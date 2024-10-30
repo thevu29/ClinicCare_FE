@@ -9,7 +9,7 @@ import {
   IconBell,
   IconPower,
   IconSearch,
-  IconChevronLeft,
+  IconLayoutSidebarLeftCollapse,
 } from "@tabler/icons-react";
 import classes from "./Header.module.scss";
 
@@ -24,9 +24,10 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
               onClick={() => setIsCollapsed(!isCollapsed)}
             >
               <ThemeIcon variant="white" className="hover:bg-[#228be61f]">
-                <IconChevronLeft
+                <IconLayoutSidebarLeftCollapse
                   className={classes.chevron}
                   style={{ transform: isCollapsed ? "rotate(180deg)" : "rotate(0)" }}
+                  rotate={isCollapsed.toString()}
                 />
               </ThemeIcon>
             </UnstyledButton>
