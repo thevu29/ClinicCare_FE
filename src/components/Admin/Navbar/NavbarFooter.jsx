@@ -17,7 +17,7 @@ const NavbarFooter = ({ isCollapsed }) => {
             </Text>
 
             <Text c="dimmed" size="xs">
-              daisex@gmail.com
+              daisex@gmail.com  
             </Text>
           </div>
         )}
