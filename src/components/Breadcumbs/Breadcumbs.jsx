@@ -2,7 +2,7 @@ import { Breadcrumbs, ThemeIcon, Image } from "@mantine/core";
 import { Link } from "react-router-dom";
 import LogoImage from "../../assets/images/logo.png";
 
-const BreadcrumbsComponent = ({ items }) => {
+const BreadcumbsComponent = ({ items }) => {
   const elements = items.map((item, index) =>
     index !== items.length - 1 ? (
       <Link
@@ -28,4 +28,4 @@ const BreadcrumbsComponent = ({ items }) => {
   return <Breadcrumbs>{elements}</Breadcrumbs>;
 };
 
-export default BreadcrumbsComponent;
+export default BreadcumbsComponent;

@@ -4,7 +4,7 @@ import ErrorPage from "./error-page.jsx";
 import Home from "./components/User/Home/Home.jsx";
 import Dashboard from "./components/Admin/Dashboard/Dashboard.jsx";
 import Admin from "./components/admin/Admin.jsx";
-import UserManagement from "./components/Admin/UsersManagement/User.jsx";
+import UserManagement from "./components/Admin/Users/User.jsx";
 
 export const router = createBrowserRouter([
   {

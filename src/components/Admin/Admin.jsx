@@ -11,7 +11,7 @@ const Admin = () => {
       <Navbar isCollapsed={isCollapsed} />
       <div className="flex-1 flex flex-col">
         <Header isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-        <div className="bg-[#f1f3f5] flex-1">
+        <div className="bg-[#f1f3f5] flex-1 px-8 py-6">
           <Outlet />
         </div>
       </div>
