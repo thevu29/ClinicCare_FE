@@ -3,9 +3,8 @@ import App from "./App.jsx";
 import ErrorPage from "./error-page.jsx";
 import Home from "./components/User/Home/Home.jsx";
 import Dashboard from "./components/Admin/Dashboard/Dashboard.jsx";
-import Admin from "./components/Admin/Admin.jsx";
+import Admin from "./components/admin/Admin.jsx";
 import UserManagement from "./components/Admin/UsersManagement/User.jsx";
-import DoctorManagement from "./components/Admin/DoctorsManagement/Doctor.jsx";
 
 export const router = createBrowserRouter([
   {

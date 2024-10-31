@@ -1,18 +1,31 @@
-import { Breadcrumbs } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Breadcrumbs, ThemeIcon, Image } from "@mantine/core";
+import { Link } from "react-router-dom";
+import LogoImage from "../../assets/images/logo.png";
 
-const BreadcrumbsComponent = ({ items }) => {
+const BreadcumbsComponent = ({ items }) => {
   const elements = items.map((item, index) =>
     index !== items.length - 1 ? (
-      <Link href={item.href} key={index} className='text-[#4c6ef5] hover:underline'>
-        {item.title}
+      <Link
+        to={item.href}
+        key={index}
+        className="text-[#4c6ef5] text-[13px] hover:underline"
+      >
+        {item.href === "/admin" ? (
+          <ThemeIcon variant="transparent" size="xs" key={index} title="Dashboard">
+            <Image src={LogoImage} alt="Logo" width={20} height={20} />
+          </ThemeIcon>
+        ) : (
+          item.title
+        )}
       </Link>
     ) : (
-      <span key={index}>{item.title}</span>
+      <span className="text-[13px]" key={index}>
+        {item.title}
+      </span>
     )
   );
 
   return <Breadcrumbs>{elements}</Breadcrumbs>;
 };
 
-export default BreadcrumbsComponent;
+export default BreadcumbsComponent;

@@ -12,7 +12,12 @@ const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <MantineProvider>
+    <MantineProvider
+      theme={{
+        fontFamily: "Inter, sans-serif",
+        headings: { fontFamily: "Inter, sans-serif" },
+      }}
+    >
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         <ReactQueryDevtools initialIsOpen={false} />
