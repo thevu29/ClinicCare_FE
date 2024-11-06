@@ -7,6 +7,9 @@ import Admin from "./components/Admin/Admin.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
+import Doctor from "./components/Admin/Doctors/Doctor.jsx";
+import CreateDoctorForm from "./components/Admin/Doctors/Create/CreateDoctorForm.jsx";
+import UpdateDoctorForm from "./components/Admin/Doctors/Update/UpdateDoctorForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +26,9 @@ export const router = createBrowserRouter([
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
+          { path: "doctors", element: <Doctor /> },
+          { path: "doctors/create", element: <CreateDoctorForm /> },
+          { path: "doctors/:id/update", element: <UpdateDoctorForm /> },
         ],
       },
     ],
