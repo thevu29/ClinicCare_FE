@@ -42,16 +42,18 @@ const Navbar = ({ isCollapsed }) => {
             <ThemeIcon variant="white" radius="xl">
               <Image w="auto" fit="contain" src={logoImage} />
             </ThemeIcon>
-            <Text
-              size="xl"
-              fw={900}
-              className={clsx(
-                classes.logoText,
-                isCollapsed ? classes.collapsed : classes.expanded
-              )}
-            >
-              ClinicCare
-            </Text>
+            {!isCollapsed && (
+              <Text
+                size="xl"
+                fw={900}
+                className={clsx(
+                  classes.logoText,
+                  isCollapsed ? classes.collapsed : classes.expanded
+                )}
+              >
+                ClinicCare
+              </Text>
+            )}
           </Group>
         </Link>
       </div>
