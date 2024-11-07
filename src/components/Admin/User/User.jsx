@@ -3,18 +3,17 @@ import { IconPlus } from "@tabler/icons-react";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import UserTable from "./UserTable";
 import Search from "../Search/Search";
+import { Link } from "react-router-dom";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
-  { title: "Users", href: "/admin/users" },
+  { title: "Users" },
 ];
 
-const UserManagement = () => {
+const User = () => {
   return (
     <>
-      <BreadcumbsComponent
-        items={breadcumbData}
-      />
+      <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
         Users
       </Title>
@@ -22,9 +21,11 @@ const UserManagement = () => {
       <div className="bg-white p-8 rounded-lg mt-7">
         <Group justify="space-between" mb={24}>
           <Search placeholder="Search users" />
-          <Button leftSection={<IconPlus />} variant="filled" color="indigo">
-            Create user
-          </Button>
+          <Link to="/admin/users/create">
+            <Button leftSection={<IconPlus />} variant="filled" color="indigo">
+              Create user
+            </Button>
+          </Link>
         </Group>
 
         <UserTable />
@@ -33,4 +34,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default User;
