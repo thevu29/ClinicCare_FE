@@ -4,7 +4,6 @@ import ErrorPage from "./error-page.jsx";
 import Home from "./components/User/Home/Home.jsx";
 import Dashboard from "./components/Admin/Dashboard/Dashboard.jsx";
 import Admin from "./components/Admin/Admin.jsx";
-import UserManagement from "./components/Admin/Users/User.jsx";
 import RoleManagement from "./components/Admin/Roles/RoleManagement.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
@@ -22,7 +21,6 @@ export const router = createBrowserRouter([
         element: <Admin />,
         children: [
           { index: true, element: <Dashboard /> },
-          { path: "users", element: <UserManagement /> },
           { path: "roles", element: <RoleManagement /> },
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
