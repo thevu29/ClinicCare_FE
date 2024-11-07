@@ -5,6 +5,7 @@ import Home from "./components/User/Home/Home.jsx";
 import Dashboard from "./components/Admin/Dashboard/Dashboard.jsx";
 import Admin from "./components/Admin/Admin.jsx";
 import RoleManagement from "./components/Admin/Roles/RoleManagement.jsx";
+import UpdateRoleForm from "./components/Admin/Roles/Update/UpdateRoleForm.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
         children: [
           { index: true, element: <Dashboard /> },
           { path: "roles", element: <RoleManagement /> },
+          { path: "roles/:id/update", element: <UpdateRoleForm /> },
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },

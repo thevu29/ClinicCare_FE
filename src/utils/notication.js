@@ -4,7 +4,7 @@ export const showNotification = (message, type) => {
   notifications.show({
     title: type,
     message: message,
-    color: "green",
+    color: type.toLowerCase() === "success" ? "green" : "red",
     position: "top-right",
   });
 };

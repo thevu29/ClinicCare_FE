@@ -1,8 +1,8 @@
 import { getRolesService } from "../../../services/roleService";
-import { Table, Checkbox } from "@mantine/core";
+import { Table, Checkbox, ActionIcon } from "@mantine/core";
+import { IconEdit } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-
-const elements = [];
+import { Link } from "react-router-dom";
 
 export default function RoleTable() {
   const [roles, setRoles] = useState([]);
@@ -12,7 +12,9 @@ export default function RoleTable() {
     const fetchUsers = async () => {
       try {
         const res = await getRolesService();
-        console.log(res);
+        if (res && res.success) {
+          setRoles(res.data);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -20,33 +22,41 @@ export default function RoleTable() {
     fetchUsers();
   }, []);
 
-  const rows = elements.map((element) => (
+  const rows = roles.map((role) => (
     <Table.Tr
-      key={element.name}
+      key={role.roleId}
       bg={
-        selectedRows.includes(element.position)
+        selectedRows.includes(role.roleId)
           ? "var(--mantine-color-blue-light)"
           : undefined
       }
     >
       <Table.Td>
         <Checkbox
-          checked={selectedRows.includes(element.position)}
+          checked={selectedRows.includes(role.roleId)}
           onChange={(e) =>
             setSelectedRows(
               e.currentTarget.checked
-                ? [...selectedRows, element.position]
-                : selectedRows.filter(
-                    (position) => position !== element.position
-                  )
+                ? [...selectedRows, role.roleId]
+                : selectedRows.filter((id) => id !== role.roleId)
             )
           }
         />
       </Table.Td>
-      <Table.Td>{element.position}</Table.Td>
-      <Table.Td>{element.name}</Table.Td>
-      <Table.Td>{element.symbol}</Table.Td>
-      <Table.Td>{element.mass}</Table.Td>
+      <Table.Td>{role.name}</Table.Td>
+      <Table.Td>{role.description || "None"}</Table.Td>
+      <Table.Td>
+        <Link to={`/admin/roles/${role.roleId}/update`}>
+          <ActionIcon
+            variant="transparent"
+            color="yellow"
+            radius="xl"
+            title="Update"
+          >
+            <IconEdit style={{ width: "70%", height: "70%" }} stroke={1.5} />
+          </ActionIcon>
+        </Link>
+      </Table.Td>
     </Table.Tr>
   ));
 
@@ -56,17 +66,16 @@ export default function RoleTable() {
         <Table.Tr>
           <Table.Th>
             <Checkbox
-              checked={selectedRows.length === elements.length}
+              checked={selectedRows.length === roles.length}
               onChange={(e) =>
                 setSelectedRows(
                   e.currentTarget.checked
-                    ? elements.map((element) => element.position)
+                    ? roles.map((role) => role.roleId)
                     : []
                 )
               }
             />
           </Table.Th>
-          <Table.Th />
           <Table.Th>Name</Table.Th>
           <Table.Th>Description</Table.Th>
           <Table.Th>Actions</Table.Th>
