@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
 import {
   Button,
   Flex,
@@ -8,18 +6,17 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import {
-  getRoleService,
-  updateRoleService,
-} from "../../../../services/roleService";
+import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { showNotification } from "../../../../utils/notication";
-import { Link, useParams } from "react-router-dom";
+import { addRoleService } from "../../../../services/roleService";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin/" },
   { title: "Roles", href: "/admin/roles" },
-  { title: "Update role" },
+  { title: "Create role" },
 ];
 
 const FORM_VALIDATION = {
@@ -28,12 +25,11 @@ const FORM_VALIDATION = {
   },
 };
 
-export default function UpdateRoleForm() {
-  const { id } = useParams();
+export default function CreateRoleForm() {
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [currentRole, setCurrentRole] = useState({});
 
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control } = useForm({
     defaultValues: {
       name: "",
       description: "",
@@ -41,53 +37,29 @@ export default function UpdateRoleForm() {
     mode: "onChange",
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const rolesRes = await getRoleService(id);
-        if (rolesRes && rolesRes.success) {
-          const currentRole = {
-            name: rolesRes.data.name,
-            description: rolesRes.data.description || "",
-          };
-
-          setCurrentRole(currentRole);
-          reset(currentRole);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [id, reset]);
-
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
 
       const formData = {};
 
-      // If the role name changed
-      if (data.name.trim() !== currentRole.name) {
+      if (data.description.trim() === "") {
         formData.name = data.name.trim();
-      }
-
-      // If the role description changed
-      if (data.description.trim() !== currentRole.description) {
+      } else {
+        formData.name = data.name.trim();
         formData.description = data.description.trim();
       }
 
-      // If formData has value then update
-      if (Object.keys(formData).length > 0) {
-        const response = await updateRoleService(id, formData);
+      const response = await addRoleService(formData);
 
-        response && response.success
-          ? showNotification(response.message, "Success")
-          : showNotification(response.message, "Error");
+      if (response && response.success) {
+        showNotification(response.message, "Success");
+        navigate("/admin/roles");
+      } else {
+        showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error updating role:", error);
+      console.error("Error adding user:", error);
     }
     setIsLoading(false);
   };
@@ -99,12 +71,10 @@ export default function UpdateRoleForm() {
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
-
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
-        Update Role
+        Create Role
       </Title>
-
       <div className="bg-white p-8 rounded-lg mt-7">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Group justify="space-between" grow>

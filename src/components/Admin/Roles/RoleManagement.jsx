@@ -3,11 +3,9 @@ import RoleTable from "./RoleTable";
 import { Button, Group, Title } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import Search from "../Search/Search";
+import { Link } from "react-router-dom";
 
-const breadcumbData = [
-  { title: "Admin", href: "/admin" },
-  { title: "Roles", href: "/admin/roles" },
-];
+const breadcumbData = [{ title: "Admin", href: "/admin/" }, { title: "Roles" }];
 
 export default function RoleManagement() {
   return (
@@ -20,9 +18,11 @@ export default function RoleManagement() {
       <div className="bg-white p-8 rounded-lg mt-7">
         <Group justify="space-between" mb={24}>
           <Search placeholder="Search roles" />
-          <Button leftSection={<IconPlus />} variant="filled" color="indigo">
-            Create role
-          </Button>
+          <Link to="/admin/roles/create">
+            <Button leftSection={<IconPlus />} variant="filled" color="indigo">
+              Create role
+            </Button>
+          </Link>
         </Group>
 
         <RoleTable />
