@@ -1,5 +1,5 @@
 import { Group, Text, ScrollArea, ThemeIcon, Image } from "@mantine/core";
-import { IconUser, IconGauge, IconLock } from "@tabler/icons-react";
+import { IconUser, IconGauge, IconLock, IconDiscountFilled } from "@tabler/icons-react";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
 import classes from "./Navbar.module.scss";
@@ -19,6 +19,7 @@ const mockdata = [
       { label: "Recovery codes", link: "/" },
     ],
   },
+  {label: "Promotion", icon:IconDiscountFilled, link:"/admin/promotions"},
 ];
 
 const Navbar = ({ isCollapsed }) => {

@@ -6,7 +6,7 @@ const NavbarFooter = ({ isCollapsed }) => {
     <UnstyledButton className={classes.user}>
       <Group wrap="no">
         <Avatar
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+          src="https://media.yeah1.com/files/ngoctran/2022/07/01/289693821_582015943280803_2102006602626651935_n-205941.jpg"
           radius="xl"
         />
 
@@ -17,7 +17,7 @@ const NavbarFooter = ({ isCollapsed }) => {
             </Text>
 
             <Text c="dimmed" size="xs">
-              daisex@gmail.com
+              daideptrai@gmail.com
             </Text>
           </div>
         )}

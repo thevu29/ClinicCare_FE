@@ -8,7 +8,7 @@ export const getUsersService = async (
   order = "asc"
 ) => {
   const res = await axios.get(
-    `/users?search=${search}page=${page}&size=${size}&sortBy=${sortBy}&order=${order}`
+    `/users?search=${search}&page=${page}&size=${size}&sortBy=${sortBy}&order=${order}`
   );
   return res;
 };
