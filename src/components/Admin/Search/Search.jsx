@@ -9,9 +9,10 @@ const Search = ({ placeholder }) => {
   const navigate = useNavigate();
 
   const handleSearch = useDebouncedCallback((search) => {
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(location.search);
+
     params.set("search", search);
-    // params.set("page", "1");
+    params.delete("page");
 
     if (!search) params.delete("search");
 
