@@ -46,15 +46,19 @@ const FORM_VALIDATION = {
   role: {
     required: "Role is required",
   },
+  specialty: {
+    required: "Specialty is required for doctor",
+  },
 };
 
 const CreateUserForm = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
 
   const [roles, setRoles] = useState([]);
+  const [isDoctor, setIsDoctor] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, setValue, watch } = useForm({
+  const { handleSubmit, control, setValue, watch, trigger } = useForm({
     defaultValues: {
       name: "",
       phone: "",
@@ -63,11 +67,13 @@ const CreateUserForm = () => {
       confirmPassword: "",
       image: "",
       roleId: "",
+      specialty: "",
     },
     mode: "onChange",
   });
 
   const password = watch("password");
+  const selectedRole = watch("roleId");
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -77,6 +83,7 @@ const CreateUserForm = () => {
           const data = res.data.map((role) => ({
             value: role.roleId,
             label: role.name,
+            isDoctor: role.name.toLowerCase() === "doctor",
           }));
 
           setRoles(data);
@@ -88,6 +95,21 @@ const CreateUserForm = () => {
 
     fetchRoles();
   }, []);
+
+  useEffect(() => {
+    if (selectedRole && roles) {
+      const selectedRoleData = roles.find(role => role.value === selectedRole);
+      const isDoctorRole = selectedRoleData?.isDoctor || false;
+      
+      setIsDoctor(isDoctorRole);
+      
+      if (!isDoctorRole) {
+        setValue("specialty", "");
+      }
+      
+      trigger("specialty");
+    }
+  }, [selectedRole, roles, setValue, trigger]);
 
   const onSubmit = async (data) => {
     try {
@@ -191,7 +213,7 @@ const CreateUserForm = () => {
                   error={error?.message}
                   label="Email"
                   size="md"
-                  type="text"
+                  type="email"
                   placeholder="Enter your email"
                 />
               )}
@@ -223,6 +245,7 @@ const CreateUserForm = () => {
                   {...field}
                   error={error?.message}
                   label="Role"
+                  size="md"
                   placeholder="Select role"
                   data={roles}
                   allowDeselect={false}
@@ -241,12 +264,33 @@ const CreateUserForm = () => {
                 <PasswordInput
                   {...field}
                   label="Confirm password"
+                  size="md"
                   error={error?.message}
                   placeholder="Repeat your password"
                 />
               )}
             />
           </Group>
+
+          {isDoctor && (
+            <Group grow mt="md">
+              <Controller
+                name="specialty"
+                control={control}
+                rules={FORM_VALIDATION.specialty}
+                render={({ field, fieldState: { error } }) => (
+                  <TextInput
+                    {...field}
+                    error={error?.message}
+                    label="Specialty"
+                    size="md"
+                    type="text"
+                    placeholder="Enter doctor's specialty"
+                  />
+                )}
+              />
+            </Group>
+          )}
 
           <Group mt={32} justify="flex-end">
             <Link to="/admin/users">

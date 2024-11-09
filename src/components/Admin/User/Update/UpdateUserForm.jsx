@@ -10,7 +10,7 @@ import {
   Title,
 } from "@mantine/core";
 import {
-  getUserService,
+  getUserByIdService,
   updateUserService,
 } from "../../../../services/userService";
 import { getRolesService } from "../../../../services/roleService";
@@ -48,13 +48,17 @@ const FORM_VALIDATION = {
   role: {
     required: "Role is required",
   },
+  specialty: {
+    required: "Specialty is required",
+  },
 };
 
 const UpdateUserForm = () => {
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
+
   const [roles, setRoles] = useState([]);
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
@@ -71,19 +75,22 @@ const UpdateUserForm = () => {
       try {
         const rolesRes = await getRolesService();
         if (rolesRes.success) {
-          const rolesData = rolesRes.data.map((role) => ({
-            value: role.roleId,
-            label: role.name,
-          }));
+          const rolesData = rolesRes.data
+            .map((role) => ({
+              value: role.roleId,
+              label: role.name,
+            }))
+            .filter((role) => role.label !== "User");
+
           setRoles(rolesData);
 
-          const userRes = await getUserService(id);
+          const userRes = await getUserByIdService(id);
           if (userRes.success) {
             const user = userRes.data;
             setUser(user);
 
             const userRole =
-              rolesData.find((r) => r.label === user.role)?.value || "";
+              rolesData.find((role) => role.label === user.role)?.value || "";
 
             reset({
               name: user.name,
@@ -120,7 +127,7 @@ const UpdateUserForm = () => {
       const response = await updateUserService(id, formData);
 
       response.success
-        ? showNotification(response.message, "success")
+        ? showNotification(response.message, "Success")
         : showNotification(response.message, "Error");
     } catch (error) {
       console.error("Error updating user:", error);
@@ -191,24 +198,26 @@ const UpdateUserForm = () => {
             />
           </Group>
 
-          <Group grow mt={20}>
-            <Controller
-              name="roleId"
-              control={control}
-              rules={FORM_VALIDATION.role}
-              render={({ field, fieldState: { error } }) => (
-                <Select
-                  {...field}
-                  error={error?.message}
-                  defaultValue={field.value}
-                  label="Role"
-                  placeholder="Select role"
-                  data={roles}
-                  allowDeselect={false}
-                />
-              )}
-            />
-          </Group>
+          {user && user.role.toLowerCase() !== "user" && (
+            <Group grow mt={20}>
+              <Controller
+                name="roleId"
+                control={control}
+                rules={FORM_VALIDATION.role}
+                render={({ field, fieldState: { error } }) => (
+                  <Select
+                    {...field}
+                    error={error?.message}
+                    defaultValue={field.value}
+                    label="Role"
+                    placeholder="Select role"
+                    data={roles}
+                    allowDeselect={false}
+                  />
+                )}
+              />
+            </Group>
+          )}
 
           <Group mt={32} justify="flex-end">
             <Link to="/admin/users">
