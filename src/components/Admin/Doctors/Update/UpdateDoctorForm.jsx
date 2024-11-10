@@ -67,10 +67,10 @@ const UpdateDoctorForm = () => {
             specialty: doctor.specialty,
           });
         } else {
-          showNotification(doctorRes.message, "error");
+          showNotification(doctorRes.message, "Error");
         }
       } catch (error) {
-        showNotification(error.message, "error");
+        showNotification(error.message, "Error");
       } finally {
         setIsLoading(false);
       }
@@ -89,13 +89,13 @@ const UpdateDoctorForm = () => {
 
       const response = await updateDoctorService(id, formData);
       if (response.success) {
-        showNotification(response.message, "success");
+        showNotification(response.message, "Success");
         navigate("/admin/doctors");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
-      showNotification(error.message, "error");
+      showNotification(error.message, "Error");
     } finally {
       setIsLoading(false);
     }

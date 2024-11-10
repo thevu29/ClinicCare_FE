@@ -10,6 +10,9 @@ import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
 import Doctor from "./components/Admin/Doctors/Doctor.jsx";
 import CreateDoctorForm from "./components/Admin/Doctors/Create/CreateDoctorForm.jsx";
 import UpdateDoctorForm from "./components/Admin/Doctors/Update/UpdateDoctorForm.jsx";
+import MedicalRecord from "./components/Admin/MedicalRecord/MedicalRecord.jsx";
+import CreateMedicalRecordForm from "./components/Admin/MedicalRecord/Create/CreateMedicalRecordForm.jsx";
+import UpdateMedicalRecordForm from "./components/Admin/MedicalRecord/Update/UpdateMedicalRecordForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +32,9 @@ export const router = createBrowserRouter([
           { path: "doctors", element: <Doctor /> },
           { path: "doctors/create", element: <CreateDoctorForm /> },
           { path: "doctors/:id/update", element: <UpdateDoctorForm /> },
+          { path: "medical-records", element: <MedicalRecord />},
+          { path: "medical-records/create", element: <CreateMedicalRecordForm /> },
+          { path: "medical-records/:id/update", element: <UpdateMedicalRecordForm /> }
         ],
       },
     ],

@@ -51,7 +51,6 @@ const CreateDoctorForm = ({ history }) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const [roles, setRoles] = useState([]);
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
@@ -85,10 +84,10 @@ const CreateDoctorForm = ({ history }) => {
       const response = await createDoctorService(formData);
 
       if (response.success) {
-        showNotification(response.message, "success");
-        navigate("/admin/users");
+        showNotification(response.message, "Success");
+        navigate("/admin/doctors");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
       console.error("Error adding user:", error);
