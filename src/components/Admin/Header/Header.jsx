@@ -1,72 +1,15 @@
+import { Group, ThemeIcon, UnstyledButton, Tooltip, Menu } from "@mantine/core";
 import {
-  Group,
-  ThemeIcon,
-  UnstyledButton,
-  Tooltip,
-  Menu,
-  ScrollArea,
-  Divider,
-  Text,
-  Box,
-} from "@mantine/core";
-import {
-  IconBell,
   IconPower,
   IconLayoutSidebarLeftCollapse,
+  IconBell,
 } from "@tabler/icons-react";
 import classes from "./Header.module.scss";
-import { useEffect, useState } from "react";
-import { getByUserIdService } from "../../../services/notificationService";
+import NotificationBox from "./NotificationBox";
+import { useState } from "react";
 
 const Header = ({ isCollapsed, setIsCollapsed }) => {
-  const [notifications, setNotifications] = useState([]);
-
-  // Cursor
-  const [cursor, setCursor] = useState("");
-
-  // Admin Id
-  const userId = "1112c29f-aa3c-40ce-ad10-4266c06b8461";
-
-  // Handle for load more notification
-  const handleLoadMore = async () => {
-    try {
-      const res = await getByUserIdService(userId, cursor);
-      console.log(res);
-
-      if (res && res.success) {
-        // Set cursor
-        setCursor(res.data.cursor);
-        // Set notification
-        setNotifications((prev) => [...prev, ...res.data.notifications]);
-      }
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-    }
-  };
-
-  // Get notification with admin Id
-  useEffect(() => {
-    const fetchNotification = async () => {
-      try {
-        const res = await getByUserIdService(userId);
-        console.log(res);
-
-        if (res && res.success) {
-          // Set cursor
-          setCursor(res.data.cursor);
-          // Set notification
-          setNotifications(res.data.notifications);
-        }
-      } catch (error) {
-        console.error("Error fetching notifications:", error);
-      }
-    };
-    fetchNotification();
-  }, []);
-
-  useEffect(() => {
-    console.log(notifications);
-  }, [notifications]);
+  const [isNotifiOpen, setIsNotifiOpen] = useState(false);
 
   return (
     <header className={`h-[60px] px-6 ${classes.header}`}>
@@ -89,7 +32,11 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
         </Tooltip>
 
         <Group>
-          <Menu shadow="md">
+          <Menu
+            shadow="md"
+            onOpen={() => setIsNotifiOpen(true)}
+            onClose={() => setIsNotifiOpen(false)}
+          >
             <Menu.Target>
               <Tooltip label="Notifications">
                 <UnstyledButton className="size-10 flex justify-center items-center">
@@ -104,26 +51,7 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
               </Tooltip>
             </Menu.Target>
 
-            <Menu.Dropdown>
-              <Box w={300} mah={300} style={{ overflowY: "auto" }}>
-                {notifications.map((item) => (
-                  <Menu.Item py={20} key={item.notificationId}>
-                    {item.message}
-                  </Menu.Item>
-                ))}
-              </Box>
-
-              <Divider />
-
-              <Text
-                c="blue"
-                align="center"
-                className="hover:underline cursor-pointer"
-                onClick={handleLoadMore}
-              >
-                More
-              </Text>
-            </Menu.Dropdown>
+            <Menu.Dropdown>{isNotifiOpen && <NotificationBox />}</Menu.Dropdown>
           </Menu>
 
           <Tooltip label="Logout">
