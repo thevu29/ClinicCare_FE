@@ -82,12 +82,19 @@ const UpdateDoctorForm = () => {
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
+
       const formData = new FormData();
+
       Object.keys(data).forEach((key) => {
         if (key !== "image") formData.append(key, data[key]);
       });
 
+      if (data.image && typeof data.image !== "string") {
+        formData.append("image", data.image);
+      }
+
       const response = await updateDoctorService(id, formData);
+      
       if (response.success) {
         showNotification(response.message, "Success");
         navigate("/admin/doctors");
@@ -154,7 +161,9 @@ const UpdateDoctorForm = () => {
             <Controller
               name="image"
               control={control}
-              render={() => <AvatarDropzone user={doctor} onUpload={handleImageUpload} />}
+              render={() => (
+                <AvatarDropzone user={doctor} onUpload={handleImageUpload} />
+              )}
             />
           </Group>
           <Group grow mt={20}>

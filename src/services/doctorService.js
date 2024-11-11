@@ -26,13 +26,13 @@ export const getDoctorServiceById = async (id) => {
   return await axios.get(`/doctors/${id}`);
 };
 
-export const createDoctorService = async (doctor) => {
-  const res = await axios.post("/doctors", doctor);
+export const createDoctorService = async (formData) => {
+  const res = await axios.post("/doctors", formData);
   return res;
 };
 
-export const updateDoctorService = async (id, doctor) => {
-  const res = await axios.put(`/doctors/update/${id}`, doctor);
+export const updateDoctorService = async (id, formData) => {
+  const res = await axios.put(`/doctors/update/${id}`, formData);
   return res;
 };
 

@@ -59,6 +59,9 @@ const DoctorTable = () => {
     const _sortBy = params.get("sortBy") || "";
     const _order = params.get("order") || "";
 
+    setSortBy(_sortBy);
+    setOrder(_order);
+
     fetchDoctors(search, page, _sortBy, _order);
   }, [location.search]);
 

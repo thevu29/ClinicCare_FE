@@ -295,13 +295,13 @@ const MedicalRecordTable = () => {
               </Group>
             </Table.Th>
             <Table.Th
-              onClick={() => handleSort("date")}
+              onClick={() => handleSort("createAt")}
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
                 <span>Date</span>
                 <Transition
-                  mounted={sortBy === "date"}
+                  mounted={sortBy === "createAt"}
                   transition={{
                     type: "rotate-left",
                     duration: 200,
@@ -309,7 +309,7 @@ const MedicalRecordTable = () => {
                   }}
                 >
                   {(styles) =>
-                    sortBy === "date" && (
+                    sortBy === "createAt" && (
                       <IconChevronUp
                         style={{
                           transform:
