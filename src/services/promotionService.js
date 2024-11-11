@@ -4,6 +4,8 @@ export const getPromotionsService = async ({
   search = "",
   page = 1,
   size = 5,
+  status = "",
+  discount = "",
   sortBy,
   order,
 }) => {
@@ -12,6 +14,8 @@ export const getPromotionsService = async ({
   if (search) params.append("search", search);
   if (page) params.append("page", page);
   if (size) params.append("size", size);
+  if (status) params.append("status", status);
+  if (discount) params.append("discount", discount);
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
 
