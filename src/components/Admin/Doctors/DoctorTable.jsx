@@ -22,12 +22,11 @@ import { handleSorting } from "../../../utils/sort";
 
 const ITEMS_PER_PAGE = 4;
 
-const DoctorTable = () => {
+const DoctorTable = ({selectedRows, setSelectedRows}) => {
   const [doctors, setDoctors] = useState({ results: [], meta: {} });
   const [sortBy, setSortBy] = useState(null);
   const [order, setOrder] = useState("asc");
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedRows, setSelectedRows] = useState([]);
 
   const location = useLocation();
   const pathname = location.pathname;
