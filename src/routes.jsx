@@ -9,6 +9,10 @@ import Promotion from "./components/Admin/Promotion/Promotion.jsx";
 import CreatePromotionForm from "./components/Admin/Promotion/Create/CreatePromotionForm.jsx";
 import UpdatePromotionForm from "./components/Admin/Promotion/Update/UpdatePromotionForm.jsx";
 
+import Service from "./components/Admin/Service/Service.jsx";
+import CreateServiceForm from "./components/Admin/Service/Create/CreateServiceForm.jsx";
+import UpdateServiceForm from "./components/Admin/Service/Update/UpdateServiceForm.jsx";
+
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
@@ -29,6 +33,12 @@ export const router = createBrowserRouter([
           { path: "promotions", element: <Promotion /> },
           { path: "promotions/create", element: <CreatePromotionForm /> },
           { path: "promotions/:id/update", element: <UpdatePromotionForm /> },
+
+          // Services
+          { path : "services", element: <Service /> },
+          { path : "services/create", element: <CreateServiceForm /> },
+          { path : "services/:id/update", element: <UpdateServiceForm /> },
+          
 
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },

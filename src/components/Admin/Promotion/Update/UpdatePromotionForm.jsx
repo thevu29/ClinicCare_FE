@@ -15,7 +15,7 @@ import {
 } from "../../../../services/promotionService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { showNotification } from "../../../../utils/notication";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toUpper } from "lodash";
 
 const statuses = [
@@ -48,6 +48,8 @@ const FORM_VALIDATION = {
 
 const UpdatePromotionForm = () => {
   const { id } = useParams();
+
+  const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -97,9 +99,11 @@ const UpdatePromotionForm = () => {
 
       const response = await updatePromotionService(id, data);
 
-      response.success
-        ? showNotification(response.message, "Success")
-        : showNotification(response.message, "Error");
+      if (response.success){
+        showNotification(response.message, "Success");
+        navigate("/admin/promotions");
+      }
+      else showNotification(response.message, "Error");
     } catch (error) {
       console.error("Error updating promotion:", error);
     } finally {
