@@ -130,10 +130,10 @@ const CreateUserForm = () => {
       const response = await addUserService(formData);
 
       if (response.success) {
-        showNotification(response.message, "success");
+        showNotification(response.message, "Success");
         navigate("/admin/users");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
       console.error("Error adding user:", error);

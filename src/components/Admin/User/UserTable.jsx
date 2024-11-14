@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Table,
   Checkbox,
@@ -6,68 +5,41 @@ import {
   Group,
   ActionIcon,
   Text,
-  LoadingOverlay,
   Transition,
+  NumberInput,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  deleteUserService,
-  getUsersService,
-} from "../../../services/userService";
+import { Link } from "react-router-dom";
+import { deleteUserService } from "../../../services/userService";
 import { showNotification } from "../../../utils/notification";
-import { handleSorting } from "../../../utils/sort";
 import PaginationComponent from "../../Pagination/Pagination";
 import clsx from "clsx";
 import FilterUser from "./Filter/FilterUser";
 
-const ITEMS_PER_PAGE = 4;
-
-const UserTable = ({ selectedRows, setSelectedRows }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-  const navigate = useNavigate();
-
-  const [users, setUsers] = useState({ results: [], meta: {} });
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState(null);
-  const [order, setOrder] = useState("asc");
-
-  const fetchUsers = async (search, role, page, sortBy, order) => {
-    try {
-      const res = await getUsersService({
-        search,
-        role,
-        page,
-        size: ITEMS_PER_PAGE,
-        sortBy,
-        order,
-      });
-
-      if (res.success) {
-        const data = { results: res.data, meta: res.meta };
-        setUsers(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+const UserTable = ({
+  users,
+  fetchUsers,
+  sortBy,
+  order,
+  setIsLoading,
+  selectedUsers,
+  setSelectedUsers,
+  handleSort,
+  size,
+  setSize,
+}) => {
+  const toggleUserSelection = (userId) => {
+    setSelectedUsers((prev) =>
+      prev.includes(userId)
+        ? prev.filter((id) => id !== userId)
+        : [...prev, userId]
+    );
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-
-    const search = params.get("search") || "";
-    const role = params.get("role") || "";
-    const page = parseInt(params.get("page")) || 1;
-    const _sortBy = params.get("sortBy") || "";
-    const _order = params.get("order") || "";
-
-    setSortBy(_sortBy);
-    setOrder(_order);
-
-    fetchUsers(search, role, page, _sortBy, _order);
-  }, [location.search]);
+  const toggleAllUsers = (userIds) => {
+    setSelectedUsers((prev) => (prev.length === userIds.length ? [] : userIds));
+  };
 
   const deleteUser = async (id) => {
     try {
@@ -107,27 +79,21 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
 
   const rows =
     users &&
-    users.results &&
-    users.results.length > 0 &&
-    users.results.map((user) => (
+    users.data &&
+    users.data.length > 0 &&
+    users.data.map((user) => (
       <Table.Tr
         key={user.userId}
         bg={
-          selectedRows.includes(user.userId)
+          selectedUsers.includes(user.userId)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedRows.includes(user.userId)}
-            onChange={(e) =>
-              setSelectedRows(
-                e.currentTarget.checked
-                  ? [...selectedRows, user.userId]
-                  : selectedRows.filter((position) => position !== user.userId)
-              )
-            }
+            checked={selectedUsers.includes(user.userId)}
+            onChange={() => toggleUserSelection(user.userId)}
           />
         </Table.Td>
         <Table.Td>
@@ -184,40 +150,18 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
       </Table.Tr>
     ));
 
-  const handleSort = (field) => {
-    let newOrder = "asc";
-    if (sortBy === field) {
-      newOrder = order === "asc" ? "desc" : "asc";
-    }
-    setSortBy(field);
-    setOrder(newOrder);
-    handleSorting(field, newOrder, location, pathname, navigate);
-  };
-
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
               <Checkbox
                 checked={
-                  users.results.length <= 0
-                    ? false
-                    : selectedRows.length === users.results.length
+                  users ? selectedUsers.length === users.data.length : false
                 }
-                onChange={(e) =>
-                  setSelectedRows(
-                    e.currentTarget.checked
-                      ? users.results.map((user) => user.userId)
-                      : []
-                  )
+                onChange={() =>
+                  toggleAllUsers(users.data.map((user) => user.userId))
                 }
               />
             </Table.Th>
@@ -325,12 +269,26 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {users && users.meta && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{users.meta.take}</strong> of{" "}
-            <strong>{users.meta.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {users && users.meta && (
+            <span className="text-xs italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{users.meta.take}</strong> of{" "}
+              <strong>{users.meta.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput
+              maw={50}
+              size="xs"
+              value={size}
+              onChange={setSize}
+            />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={
