@@ -18,6 +18,8 @@ import { IconEdit, IconChevronUp, IconFilter } from "@tabler/icons-react";
 
 import PaginationComponent from "../../Pagination/Pagination";
 
+import clsx from "clsx";
+
 const ITEMS_PER_PAGE = 4;
 
 const statuses = [
@@ -113,7 +115,19 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
         <Table.Td>{promotion.description}</Table.Td>
         <Table.Td>{promotion.discount}</Table.Td>
         <Table.Td>{promotion.expireAt}</Table.Td>
-        <Table.Td>{promotion.status}</Table.Td>
+        <Table.Td>
+          <span  className={clsx(
+              "py-1 px-[6px] flex justify-center items-center max-w-20",
+              {
+                "bg-red-600 text-white": promotion.status === "END",
+                "bg-green-600 text-white": promotion.status === "ACTIVE",
+                "bg-blue-600 text-white": promotion.status === "INACTIVE",
+                "bg-yellow-600 text-white":promotion.status === "EXPIRED",
+              }
+            )}>
+            {promotion.status}
+          </span>
+        </Table.Td>
         <Table.Td>
           <Group gap={6}>
             <Link to={`${promotion.promotionId}/update`}>

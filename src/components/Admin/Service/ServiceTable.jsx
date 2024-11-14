@@ -28,6 +28,7 @@ import { getAllPromotionsService } from "../../../services/promotionService";
 import { showNotification } from "../../../utils/notication";
 import PaginationComponent from "../../Pagination/Pagination";
 import { handleSorting } from "../../../utils/sort";
+import clsx from "clsx";
 
 const ITEMS_PER_PAGE = 4;
 
@@ -163,7 +164,19 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
         <Table.Td>{service.name}</Table.Td>
         <Table.Td>{service.description}</Table.Td>
         <Table.Td>{service.price}</Table.Td>
-        <Table.Td>{service.status}</Table.Td>
+        <Table.Td>
+          <span
+            className={clsx(
+              "py-1 px-[6px] flex justify-center items-center max-w-28",
+              {
+                "bg-red-600 text-white": service.status === "UNAVAILABLE",
+                "bg-green-600 text-white": service.status === "AVAILABLE",
+              }
+            )}
+          >
+            {service.status}
+          </span>
+        </Table.Td>
         <Table.Td>
           {promotions.map((promotion) => {
             return promotion.promotionId === service.promotionId
@@ -344,25 +357,25 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
             <Table.Th>
               <Group justify="space-between">
                 <span>Status</span>
-              </Group>
-              <Menu shadow="md" width={200}>
-                <Menu.Target>
-                  <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
-                    <IconFilter width={18} height={18} />
-                  </Button>
-                </Menu.Target>
+                <Menu shadow="md" width={200}>
+                  <Menu.Target>
+                    <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
+                      <IconFilter width={18} height={18} />
+                    </Button>
+                  </Menu.Target>
 
-                <Menu.Dropdown>
-                  <Select
-                    placeholder="Select status"
-                    data={statuses}
-                    allowDeselect
-                    value={selectedStatus}
-                    onChange={handleStatusChange}
-                    maw={150}
-                  />
-                </Menu.Dropdown>
-              </Menu>
+                  <Menu.Dropdown>
+                    <Select
+                      placeholder="Select status"
+                      data={statuses}
+                      allowDeselect
+                      value={selectedStatus}
+                      onChange={handleStatusChange}
+                      maw={150}
+                    />
+                  </Menu.Dropdown>
+                </Menu>
+              </Group>
             </Table.Th>
             <Table.Th>
               <Group justify="space-between">
