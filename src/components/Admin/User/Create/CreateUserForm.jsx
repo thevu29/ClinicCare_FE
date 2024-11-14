@@ -15,7 +15,7 @@ import { getAllRoles } from "../../../../services/roleService";
 import { addUserService } from "../../../../services/userService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -98,15 +98,17 @@ const CreateUserForm = () => {
 
   useEffect(() => {
     if (selectedRole && roles) {
-      const selectedRoleData = roles.find(role => role.value === selectedRole);
+      const selectedRoleData = roles.find(
+        (role) => role.value === selectedRole
+      );
       const isDoctorRole = selectedRoleData?.isDoctor || false;
-      
+
       setIsDoctor(isDoctorRole);
-      
+
       if (!isDoctorRole) {
         setValue("specialty", "");
       }
-      
+
       trigger("specialty");
     }
   }, [selectedRole, roles, setValue, trigger]);

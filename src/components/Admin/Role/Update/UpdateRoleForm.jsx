@@ -17,7 +17,7 @@ import { showNotification } from "../../../../utils/notification";
 import { Link, useParams } from "react-router-dom";
 
 const breadcumbData = [
-  { title: "Admin", href: "/admin/" },
+  { title: "Admin", href: "/admin" },
   { title: "Roles", href: "/admin/roles" },
   { title: "Update role" },
 ];
@@ -66,7 +66,7 @@ export default function UpdateRoleForm() {
     try {
       setIsLoading(true);
 
-      const payload = {}
+      const payload = {};
 
       if (data.name.trim() !== currentRole.name) {
         payload.name = data.name.trim();

@@ -16,7 +16,7 @@ import {
   deleteUserService,
   getUsersService,
 } from "../../../services/userService";
-import { showNotification } from "../../../utils/notication";
+import { showNotification } from "../../../utils/notification";
 import clsx from "clsx";
 import PaginationComponent from "../../Pagination/Pagination";
 import { handleSorting } from "../../../utils/sort";

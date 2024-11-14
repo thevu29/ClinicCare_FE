@@ -5,7 +5,7 @@ import { IconPlus } from "@tabler/icons-react";
 import Search from "../Search/Search";
 import { Link } from "react-router-dom";
 
-const breadcumbData = [{ title: "Admin", href: "/admin/" }, { title: "Roles" }];
+const breadcumbData = [{ title: "Admin", href: "/admin" }, { title: "Roles" }];
 
 export default function RoleManagement() {
   return (

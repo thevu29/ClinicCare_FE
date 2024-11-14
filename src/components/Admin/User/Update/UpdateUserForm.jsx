@@ -16,7 +16,7 @@ import {
 import { getAllRoles } from "../../../../services/roleService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { Link, useParams } from "react-router-dom";
 
 const breadcumbData = [

@@ -14,7 +14,7 @@ import { showNotification } from "../../../../utils/notification";
 import { addRoleService } from "../../../../services/roleService";
 
 const breadcumbData = [
-  { title: "Admin", href: "/admin/" },
+  { title: "Admin", href: "/admin" },
   { title: "Roles", href: "/admin/roles" },
   { title: "Create role" },
 ];
