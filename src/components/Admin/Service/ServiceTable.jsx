@@ -81,6 +81,10 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
   };
 
   useEffect(() => {
+    fetchAllPromotions();
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(location.search);
 
     const search = params.get("search") || "";
@@ -92,8 +96,7 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
     setOrder(_order);
 
     fetchServices(search, page, _sortBy, _order);
-    fetchAllPromotions();
-  }, [location.search, services]);
+  }, [location.search]);
 
   const deleteService = async (id) => {
     try {
@@ -102,9 +105,9 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
       const res = await deleteServiceManager(id);
 
       if (res.success) {
-        showNotification(res.message, "success");
+        showNotification(res.message, "Success");
       } else {
-        showNotification(res.message, "error");
+        showNotification(res.message, "Error");
       }
     } catch (error) {
       console.error(error);

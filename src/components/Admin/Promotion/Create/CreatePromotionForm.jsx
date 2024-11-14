@@ -63,14 +63,13 @@ const CreatePromotionForm = () => {
     try {
       setIsLoading(true);
 
-
       const response = await addPromotionService(data);
 
       if (response.success) {
-        showNotification(response.message, "success");
+        showNotification(response.message, "Success");
         navigate("/admin/promotions");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
       console.error("Error adding promotion:", error);

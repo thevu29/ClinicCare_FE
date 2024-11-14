@@ -21,6 +21,11 @@ const breadcumbData = [
   { title: "Create service" },
 ];
 
+const statuses = [
+  { label: "available", value: "Available"},
+  { label: "unavailable", value: "Unavailable"},
+]
+
 const FORM_VALIDATION = {
   name: {
     required: "Name is required",
@@ -31,8 +36,8 @@ const FORM_VALIDATION = {
   price: {
     required: "Price is required",
   },
-  promotionId: {
-    requiredId: "Promotion is required",
+  status: {
+    required: "Status is required",
   },
 };
 
@@ -47,6 +52,7 @@ const CreateServiceForm = () => {
       name: "",
       description: "",
       price: "",
+      status: "",
       promotionId: "",
     },
     mode: "onChange",
@@ -80,10 +86,10 @@ const CreateServiceForm = () => {
       const res = await addServiceManager(data);
 
       if (res.success) {
-        showNotification(res.message, "success");
+        showNotification(res.message, "Success");
         navigate("/admin/services");
       } else {
-        showNotification(res.message, "error");
+        showNotification(res.message, "Error");
       }
     } catch (error) {
       console.error("Error creating service:", error);
@@ -154,8 +160,27 @@ const CreateServiceForm = () => {
                   />
                 )}
               />
+            </Flex>
+          </Group>
 
-              <Controller
+          <Group grow mt={20}>
+            <Controller
+              name="status"
+              control={control}
+              rules={FORM_VALIDATION.status}
+              render={({ field, fieldState: { error } }) => (
+                <Select
+                  {...field}
+                  error={error?.message}
+                  label="Status"
+                  size="md"
+                  placeholder="Select status"
+                  data={statuses}
+                  allowDeselect={false}
+                />
+              )}
+            />
+            <Controller
                 name="promotionId"
                 control={control}
                 rules={FORM_VALIDATION.promotionId}
@@ -167,12 +192,11 @@ const CreateServiceForm = () => {
                     size="md"
                     placeholder="Select promotion"
                     data={promotions}
-                    allowDeselect={false}
                   />
                 )}
               />
-            </Flex>
           </Group>
+
 
           <Group mt={32} justify="flex-end">
             <Link to="/admin/services">

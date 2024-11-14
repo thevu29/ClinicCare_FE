@@ -35,7 +35,6 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   const [promotions, setPromotions] = useState({ results: [], meta: {} });
-  const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [order, setOrder] = useState("asc");
 
@@ -148,7 +147,6 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
   return (
     <>
       <LoadingOverlay
-        visible={isLoading}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
