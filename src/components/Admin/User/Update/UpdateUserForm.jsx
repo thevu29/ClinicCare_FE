@@ -13,7 +13,7 @@ import {
   getUserByIdService,
   updateUserService,
 } from "../../../../services/userService";
-import { getRolesService } from "../../../../services/roleService";
+import { getAllRoles } from "../../../../services/roleService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
 import { showNotification } from "../../../../utils/notication";
@@ -73,7 +73,7 @@ const UpdateUserForm = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const rolesRes = await getRolesService();
+        const rolesRes = await getAllRoles();
         if (rolesRes.success) {
           const rolesData = rolesRes.data
             .map((role) => ({

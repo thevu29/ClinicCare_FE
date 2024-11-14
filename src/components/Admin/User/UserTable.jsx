@@ -336,7 +336,7 @@ const UserTable = ({ selectedRows, setSelectedRows }) => {
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={users?.meta?.totalPage || 1}
+          totalPages={users?.meta?.totalPages || 1}
         />
       </Group>
     </>

@@ -13,7 +13,7 @@ import {
   updateRoleService,
 } from "../../../../services/roleService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { Link, useParams } from "react-router-dom";
 
 const breadcumbData = [
@@ -66,25 +66,23 @@ export default function UpdateRoleForm() {
     try {
       setIsLoading(true);
 
-      const formData = {};
+      const payload = {}
 
-      // If the role name changed
       if (data.name.trim() !== currentRole.name) {
-        formData.name = data.name.trim();
+        payload.name = data.name.trim();
       }
-
-      // If the role description changed
       if (data.description.trim() !== currentRole.description) {
-        formData.description = data.description.trim();
+        payload.description = data.description.trim();
       }
 
-      // If formData has value then update
-      if (Object.keys(formData).length > 0) {
-        const response = await updateRoleService(id, formData);
+      if (Object.keys(payload).length > 0) {
+        const response = await updateRoleService(id, payload);
 
         response && response.success
           ? showNotification(response.message, "Success")
           : showNotification(response.message, "Error");
+      } else {
+        showNotification("No changes detected", "Warning");
       }
     } catch (error) {
       console.error("Error updating role:", error);

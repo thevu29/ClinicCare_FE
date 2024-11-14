@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { addRoleService } from "../../../../services/roleService";
 
 const breadcumbData = [
@@ -41,16 +41,7 @@ export default function CreateRoleForm() {
     try {
       setIsLoading(true);
 
-      const formData = {};
-
-      if (data.description.trim() === "") {
-        formData.name = data.name.trim();
-      } else {
-        formData.name = data.name.trim();
-        formData.description = data.description.trim();
-      }
-
-      const response = await addRoleService(formData);
+      const response = await addRoleService(data.name, data.description);
 
       if (response && response.success) {
         showNotification(response.message, "Success");

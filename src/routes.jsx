@@ -7,9 +7,9 @@ import Admin from "./components/Admin/Admin.jsx";
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
-import RoleManagement from "./components/Admin/Roles/RoleManagement.jsx";
-import UpdateRoleForm from "./components/Admin/Roles/Update/UpdateRoleForm.jsx";
-import CreateRoleForm from "./components/Admin/Roles/Create/CreateRoleForm.jsx";
+import Role from "./components/Admin/Role/Role.jsx";
+import UpdateRoleForm from "./components/Admin/Role/Update/UpdateRoleForm.jsx";
+import CreateRoleForm from "./components/Admin/Role/Create/CreateRoleForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -23,11 +23,11 @@ export const router = createBrowserRouter([
         element: <Admin />,
         children: [
           { index: true, element: <Dashboard /> },
-          // Role management
-          { path: "roles", element: <RoleManagement /> },
+
+          { path: "roles", element: <Role /> },
           { path: "roles/create", element: <CreateRoleForm /> },
           { path: "roles/:id/update", element: <UpdateRoleForm /> },
-          // End Role management
+
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
