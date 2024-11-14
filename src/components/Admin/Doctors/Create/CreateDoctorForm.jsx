@@ -27,6 +27,7 @@ const FORM_VALIDATION = {
     required: "Name is required",
   },
   phone: {
+    required: "Phone number is required",
     pattern: {
       value: /^\d{10}$/,
       message: "Phone number must contain exactly 10 digits",

@@ -21,7 +21,7 @@ import { handleSorting } from "../../../utils/sort";
 
 const ITEMS_PER_PAGE = 4;
 
-const MedicalRecordTable = ({selectedRows, setSelectedRows}) => {
+const MedicalRecordTable = ({ selectedRows, setSelectedRows }) => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
@@ -30,12 +30,10 @@ const MedicalRecordTable = ({selectedRows, setSelectedRows}) => {
     results: [],
     meta: {},
   });
-  // const [selectedRows, setSelectedRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [sortBy, setSortBy] = useState(null);
   const [order, setOrder] = useState("asc");
 
-  
   const fetchMedicalRecords = async (search, page, sortBy, order) => {
     try {
       const res = await getMedicalRecordsService({

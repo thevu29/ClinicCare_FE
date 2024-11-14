@@ -35,6 +35,9 @@ const FORM_VALIDATION = {
   serviceName: {
     required: "Service is required",
   },
+  description: {
+    required: "Description is required",
+  },
 };
 
 const CreateMedicalRecordForm = () => {
@@ -157,6 +160,7 @@ const CreateMedicalRecordForm = () => {
                 rules={FORM_VALIDATION.patientName}
                 render={({ field, fieldState: { error } }) => (
                   <Select
+                    searchable
                     {...field}
                     error={error?.message}
                     label="Patient"
@@ -165,7 +169,7 @@ const CreateMedicalRecordForm = () => {
                     allowDeselect={false}
                     itemComponent={SelectItem}
                     onChange={(value) => {
-                      field.onChange(value); 
+                      field.onChange(value);
                       const selectedPatient = patients.find(
                         (p) => p.value === value
                       );
@@ -201,6 +205,7 @@ const CreateMedicalRecordForm = () => {
                 rules={FORM_VALIDATION.doctorName}
                 render={({ field, fieldState: { error } }) => (
                   <Select
+                    searchable
                     {...field}
                     error={error?.message}
                     label="Doctor"
@@ -209,7 +214,7 @@ const CreateMedicalRecordForm = () => {
                     allowDeselect={false}
                     itemComponent={SelectItem}
                     onChange={(value) => {
-                      field.onChange(value); 
+                      field.onChange(value);
                       const selectedDoctor = doctors.find(
                         (p) => p.value === value
                       );
@@ -237,6 +242,7 @@ const CreateMedicalRecordForm = () => {
                 )}
               />
               <Controller
+                searchabl
                 name="serviceId"
                 control={control}
                 rules={FORM_VALIDATION.serviceName}
