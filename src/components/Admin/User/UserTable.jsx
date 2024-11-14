@@ -16,10 +16,10 @@ import {
   deleteUserService,
   getUsersService,
 } from "../../../services/userService";
-import { showNotification } from "../../../utils/notication";
-import clsx from "clsx";
-import PaginationComponent from "../../Pagination/Pagination";
+import { showNotification } from "../../../utils/notification";
 import { handleSorting } from "../../../utils/sort";
+import PaginationComponent from "../../Pagination/Pagination";
+import clsx from "clsx";
 import FilterUser from "./Filter/FilterUser";
 
 const ITEMS_PER_PAGE = 4;

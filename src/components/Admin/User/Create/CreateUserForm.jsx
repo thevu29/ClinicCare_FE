@@ -13,9 +13,9 @@ import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllRoles } from "../../../../services/roleService";
 import { addUserService } from "../../../../services/userService";
+import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
-import { showNotification } from "../../../../utils/notication";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
