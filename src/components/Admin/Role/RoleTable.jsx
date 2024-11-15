@@ -1,12 +1,18 @@
 import { getRolesService } from "../../../services/roleService";
-import { Table, Checkbox, ActionIcon, Group, Transition } from "@mantine/core";
+import {
+  Table,
+  Checkbox,
+  ActionIcon,
+  Group,
+  Transition,
+  NumberInput,
+  Text,
+} from "@mantine/core";
 import { IconChevronUp, IconEdit } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { handleSorting } from "../../../utils/sort";
 import PaginationComponent from "../../Pagination/Pagination";
-
-const ITEMS_PER_PAGE = 4;
 
 const RoleTable = () => {
   const location = useLocation();
@@ -17,24 +23,28 @@ const RoleTable = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [sortBy, setSortBy] = useState(null);
   const [order, setOrder] = useState("asc");
+  const [size, setSize] = useState(4);
 
-  const fetchRoles = async (search, page, sortBy, order) => {
-    try {
-      const res = await getRolesService({
-        search,
-        page,
-        size: ITEMS_PER_PAGE,
-        sortBy,
-        order,
-      });
+  const fetchRoles = useCallback(
+    async (search, page, sortBy, order) => {
+      try {
+        const res = await getRolesService({
+          search,
+          page,
+          size,
+          sortBy,
+          order,
+        });
 
-      if (res && res.success) {
-        setRoles(res);
+        if (res && res.success) {
+          setRoles(res);
+        }
+      } catch (error) {
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    },
+    [size]
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -48,7 +58,7 @@ const RoleTable = () => {
     setOrder(_order);
 
     fetchRoles(search, page, _sortBy, _order);
-  }, [location.search]);
+  }, [location.search, fetchRoles]);
 
   const handleSort = (field) => {
     let newOrder = "asc";
@@ -163,12 +173,21 @@ const RoleTable = () => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {roles && roles.meta && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{roles.meta.take}</strong> of{" "}
-            <strong>{roles.meta.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {roles && roles.meta && (
+            <span className="text-xs italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{roles.meta.take}</strong> of{" "}
+              <strong>{roles.meta.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput maw={50} size="xs" value={size} onChange={setSize} />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={

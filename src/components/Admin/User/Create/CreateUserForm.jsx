@@ -13,9 +13,9 @@ import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllRoles } from "../../../../services/roleService";
 import { addUserService } from "../../../../services/userService";
+import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
-import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -132,10 +132,10 @@ const CreateUserForm = () => {
       const response = await addUserService(formData);
 
       if (response.success) {
-        showNotification(response.message, "success");
+        showNotification(response.message, "Success");
         navigate("/admin/users");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
       console.error("Error adding user:", error);
