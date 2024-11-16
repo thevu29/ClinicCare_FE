@@ -173,12 +173,13 @@ const ServiceTable = ({
         <Table.Td>{service.price}</Table.Td>
         <Table.Td>
           <span
-            className={clsx("p-3", {
-              "bg-green-600 text-white":
-                service.status.toLowerCase() === "available",
-              "bg-gray-600 text-white":
-                service.status.toLowerCase() === "unavailable",
-            })}
+            className={clsx(
+              "py-1 px-[6px] flex justify-center items-center max-w-28",
+              {
+                "bg-red-600 text-white": service.status === "UNAVAILABLE",
+                "bg-green-600 text-white": service.status === "AVAILABLE",
+              }
+            )}
           >
             {service.status}
           </span>
