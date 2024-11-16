@@ -11,11 +11,11 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { getRolesService } from "../../../../services/roleService";
+import { getAllRoles } from "../../../../services/roleService";
 import { addUserService } from "../../../../services/userService";
+import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/Dropzone";
-import { showNotification } from "../../../../utils/notication";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -78,7 +78,7 @@ const CreateUserForm = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await getRolesService();
+        const res = await getAllRoles();
         if (res.success) {
           const data = res.data.map((role) => ({
             value: role.roleId,
@@ -130,10 +130,10 @@ const CreateUserForm = () => {
       const response = await addUserService(formData);
 
       if (response.success) {
-        showNotification(response.message, "success");
+        showNotification(response.message, "Success");
         navigate("/admin/users");
       } else {
-        showNotification(response.message, "error");
+        showNotification(response.message, "Error");
       }
     } catch (error) {
       console.error("Error adding user:", error);

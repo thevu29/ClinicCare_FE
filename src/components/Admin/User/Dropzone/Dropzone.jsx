@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Flex, Group, Image, Text, rem } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { notifications } from "@mantine/notifications";
+import { showNotification } from "../../../../utils/notification";
 
 const AvatarDropzone = ({ onUpload, disabled, user }) => {
   const [preview, setPreview] = useState(null);
@@ -25,12 +25,7 @@ const AvatarDropzone = ({ onUpload, disabled, user }) => {
   const handleReject = (files) => {
     files.forEach((file) => {
       file.errors.forEach((error) => {
-        notifications.show({
-          title: "Fail",
-          message: error.message,
-          color: "red",
-          position: "top-right",
-        });
+        showNotification(error.message, "Error");
       });
     });
   };
