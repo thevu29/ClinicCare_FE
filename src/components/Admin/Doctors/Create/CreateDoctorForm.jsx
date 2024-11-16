@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createDoctorService } from "../../../../services/doctorService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/AvatarDropzone";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -190,7 +190,7 @@ const CreateDoctorForm = ({ history }) => {
             />
           </Group>
 
-          <Group grow mt={20}>
+          <Group grow mt={25}>
             <Controller
               name="specialty"
               control={control}

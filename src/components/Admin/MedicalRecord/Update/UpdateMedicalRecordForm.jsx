@@ -19,7 +19,7 @@ import {
   getServiceManager,
 } from "../../../../services/medicalRecordService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },

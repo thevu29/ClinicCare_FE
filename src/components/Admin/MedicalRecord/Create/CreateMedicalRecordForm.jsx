@@ -17,7 +17,7 @@ import {
   getServiceManager,
 } from "../../../../services/medicalRecordService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -248,6 +248,7 @@ const CreateMedicalRecordForm = () => {
                 rules={FORM_VALIDATION.serviceName}
                 render={({ field, fieldState: { error } }) => (
                   <Select
+                    searchable
                     {...field}
                     error={error?.message}
                     label="Service"

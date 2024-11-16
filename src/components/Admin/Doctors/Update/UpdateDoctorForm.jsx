@@ -15,7 +15,7 @@ import {
 } from "../../../../services/doctorService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/AvatarDropzone";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },

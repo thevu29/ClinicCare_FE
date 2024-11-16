@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import {
   Table,
   Checkbox,
@@ -6,61 +5,40 @@ import {
   Group,
   Text,
   Transition,
-  LoadingOverlay,
+  NumberInput,
 } from "@mantine/core";
-import {
-  getMedicalRecordsService,
-  deleteMedicalRecordService,
-} from "../../../services/medicalRecordService";
+import { deleteMedicalRecordService } from "../../../services/medicalRecordService";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
-import { useLocation, Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import PaginationComponent from "../../Pagination/Pagination";
 import { modals } from "@mantine/modals";
-import { showNotification } from "../../../utils/notication";
-import { handleSorting } from "../../../utils/sort";
+import { showNotification } from "../../../utils/notification";
 
-const ITEMS_PER_PAGE = 4;
-
-const MedicalRecordTable = ({ selectedRows, setSelectedRows }) => {
-  const location = useLocation();
-  const pathname = location.pathname;
-  const navigate = useNavigate();
-
-  const [medicalRecords, setMedicalRecords] = useState({
-    results: [],
-    meta: {},
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState(null);
-  const [order, setOrder] = useState("asc");
-
-  const fetchMedicalRecords = async (search, page, sortBy, order) => {
-    try {
-      const res = await getMedicalRecordsService({
-        page,
-        size: ITEMS_PER_PAGE,
-        search,
-        sortBy,
-        order,
-      });
-      if (res.success) {
-        const data = { results: res.data, meta: res.meta };
-        setMedicalRecords(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+const MedicalRecordTable = ({
+  medicalRecords,
+  fetchMedicalRecords,
+  sortBy,
+  order,
+  setIsLoading,
+  selectedMedicalRecords,
+  setSelectedMedicalRecords,
+  handleSort,
+  size,
+  setSize,
+}) => {
+  const toggleMedicalRecordSelection = (medicalRecordId) => {
+    setSelectedMedicalRecords((prev) =>
+      prev.includes(medicalRecordId)
+        ? prev.filter((id) => id !== medicalRecordId)
+        : [...prev, medicalRecordId]
+    );
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const search = params.get("search") || "";
-    const page = parseInt(params.get("page")) || 1;
-    const _sortBy = params.get("sortBy") || "";
-    const _order = params.get("order") || "";
-
-    fetchMedicalRecords(search, page, _sortBy, _order);
-  }, [location.search]);
+  const toggleAllMedicalRecords = (medicalRecordIds) => {
+    setSelectedMedicalRecords((prev) =>
+      prev.length === medicalRecordIds.length ? [] : medicalRecordIds
+    );
+  };
 
   const deleteMedicalRecord = async (id) => {
     try {
@@ -103,28 +81,24 @@ const MedicalRecordTable = ({ selectedRows, setSelectedRows }) => {
 
   const rows =
     medicalRecords &&
-    medicalRecords.results &&
-    medicalRecords.results.length > 0 &&
-    medicalRecords.results.map((medicalRecord) => (
+    medicalRecords.data &&
+    medicalRecords.data.length > 0 &&
+    medicalRecords.data.map((medicalRecord) => (
       <Table.Tr
         key={medicalRecord.medicalRecordId}
         bg={
-          selectedRows.includes(medicalRecord.medicalRecordId)
+          selectedMedicalRecords.includes(medicalRecord.medicalRecordId)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedRows.includes(medicalRecord.medicalRecordId)}
-            onChange={(e) =>
-              setSelectedRows(
-                e.currentTarget.checked
-                  ? [...selectedRows, medicalRecord.medicalRecordId]
-                  : selectedRows.filter(
-                      (position) => position !== medicalRecord.medicalRecordId
-                    )
-              )
+            checked={selectedMedicalRecords.includes(
+              medicalRecord.medicalRecordId
+            )}
+            onChange={() =>
+              toggleMedicalRecordSelection(medicalRecord.medicalRecordId)
             }
           />
         </Table.Td>
@@ -164,41 +138,24 @@ const MedicalRecordTable = ({ selectedRows, setSelectedRows }) => {
       </Table.Tr>
     ));
 
-  const handleSort = (field) => {
-    let newOrder = "asc";
-    if (sortBy === field) {
-      newOrder = order === "asc" ? "desc" : "asc";
-    }
-    setSortBy(field);
-    setOrder(newOrder);
-    handleSorting(field, newOrder, location, pathname, navigate);
-  };
-
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
               <Checkbox
                 checked={
-                  medicalRecords.results.length <= 0
-                    ? false
-                    : selectedRows.length === medicalRecords.results.length
+                  medicalRecords
+                    ? selectedMedicalRecords.length ===
+                      medicalRecords.data.length
+                    : false
                 }
-                onChange={(e) =>
-                  setSelectedRows(
-                    e.currentTarget.checked
-                      ? medicalRecords.results.map(
-                          (medicalRecord) => medicalRecord.medicalRecordId
-                        )
-                      : []
+                onChange={() =>
+                  toggleAllMedicalRecords(
+                    medicalRecords.data.map(
+                      (medicalRecord) => medicalRecord.medicalRecordId
+                    )
                   )
                 }
               />
@@ -330,18 +287,27 @@ const MedicalRecordTable = ({ selectedRows, setSelectedRows }) => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {medicalRecords && medicalRecords.meta && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{medicalRecords.meta.take}</strong> of{" "}
-            <strong>{medicalRecords.meta.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {medicalRecords && medicalRecords.meta && (
+            <span className="text-xs italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{medicalRecords.meta.take}</strong> of{" "}
+              <strong>{medicalRecords.meta.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput maw={50} size="xs" value={size} onChange={setSize} />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={medicalRecords?.meta?.totalPage || 1}
+          totalPages={medicalRecords?.meta?.totalPages || 1}
         />
       </Group>
     </>
