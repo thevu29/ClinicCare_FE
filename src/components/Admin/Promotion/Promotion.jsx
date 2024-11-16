@@ -1,5 +1,5 @@
 import { Button, Group, Title } from "@mantine/core";
-import { IconPlus, IconTrashX } from "@tabler/icons-react";
+import { IconPlus } from "@tabler/icons-react";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import PromotionTable from "./PromotionTable";
 import Search from "../Search/Search";
@@ -25,11 +25,6 @@ const Promotion = () => {
         <Group justify="space-between" mb={24}>
           <Search placeholder="Search promotion" />
           <Group>
-            {selectedRows.length > 0 && (
-              <Button variant="light" color="red" radius="md">
-                <IconTrashX width={18} height={18} />
-              </Button>
-            )}
             <Link to="/admin/promotions/create">
               <Button
                 leftSection={<IconPlus />}

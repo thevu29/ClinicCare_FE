@@ -1,102 +1,72 @@
-import { useEffect, useState } from "react";
 import {
   Table,
   Checkbox,
   Group,
   ActionIcon,
   Text,
-  LoadingOverlay,
   Transition,
+  NumberInput,
   Menu,
-  Select,
-  Button,
 } from "@mantine/core";
-
 import { modals } from "@mantine/modals";
 import {
   IconEdit,
   IconTrash,
   IconChevronUp,
-  IconFilter,
+  IconRosetteDiscount,
+  IconDotsVertical,
+  IconRosetteDiscountCheckOff,
 } from "@tabler/icons-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 import {
-  getServicesManager,
   deleteServiceManager,
+  removePromotionService,
 } from "../../../services/serviceManager";
-import { getAllPromotionsService } from "../../../services/promotionService";
-import { showNotification } from "../../../utils/notication";
+import { showNotification } from "../../../utils/notification";
+import clsx from "clsx";
 import PaginationComponent from "../../Pagination/Pagination";
-import { handleSorting } from "../../../utils/sort";
+import FilterServiceStatus from "./Filter/FilterServiceStatus";
+import FilterServicePrice from "./Filter/FilterServicePrice";
+import ApplyPromotionModal from "./Modal/ApplyPromotionModal";
 
-const ITEMS_PER_PAGE = 4;
-
-const statuses = [
-  { value: "available", label: "Available" },
-  { value: "unavailable", label: "Unavailable" },
-];
-
-const ServiceTable = ({ selectedRows, setSelectedRows }) => {
+const ServiceTable = ({
+  services,
+  fetchServices,
+  sortBy,
+  order,
+  setIsLoading,
+  selectedServices,
+  setSelectedServices,
+  handleSort,
+  size,
+  setSize,
+}) => {
   const location = useLocation();
-  const pathname = location.pathname;
-  const navigate = useNavigate();
 
-  const [services, setServices] = useState({ results: [], meta: [] });
-  const [isLoading, setIsLoading] = useState(false);
-  const [sortBy, setSortBy] = useState(null);
-  const [order, setOrder] = useState("asc");
-  const [promotions, setPromotions] = useState([]);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [selectedServiceId, setSelectedServiceId] = useState(null);
 
-  const [selectedStatus, setSelectedStatus] = useState(null);
-
-  const fetchServices = async (search, page, sortBy, order) => {
-    try {
-      const res = await getServicesManager({
-        search,
-        page,
-        size: ITEMS_PER_PAGE,
-        sortBy,
-        order,
-      });
-
-      if (res.success) {
-        const data = { results: res.data, meta: res.meta };
-        setServices(data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const toggleServiceSelection = (serviceId) => {
+    setSelectedServices((prev) =>
+      prev.includes(serviceId)
+        ? prev.filter((id) => id !== serviceId)
+        : [...prev, serviceId]
+    );
   };
 
-  const fetchAllPromotions = async () => {
-    try {
-      const res = await getAllPromotionsService();
-
-      if (res.success) {
-        setPromotions(res.data);
-      }
-    } catch (error) {
-      console.error(error);
-    }
+  const toggleAllServices = (serviceIds) => {
+    setSelectedServices((prev) =>
+      prev.length === serviceIds.length ? [] : serviceIds
+    );
   };
 
-  useEffect(() => {
-    fetchAllPromotions();
-  }, []);
-
-  useEffect(() => {
+  const handleSizeChange = (size) => {
+    setSize(+size);
     const params = new URLSearchParams(location.search);
-
-    const search = params.get("search") || "";
-    const page = parseInt(params.get("page")) || 1;
-    const _sortBy = params.get("sortBy") || "";
-    const _order = params.get("order") || "";
-
-    setSortBy(_sortBy);
-    setOrder(_order);
-
-    fetchServices(search, page, _sortBy, _order);
-  }, [location.search]);
+    params.delete("page");
+  };
 
   const deleteService = async (id) => {
     try {
@@ -106,6 +76,7 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
 
       if (res.success) {
         showNotification(res.message, "Success");
+        fetchServices();
       } else {
         showNotification(res.message, "Error");
       }
@@ -118,135 +89,186 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
 
   const openDeleteModal = (id) =>
     modals.openConfirmModal({
-      title: <Text size="xl">Delete Service</Text>,
+      title: <Text size="xl">Delete service</Text>,
       children: (
         <>
           <Text size="md">Are you sure you want to delete this service?</Text>
           <Text mt="sm" c="yellow" fs="italic" size="sm">
             This action is irreversible and you will have to contact support to
-            restore your data
+            restore your data.
           </Text>
         </>
       ),
       labels: { confirm: "Delete service", cancel: "Cancel" },
-      confirmDrops: { color: "red" },
+      confirmProps: { color: "red" },
       onConfirm: () => deleteService(id),
     });
 
+  const handleOpenApplyPromotionModal = (serviceId) => {
+    setSelectedServiceId(serviceId);
+    open();
+  };
+
+  const handleRemovePromotion = async (serviceId) => {
+    try {
+      setIsLoading(true);
+
+      const res = await removePromotionService(serviceId);
+
+      if (res.success) {
+        showNotification("Promotion removed successfully", "Success");
+        fetchServices();
+      } else {
+        showNotification(res.message, "Error");
+      }
+    } catch (error) {
+      console.error(error);
+      showNotification("An error occured", "Error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openRemovePromotionModal = (serviceId) => {
+    modals.openConfirmModal({
+      title: <Text size="xl">Remove promotion</Text>,
+      children: (
+        <>
+          <Text size="md">
+            Are you sure you want to remove promotion from this service?
+          </Text>
+          <Text mt="sm" c="yellow" fs="italic" size="sm">
+            This action is irreversible and you will have to contact support to
+            restore your data.
+          </Text>
+        </>
+      ),
+      labels: { confirm: "Remove promotion", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: () => handleRemovePromotion(serviceId),
+    });
+  };
+
   const rows =
     services &&
-    services.results &&
-    services.results.length > 0 &&
-    services.results.map((service) => (
+    services.data &&
+    services.data.length > 0 &&
+    services.data.map((service) => (
       <Table.Tr
         key={service.serviceId}
         bg={
-          selectedRows.includes(service.serviceId)
+          selectedServices.includes(service.serviceId)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedRows.includes(service.serviceId)}
-            onChange={(e) =>
-              setSelectedRows(
-                e.currentTarget.checked
-                  ? [...selectedRows, service.serviceId]
-                  : selectedRows.filter(
-                      (position) => position !== service.serviceId
-                    )
-              )
-            }
+            checked={selectedServices.includes(service.serviceId)}
+            onChange={() => toggleServiceSelection(service.serviceId)}
           />
         </Table.Td>
         <Table.Td>{service.name}</Table.Td>
         <Table.Td>{service.description}</Table.Td>
         <Table.Td>{service.price}</Table.Td>
-        <Table.Td>{service.status}</Table.Td>
         <Table.Td>
-          {promotions.map((promotion) => {
-            return promotion.promotionId === service.promotionId
-              ? promotion.description
-              : null;
-          })}
+          <span
+            className={clsx("p-3", {
+              "bg-green-600 text-white":
+                service.status.toLowerCase() === "available",
+              "bg-gray-600 text-white":
+                service.status.toLowerCase() === "unavailable",
+            })}
+          >
+            {service.status}
+          </span>
         </Table.Td>
+        <Table.Td>{service.promotionDiscount}</Table.Td>
         <Table.Td>
-          <Group gap={6}>
-            <Link to={`/admin/services/${service.serviceId}/update`}>
+          <Menu shadow="md" width={200}>
+            <Menu.Target>
               <ActionIcon
                 variant="transparent"
-                color="yellow"
-                radius="xl"
-                title="Update"
+                aria-label="Actions"
+                color="black"
               >
-                <IconEdit
+                <IconDotsVertical
                   style={{ width: "70%", height: "70%" }}
                   stroke={1.5}
                 />
               </ActionIcon>
-            </Link>
+            </Menu.Target>
 
-            <ActionIcon
-              variant="transparent"
-              color="red"
-              radius="xl"
-              title="Delete"
-              onClick={() => openDeleteModal(service.serviceId)}
-            >
-              <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
-            </ActionIcon>
-          </Group>
+            <Menu.Dropdown>
+              <Menu.Item
+                color="blue"
+                leftSection={
+                  <IconRosetteDiscount
+                    style={{ width: "70%", height: "70%" }}
+                    stroke={1.5}
+                  />
+                }
+                onClick={() => handleOpenApplyPromotionModal(service.serviceId)}
+              >
+                Apply promotion
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconRosetteDiscountCheckOff
+                    style={{ width: "70%", height: "70%" }}
+                    stroke={1.5}
+                  />
+                }
+                onClick={() => openRemovePromotionModal(service.serviceId)}
+              >
+                Remove promotion
+              </Menu.Item>
+              <Link to={`/admin/services/${service.serviceId}/update`}>
+                <Menu.Item
+                  color="yellow"
+                  leftSection={
+                    <IconEdit
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  }
+                >
+                  Update service
+                </Menu.Item>
+              </Link>
+              <Menu.Item
+                color="red"
+                leftSection={
+                  <IconTrash
+                    style={{ width: "70%", height: "70%" }}
+                    stroke={1.5}
+                  />
+                }
+                onClick={() => openDeleteModal(service.serviceId)}
+              >
+                Delete service
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Table.Td>
       </Table.Tr>
     ));
 
-  const handleSort = (field) => {
-    let newOrder = "asc";
-    if (sortBy === field) {
-      newOrder = order === "asc" ? "desc" : "asc";
-    }
-    setSortBy(field);
-    setOrder(newOrder);
-    handleSorting(field, newOrder, location, pathname, navigate);
-  };
-
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
-
-    const params = new URLSearchParams(location.search);
-
-    params.set("status", status);
-    params.delete("page");
-
-    if (!status) params.delete("status");
-
-    navigate(`${pathname}?${params.toString()}`);
-  };
-
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
-
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
               <Checkbox
                 checked={
-                  services.results.length <= 0
-                    ? false
-                    : selectedRows.length === services.results.length
+                  services && services.data && services.data.length > 0
+                    ? selectedServices.length === services.data.length
+                    : false
                 }
-                onChange={(e) =>
-                  setSelectedRows(
-                    e.currentTarget.checked
-                      ? services.results.map((service) => service.serviceId)
-                      : []
+                onChange={() =>
+                  toggleAllServices(
+                    services.data.map((service) => service.serviceId)
                   )
                 }
               />
@@ -281,92 +303,51 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
                 </Transition>
               </Group>
             </Table.Th>
-            <Table.Th
-              onClick={() => handleSort("description")}
-              className="cursor-pointer hover:bg-slate-50"
-            >
-              <Group justify="space-between">
-                <span>Description</span>
-                <Transition
-                  mounted={sortBy === "desciption"}
-                  transition={{
-                    type: "rotate-left",
-                    duration: 200,
-                    timingFunction: "ease",
-                  }}
-                >
-                  {(styles) =>
-                    sortBy === "description" && (
-                      <IconChevronUp
-                        style={{
-                          transform:
-                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
-                          ...styles,
-                        }}
-                        width={16}
-                        height={16}
-                      />
-                    )
-                  }
-                </Transition>
-              </Group>
-            </Table.Th>
+            <Table.Th>Description</Table.Th>
             <Table.Th
               onClick={() => handleSort("price")}
               className="cursor-pointer hover:bg-slate-50"
             >
-              <Group justify="space-between">
-                <span>Price</span>
-                <Transition
-                  mounted={sortBy === "price"}
-                  transition={{
-                    type: "rotate-left",
-                    duration: 200,
-                    timingFunction: "ease",
-                  }}
-                >
-                  {(styles) =>
-                    sortBy === "price" && (
-                      <IconChevronUp
-                        style={{
-                          transform:
-                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
-                          ...styles,
-                        }}
-                        width={16}
-                        height={16}
-                      />
-                    )
-                  }
-                </Transition>
+              <Group>
+                <Group justify="space-between">
+                  <span>Price</span>
+                  <Transition
+                    mounted={sortBy === "price"}
+                    transition={{
+                      type: "rotate-left",
+                      duration: 200,
+                      timingFunction: "ease",
+                    }}
+                  >
+                    {(styles) =>
+                      sortBy === "price" && (
+                        <IconChevronUp
+                          style={{
+                            transform:
+                              order === "asc"
+                                ? "rotate(0deg)"
+                                : "rotate(180deg)",
+                            ...styles,
+                          }}
+                          width={16}
+                          height={16}
+                        />
+                      )
+                    }
+                  </Transition>
+                </Group>
+                <FilterServicePrice />
               </Group>
             </Table.Th>
             <Table.Th>
-              <Group justify="space-between">
+              <Group>
                 <span>Status</span>
+                <FilterServiceStatus />
               </Group>
-              <Menu shadow="md" width={200}>
-                <Menu.Target>
-                  <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
-                    <IconFilter width={18} height={18} />
-                  </Button>
-                </Menu.Target>
-
-                <Menu.Dropdown>
-                  <Select
-                    placeholder="Select status"
-                    data={statuses}
-                    allowDeselect
-                    value={selectedStatus}
-                    onChange={handleStatusChange}
-                    maw={150}
-                  />
-                </Menu.Dropdown>
-              </Menu>
             </Table.Th>
             <Table.Th>
               <Group justify="space-between">
-                <span>Promotion</span>
+                <span>Promotion(%)</span>
               </Group>
             </Table.Th>
 
@@ -377,12 +358,26 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
       </Table>
 
       <Group justify="space-between" mt={24}>
-        {services && services.meta && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{services.meta.take}</strong> of{" "}
-            <strong>{services.meta.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {services && services.meta && (
+            <span className="text-xs italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{services.meta.take}</strong> of{" "}
+              <strong>{services.meta.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput
+              maw={50}
+              size="xs"
+              value={size}
+              onChange={(e) => handleSizeChange(e)}
+            />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={
@@ -391,6 +386,14 @@ const ServiceTable = ({ selectedRows, setSelectedRows }) => {
           totalPages={services?.meta?.totalPage || 1}
         />
       </Group>
+
+      <ApplyPromotionModal
+        opened={opened}
+        close={close}
+        serviceId={selectedServiceId}
+        fetchServices={fetchServices}
+        setIsLoading={setIsLoading}
+      />
     </>
   );
 };

@@ -4,62 +4,35 @@ import {
   Checkbox,
   Group,
   ActionIcon,
-  LoadingOverlay,
   Transition,
-  Button,
-  Menu,
-  Select,
+  Text,
+  NumberInput,
 } from "@mantine/core";
-import { getPromotionsService } from "../../../services/promotionService";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { handleSorting } from "../../../utils/sort";
-
-import { IconEdit, IconChevronUp, IconFilter } from "@tabler/icons-react";
-
+import { IconEdit, IconChevronUp } from "@tabler/icons-react";
+import { usePromotions } from "../../../hooks/promotionHook";
+import clsx from "clsx";
 import PaginationComponent from "../../Pagination/Pagination";
-
-const ITEMS_PER_PAGE = 4;
-
-const statuses = [
-  { value: "active", label: "Active" },
-  { value: "inactive", label: "Inactive" },
-  { value: "expired", label: "Expired" },
-  { value: "end", label: "End" },
-];
+import FilterPromotionStatus from "./Filter/FilterPromotionStatus";
+import FilterPromotionDiscount from "./Filter/FilterPromotionDiscount";
 
 const PromotionTable = ({ selectedRows, setSelectedRows }) => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
 
-  const [selectedStatus, setSelectedStatus] = useState(null);
-
-  const [promotions, setPromotions] = useState({ results: [], meta: {} });
   const [sortBy, setSortBy] = useState(null);
   const [order, setOrder] = useState("asc");
 
-  const fetchPromotions = async (search, page, sortBy, order) => {
-    try {
-      const res = await getPromotionsService({
-        search,
-        page,
-        ITEMS_PER_PAGE,
-        sortBy,
-        order,
-      });
-      if (res.success) {
-        const data = { results: res.data, meta: res.meta };
-        setPromotions(data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { promotions, size, setSize, fetchPromotions } = usePromotions();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
     const search = params.get("search") || "";
+    const status = params.get("status") || "";
+    const discount = params.get("discount") || "";
     const page = parseInt(params.get("page")) || 1;
     const _sortBy = params.get("sortBy") || "";
     const _order = params.get("order") || "";
@@ -67,27 +40,14 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
     setSortBy(_sortBy);
     setOrder(_order);
 
-    fetchPromotions(search, page, _sortBy, _order);
-  }, [location.search]);
-
-  const handleStatusChange = (status) => {
-    setSelectedStatus(status);
-
-    const params = new URLSearchParams(window.location.search);
-
-    params.set("status", status);
-    params.delete("page");
-
-    if (!status) params.delete("status");
-
-    navigate(`${pathname}?${params.toString()}`);
-  };
+    fetchPromotions(search, status, discount, page, _sortBy, _order);
+  }, [location.search, fetchPromotions]);
 
   const rows =
     promotions &&
-    promotions.results &&
-    promotions.results.length > 0 &&
-    promotions.results.map((promotion) => (
+    promotions.data &&
+    promotions.data.length > 0 &&
+    promotions.data.map((promotion) => (
       <Table.Tr
         key={promotion.promotionId}
         bg={
@@ -113,7 +73,20 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
         <Table.Td>{promotion.description}</Table.Td>
         <Table.Td>{promotion.discount}</Table.Td>
         <Table.Td>{promotion.expireAt}</Table.Td>
-        <Table.Td>{promotion.status}</Table.Td>
+        <Table.Td>
+          <span
+            className={clsx("p-3", {
+              "bg-green-600 text-white":
+                promotion.status.toLowerCase() === "active",
+              "bg-gray-600 text-white":
+                promotion.status.toLowerCase() === "inactive",
+              "bg-red-600 text-white":
+                promotion.status.toLowerCase() === "expired",
+            })}
+          >
+            {promotion.status}
+          </span>
+        </Table.Td>
         <Table.Td>
           <Group gap={6}>
             <Link to={`${promotion.promotionId}/update`}>
@@ -144,26 +117,28 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
     handleSorting(field, newOrder, location, pathname, navigate);
   };
 
+  const handleSizeChange = (size) => {
+    setSize(+size);
+    const params = new URLSearchParams(location.search);
+    params.delete("page");
+  };
+
   return (
     <>
-      <LoadingOverlay
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
         <Table.Thead>
           <Table.Tr>
             <Table.Th>
               <Checkbox
                 checked={
-                  promotions.results.length <= 0
-                    ? false
-                    : selectedRows.length === promotions.results.length
+                  promotions && promotions.data && promotions.data.length > 0
+                    ? selectedRows.length === promotions.data.length
+                    : false
                 }
                 onChange={(e) =>
                   setSelectedRows(
                     e.currentTarget.checked
-                      ? promotions.results.map(
+                      ? promotions.data.map(
                           (promotion) => promotion.promotionId
                         )
                       : []
@@ -204,32 +179,37 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
 
             <Table.Th
               onClick={() => handleSort("discount")}
-              className="cursor-pointer hover:bg-slate-50"
+              className="cursor-pointer hover:bg-slate-50 p-0"
             >
               <Group>
-                <span>Discount</span>
-                <Transition
-                  mounted={sortBy === "discount"}
-                  transition={{
-                    type: "rotate-left",
-                    duration: 200,
-                    timingFunction: "ease",
-                  }}
-                >
-                  {(styles) =>
-                    sortBy === "discount" && (
-                      <IconChevronUp
-                        style={{
-                          transform:
-                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
-                          ...styles,
-                        }}
-                        width={16}
-                        height={16}
-                      />
-                    )
-                  }
-                </Transition>
+                <Group>
+                  <span>Discount</span>
+                  <Transition
+                    mounted={sortBy === "discount"}
+                    transition={{
+                      type: "rotate-left",
+                      duration: 200,
+                      timingFunction: "ease",
+                    }}
+                  >
+                    {(styles) =>
+                      sortBy === "discount" && (
+                        <IconChevronUp
+                          style={{
+                            transform:
+                              order === "asc"
+                                ? "rotate(0deg)"
+                                : "rotate(180deg)",
+                            ...styles,
+                          }}
+                          width={16}
+                          height={16}
+                        />
+                      )
+                    }
+                  </Transition>
+                </Group>
+                <FilterPromotionDiscount />
               </Group>
             </Table.Th>
             <Table.Th
@@ -263,26 +243,9 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
               </Group>
             </Table.Th>
             <Table.Th>
-              <Group justify="space-between">
+              <Group>
                 <span>Status</span>
-                <Menu shadow="md" width={200}>
-                  <Menu.Target>
-                    <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
-                      <IconFilter width={18} height={18} />
-                    </Button>
-                  </Menu.Target>
-
-                  <Menu.Dropdown>
-                    <Select
-                      placeholder="Select status"
-                      data={statuses}
-                      allowDeselect
-                      value={selectedStatus}
-                      onChange={handleStatusChange}
-                      maw={150}
-                    />
-                  </Menu.Dropdown>
-                </Menu>
+                <FilterPromotionStatus />
               </Group>
             </Table.Th>
             <Table.Th>Actions</Table.Th>
@@ -290,19 +253,34 @@ const PromotionTable = ({ selectedRows, setSelectedRows }) => {
         </Table.Thead>
         <Table.Tbody>{rows}</Table.Tbody>
       </Table>
+
       <Group justify="space-between" mt={24}>
-        {promotions && promotions.meta && (
-          <span className="text-sm italic text-gray-700 dark:text-gray-400">
-            Showing <strong>{promotions.meta.take}</strong> of{" "}
-            <strong>{promotions.meta.totalElements}</strong> entries
-          </span>
-        )}
+        <Group>
+          {promotions && promotions.meta && (
+            <span className="text-xs italic text-gray-700 dark:text-gray-400">
+              Showing <strong>{promotions.meta.take}</strong> of{" "}
+              <strong>{promotions.meta.totalElements}</strong> entries
+            </span>
+          )}
+
+          <Group gap={4}>
+            <Text size="xs" fw={700}>
+              Per page:
+            </Text>
+            <NumberInput
+              maw={50}
+              size="xs"
+              value={size}
+              onChange={(e) => handleSizeChange(e)}
+            />
+          </Group>
+        </Group>
 
         <PaginationComponent
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={promotions?.meta?.totalPage || 1}
+          totalPages={promotions?.meta?.totalPages || 1}
         />
       </Group>
     </>

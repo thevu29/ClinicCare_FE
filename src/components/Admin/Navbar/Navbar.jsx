@@ -1,5 +1,12 @@
 import { Group, Text, ScrollArea, ThemeIcon, Image } from "@mantine/core";
-import { IconUser, IconGauge, IconLock, IconDiscountFilled, IconBrandAppleArcade } from "@tabler/icons-react";
+import {
+  IconUser,
+  IconGauge,
+  IconLock,
+  IconKey,
+  IconDiscountFilled,
+  IconVaccine,
+} from "@tabler/icons-react";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
 import classes from "./Navbar.module.scss";
@@ -9,6 +16,7 @@ import clsx from "clsx";
 
 const mockdata = [
   { label: "Dashboard", icon: IconGauge, link: "/admin" },
+  { label: "Roles", icon: IconKey, link: "/admin/roles" },
   { label: "Users", icon: IconUser, link: "/admin/users" },
   {
     label: "Security",
@@ -19,8 +27,8 @@ const mockdata = [
       { label: "Recovery codes", link: "/" },
     ],
   },
-  {label: "Promotion", icon:IconDiscountFilled, link:"/admin/promotions"},
-  { label: "Service", icon: IconBrandAppleArcade, link: "/admin/services" },
+  { label: "Promotion", icon: IconDiscountFilled, link: "/admin/promotions" },
+  { label: "Service", icon: IconVaccine, link: "/admin/services" },
 ];
 
 const Navbar = ({ isCollapsed }) => {

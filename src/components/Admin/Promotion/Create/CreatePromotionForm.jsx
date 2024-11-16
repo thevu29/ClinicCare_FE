@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { addPromotionService } from "../../../../services/promotionService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -26,7 +26,6 @@ const statuses = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
   { value: "expired", label: "Expired" },
-  { value: "end", label: "End" },
 ];
 
 const FORM_VALIDATION = {

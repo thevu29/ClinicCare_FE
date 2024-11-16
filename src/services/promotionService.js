@@ -2,6 +2,8 @@ import axios from "../utils/axiosCustom";
 
 export const getPromotionsService = async ({
   search = "",
+  status = "",
+  discount = "",
   page = 1,
   size = 5,
   sortBy,
@@ -10,6 +12,8 @@ export const getPromotionsService = async ({
   const params = new URLSearchParams();
 
   if (search) params.append("search", search);
+  if (status) params.append("status", status);
+  if (discount) params.append("discount", discount);
   if (page) params.append("page", page);
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
@@ -27,18 +31,12 @@ export const getPromotionByIdService = async (id) => {
 };
 
 export const addPromotionService = async (data) => {
-  const res = await axios.post("/promotions", data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const res = await axios.post("/promotions", data);
   return res;
 };
 
 export const updatePromotionService = async (id, data) => {
-  const res = await axios.put(`/promotions/update/${id}`, data, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const res = await axios.put(`/promotions/update/${id}`, data);
   return res;
 };
 

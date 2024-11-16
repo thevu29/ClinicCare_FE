@@ -14,7 +14,7 @@ import {
   updatePromotionService,
 } from "../../../../services/promotionService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toUpper } from "lodash";
 
@@ -22,7 +22,6 @@ const statuses = [
   { value: "active", label: "Active" },
   { value: "inactive", label: "Inactive" },
   { value: "expired", label: "Expired" },
-  { value: "end", label: "End" },
 ];
 
 const breadcumbData = [
@@ -72,10 +71,10 @@ const UpdatePromotionForm = () => {
           const promotion = promotionRes.data;
 
           // set status for select
-          const statusSelected = statuses.find(
-            (status) =>  toUpper(status.value) === promotion.status
-          )?.value || "";
-
+          const statusSelected =
+            statuses.find(
+              (status) => toUpper(status.value) === promotion.status
+            )?.value || "";
 
           // set form values
           reset({
@@ -99,11 +98,10 @@ const UpdatePromotionForm = () => {
 
       const response = await updatePromotionService(id, data);
 
-      if (response.success){
+      if (response.success) {
         showNotification(response.message, "Success");
         navigate("/admin/promotions");
-      }
-      else showNotification(response.message, "Error");
+      } else showNotification(response.message, "Error");
     } catch (error) {
       console.error("Error updating promotion:", error);
     } finally {

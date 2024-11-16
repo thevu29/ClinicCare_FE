@@ -2,6 +2,8 @@ import axios from "../utils/axiosCustom";
 
 export const getServicesManager = async ({
   search = "",
+  status = "",
+  price = "",
   page = 1,
   size = 5,
   sortBy,
@@ -10,6 +12,8 @@ export const getServicesManager = async ({
   const params = new URLSearchParams();
 
   if (search) params.append("search", search);
+  if (status) params.append("status", status);
+  if (price) params.append("price", price);
   if (page) params.append("page", page);
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
@@ -27,18 +31,12 @@ export const getServiceByIdManager = async (id) => {
 };
 
 export const addServiceManager = async (data) => {
-  const res = await axios.post("/services", data, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const res = await axios.post("/services", data);
   return res;
 };
 
 export const updateServiceManager = async (id, data) => {
-  const res = await axios.put(`/services/update/${id}`, data, {
-    headers: { "Content-Type": "application/json" },
-  });
+  const res = await axios.put(`/services/update/${id}`, data);
   return res;
 };
 
@@ -47,9 +45,7 @@ export const deleteServiceManager = async (id) => {
 };
 
 export const applyPromotionService = async (id, data) => {
-  return await axios.put(`/services/apply-promotion/${id}`, data, {
-    headers: { "Content-Type": "application/json" },
-  });
+  return await axios.put(`/services/apply-promotion/${id}`, data);
 };
 
 export const removePromotionService = async (id) => {

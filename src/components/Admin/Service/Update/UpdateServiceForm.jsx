@@ -16,7 +16,7 @@ import {
   getServiceByIdManager,
 } from "../../../../services/serviceManager";
 import { getAllPromotionsService } from "../../../../services/promotionService";
-import { showNotification } from "../../../../utils/notication";
+import { showNotification } from "../../../../utils/notification";
 import { toUpper } from "lodash";
 
 const breadcumbData = [
@@ -26,16 +26,13 @@ const breadcumbData = [
 ];
 
 const statuses = [
-  { label: "available", value: "Available"},
-  { label: "unavailable", value: "Unavailable"},
+  { label: "Available", value: "available"},
+  { label: "Unavailable", value: "unavailable"},
 ]
 
 const FORM_VALIDATION = {
   name: {
     required: "Name is required",
-  },
-  description: {
-    required: "Description is required",
   },
   price: {
     required: "Price is required",
@@ -77,7 +74,6 @@ const UpdateServiceForm = () => {
 
           setPromotions(promotionsData);
 
-          // fetch service by id
           const serviceRes = await getServiceByIdManager(id);
           if (serviceRes.success) {
             const service = serviceRes.data;
@@ -89,7 +85,6 @@ const UpdateServiceForm = () => {
 
             const statusSelected = statuses.find((status) => toUpper(status.label) === service.status)?.value || "";
 
-            // set form values
             reset({
               name: service.name,
               description: service.description,
@@ -104,7 +99,6 @@ const UpdateServiceForm = () => {
       }
     };
 
-    // fetch promotions
     fetchData();
   }, [id, reset]);
 
@@ -163,7 +157,6 @@ const UpdateServiceForm = () => {
               <Controller
                 name="description"
                 control={control}
-                rules={FORM_VALIDATION.description}
                 render={({ field, fieldState: { error } }) => (
                   <TextInput
                     {...field}
