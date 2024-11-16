@@ -1,10 +1,10 @@
 import { Button, Menu, Select } from "@mantine/core";
 import { IconFilter } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { getAllRoles } from "../../../../services/roleService";
+import { getRolesService } from "../../../../services/roleService";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const FilterUser = () => {
+const FilterDoctor = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
@@ -15,7 +15,7 @@ const FilterUser = () => {
   useEffect(() => {
     const fetchRoles = async () => {
       try {
-        const res = await getAllRoles();
+        const res = await getRolesService();
         if (res.success) {
           const data = res.data.map((role) => ({
             value: role.roleId,
@@ -45,7 +45,7 @@ const FilterUser = () => {
   };
 
   return (
-    <Menu shadow="md" width={150}>
+    <Menu shadow="md" width={200}>
       <Menu.Target>
         <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
           <IconFilter width={18} height={18} />
@@ -66,4 +66,4 @@ const FilterUser = () => {
   );
 };
 
-export default FilterUser;
+export default FilterDoctor;

@@ -4,34 +4,26 @@ import {
   Group,
   LoadingOverlay,
   PasswordInput,
-  Select,
   TextInput,
   Title,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { getAllRoles } from "../../../../services/roleService";
-import { addUserService } from "../../../../services/userService";
-import { showNotification } from "../../../../utils/notification";
+import { createDoctorService } from "../../../../services/doctorService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import AvatarDropzone from "../Dropzone/Dropzone";
+import AvatarDropzone from "../Dropzone/AvatarDropzone";
+import { showNotification } from "../../../../utils/notification";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
-  { title: "Users", href: "/admin/users" },
-  { title: "Create user" },
+  { title: "Doctors", href: "/admin/doctors" },
+  { title: "Create doctor" },
 ];
 
 const FORM_VALIDATION = {
   name: {
     required: "Name is required",
-  },
-  phone: {
-    pattern: {
-      value: /^\d{10}$/,
-      message: "Phone number must contain exactly 10 digits",
-    },
   },
   email: {
     required: "Email is required",
@@ -43,75 +35,27 @@ const FORM_VALIDATION = {
   password: {
     required: "Password is required",
   },
-  role: {
-    required: "Role is required",
-  },
   specialty: {
-    required: "Specialty is required for doctor",
+    required: "Specialty is required",
   },
 };
 
-const CreateUserForm = () => {
+const CreateDoctorForm = () => {
   const navigate = useNavigate();
-
-  const [roles, setRoles] = useState([]);
-  const [isDoctor, setIsDoctor] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, setValue, watch, trigger } = useForm({
+  const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
       name: "",
       phone: "",
       email: "",
       password: "",
-      confirmPassword: "",
       image: "",
-      roleId: "",
-      specialty: "",
     },
     mode: "onChange",
   });
 
   const password = watch("password");
-  const selectedRole = watch("roleId");
-
-  useEffect(() => {
-    const fetchRoles = async () => {
-      try {
-        const res = await getAllRoles();
-        if (res.success) {
-          const data = res.data.map((role) => ({
-            value: role.roleId,
-            label: role.name,
-            isDoctor: role.name.toLowerCase() === "doctor",
-          }));
-
-          setRoles(data);
-        }
-      } catch (error) {
-        console.error("Error fetching roles:", error);
-      }
-    };
-
-    fetchRoles();
-  }, []);
-
-  useEffect(() => {
-    if (selectedRole && roles) {
-      const selectedRoleData = roles.find(
-        (role) => role.value === selectedRole
-      );
-      const isDoctorRole = selectedRoleData?.isDoctor || false;
-
-      setIsDoctor(isDoctorRole);
-
-      if (!isDoctorRole) {
-        setValue("specialty", "");
-      }
-
-      trigger("specialty");
-    }
-  }, [selectedRole, roles, setValue, trigger]);
 
   const onSubmit = async (data) => {
     try {
@@ -129,11 +73,11 @@ const CreateUserForm = () => {
         formData.append("image", data.image);
       }
 
-      const response = await addUserService(formData);
+      const response = await createDoctorService(formData);
 
       if (response.success) {
         showNotification(response.message, "Success");
-        navigate("/admin/users");
+        navigate("/admin/doctors");
       } else {
         showNotification(response.message, "Error");
       }
@@ -159,7 +103,7 @@ const CreateUserForm = () => {
 
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
-        Create User
+        Create Doctor
       </Title>
 
       <div className="bg-white p-8 rounded-lg mt-7">
@@ -216,7 +160,7 @@ const CreateUserForm = () => {
                   error={error?.message}
                   label="Email"
                   size="md"
-                  type="email"
+                  type="text"
                   placeholder="Enter your email"
                 />
               )}
@@ -238,20 +182,19 @@ const CreateUserForm = () => {
             />
           </Group>
 
-          <Group grow mt={20}>
+          <Group grow mt={25}>
             <Controller
-              name="roleId"
+              name="specialty"
               control={control}
-              rules={FORM_VALIDATION.role}
+              rules={FORM_VALIDATION.specialty}
               render={({ field, fieldState: { error } }) => (
-                <Select
+                <TextInput
                   {...field}
                   error={error?.message}
-                  label="Role"
+                  label="Specialty"
                   size="md"
-                  placeholder="Select role"
-                  data={roles}
-                  allowDeselect={false}
+                  type="text"
+                  placeholder="Enter your specialty"
                 />
               )}
             />
@@ -275,28 +218,8 @@ const CreateUserForm = () => {
             />
           </Group>
 
-          {isDoctor && (
-            <Group grow mt="md">
-              <Controller
-                name="specialty"
-                control={control}
-                rules={FORM_VALIDATION.specialty}
-                render={({ field, fieldState: { error } }) => (
-                  <TextInput
-                    {...field}
-                    error={error?.message}
-                    label="Specialty"
-                    size="md"
-                    type="text"
-                    placeholder="Enter doctor's specialty"
-                  />
-                )}
-              />
-            </Group>
-          )}
-
           <Group mt={32} justify="flex-end">
-            <Link to="/admin/users">
+            <Link to="/admin/doctors">
               <Button variant="filled" color="gray">
                 Cancel
               </Button>
@@ -311,4 +234,4 @@ const CreateUserForm = () => {
   );
 };
 
-export default CreateUserForm;
+export default CreateDoctorForm;

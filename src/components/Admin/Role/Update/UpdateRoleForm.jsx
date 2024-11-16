@@ -85,7 +85,8 @@ export default function UpdateRoleForm() {
         showNotification("No changes detected", "Warning");
       }
     } catch (error) {
-      console.error("Error updating role:", error);
+      console.log(error);
+      showNotification("An error occured", "Error");
     }
     setIsLoading(false);
   };

@@ -24,6 +24,10 @@ export const getUsersService = async ({
   return res;
 };
 
+export const getAllPatientsService = async () => {
+  return await axios.get("/users/patients/all");
+}
+
 export const getUserByIdService = async (id) => {
   return await axios.get(`/users/${id}`);
 };

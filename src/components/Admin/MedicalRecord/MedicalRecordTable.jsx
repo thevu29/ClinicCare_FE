@@ -1,57 +1,54 @@
 import {
   Table,
   Checkbox,
-  Avatar,
-  Group,
   ActionIcon,
+  Group,
   Text,
   Transition,
   NumberInput,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
+import { deleteMedicalRecordService } from "../../../services/medicalRecordService";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
-import { Link, useLocation } from "react-router-dom";
-import { deleteUserService } from "../../../services/userService";
-import { showNotification } from "../../../utils/notification";
+import { Link } from "react-router-dom";
 import PaginationComponent from "../../Pagination/Pagination";
-import clsx from "clsx";
-import FilterUser from "./Filter/FilterUser";
+import { modals } from "@mantine/modals";
+import { showNotification } from "../../../utils/notification";
 
-const UserTable = ({
-  users,
-  fetchUsers,
+const MedicalRecordTable = ({
+  medicalRecords,
+  fetchMedicalRecords,
   sortBy,
   order,
   setIsLoading,
-  selectedUsers,
-  setSelectedUsers,
+  selectedMedicalRecords,
+  setSelectedMedicalRecords,
   handleSort,
   size,
   setSize,
 }) => {
-  const location = useLocation();
-
-  const toggleUserSelection = (userId) => {
-    setSelectedUsers((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+  const toggleMedicalRecordSelection = (medicalRecordId) => {
+    setSelectedMedicalRecords((prev) =>
+      prev.includes(medicalRecordId)
+        ? prev.filter((id) => id !== medicalRecordId)
+        : [...prev, medicalRecordId]
     );
   };
 
-  const toggleAllUsers = (userIds) => {
-    setSelectedUsers((prev) => (prev.length === userIds.length ? [] : userIds));
+  const toggleAllMedicalRecords = (medicalRecordIds) => {
+    setSelectedMedicalRecords((prev) =>
+      prev.length === medicalRecordIds.length ? [] : medicalRecordIds
+    );
   };
 
-  const deleteUser = async (id) => {
+  const deleteMedicalRecord = async (id) => {
     try {
       setIsLoading(true);
 
-      const res = await deleteUserService(id);
+      const res = await deleteMedicalRecordService(id);
 
       if (res.success) {
         showNotification(res.message, "Success");
-        fetchUsers();
+        fetchMedicalRecords();
       } else {
         showNotification(res.message, "Error");
       }
@@ -62,69 +59,59 @@ const UserTable = ({
     }
   };
 
-  const openDeleteModal = (id) =>
+  const openDeleteModal = (medicalRecordId) => {
     modals.openConfirmModal({
-      title: <Text size="xl">Delete user</Text>,
+      title: <Text size="xl">Delete medical record</Text>,
       children: (
         <>
-          <Text size="md">Are you sure you want to delete this user?</Text>
+          <Text size="md">
+            Are you sure you want to delete this medical record?
+          </Text>
           <Text mt="sm" c="yellow" fs="italic" size="sm">
             This action is irreversible and you will have to contact support to
             restore your data.
           </Text>
         </>
       ),
-      labels: { confirm: "Delete user", cancel: "Cancel" },
+      labels: { confirm: "Delete medical record", cancel: "Cancel" },
       confirmProps: { color: "red" },
-      onConfirm: () => deleteUser(id),
+      onConfirm: () => deleteMedicalRecord(medicalRecordId),
     });
+  };
 
   const rows =
-    users &&
-    users.data &&
-    users.data.length > 0 &&
-    users.data.map((user) => (
+    medicalRecords &&
+    medicalRecords.data &&
+    medicalRecords.data.length > 0 &&
+    medicalRecords.data.map((medicalRecord) => (
       <Table.Tr
-        key={user.userId}
+        key={medicalRecord.medicalRecordId}
         bg={
-          selectedUsers.includes(user.userId)
+          selectedMedicalRecords.includes(medicalRecord.medicalRecordId)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedUsers.includes(user.userId)}
-            onChange={() => toggleUserSelection(user.userId)}
+            checked={selectedMedicalRecords.includes(
+              medicalRecord.medicalRecordId
+            )}
+            onChange={() =>
+              toggleMedicalRecordSelection(medicalRecord.medicalRecordId)
+            }
           />
         </Table.Td>
-        <Table.Td>
-          {user.image ? (
-            <Avatar size="sm" src={user.image} alt="User Image" />
-          ) : (
-            <Avatar size="sm" />
-          )}
-        </Table.Td>
-        <Table.Td>{user.name}</Table.Td>
-        <Table.Td>{user.email}</Table.Td>
-        <Table.Td>{user.phone}</Table.Td>
-        <Table.Td>
-          <span
-            className={clsx(
-              "py-1 px-[6px] flex justify-center items-center max-w-16",
-              {
-                "bg-red-600 text-white": user.role === "Admin",
-                "bg-green-600 text-white": user.role === "Doctor",
-                "bg-blue-600 text-white": user.role === "User",
-              }
-            )}
-          >
-            {user.role}
-          </span>
-        </Table.Td>
+        <Table.Td>{medicalRecord.patientName}</Table.Td>
+        <Table.Td>{medicalRecord.doctorName}</Table.Td>
+        <Table.Td>{medicalRecord.serviceName}</Table.Td>
+        <Table.Td>{new Date(medicalRecord.date).toLocaleDateString()}</Table.Td>
+        <Table.Td>{medicalRecord.description}</Table.Td>
         <Table.Td>
           <Group gap={6}>
-            <Link to={`/admin/users/${user.userId}/update`}>
+            <Link
+              to={`/admin/medical-records/${medicalRecord.medicalRecordId}/update`}
+            >
               <ActionIcon
                 variant="transparent"
                 color="yellow"
@@ -143,7 +130,7 @@ const UserTable = ({
               color="red"
               radius="xl"
               title="Delete"
-              onClick={() => openDeleteModal(user.userId)}
+              onClick={() => openDeleteModal(medicalRecord.medicalRecordId)}
             >
               <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
             </ActionIcon>
@@ -151,12 +138,6 @@ const UserTable = ({
         </Table.Td>
       </Table.Tr>
     ));
-
-  const handleSizeChange = (size) => {
-    setSize(+size);
-    const params = new URLSearchParams(location.search);
-    params.delete("page");
-  };
 
   return (
     <>
@@ -166,24 +147,30 @@ const UserTable = ({
             <Table.Th>
               <Checkbox
                 checked={
-                  users && users.data && users.data.length > 0
-                    ? selectedUsers.length === users.data.length
+                  medicalRecords &&
+                  medicalRecords.data &&
+                  medicalRecords.data.length > 0
+                    ? selectedMedicalRecords.length ===
+                      medicalRecords.data.length
                     : false
                 }
                 onChange={() =>
-                  toggleAllUsers(users.data.map((user) => user.userId))
+                  toggleAllMedicalRecords(
+                    medicalRecords.data.map(
+                      (medicalRecord) => medicalRecord.medicalRecordId
+                    )
+                  )
                 }
               />
             </Table.Th>
-            <Table.Th />
             <Table.Th
-              onClick={() => handleSort("name")}
+              onClick={() => handleSort("patientName")}
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
-                <span>Name</span>
+                <span>Patient</span>
                 <Transition
-                  mounted={sortBy === "name"}
+                  mounted={sortBy === "patientName"}
                   transition={{
                     type: "rotate-left",
                     duration: 200,
@@ -191,7 +178,7 @@ const UserTable = ({
                   }}
                 >
                   {(styles) =>
-                    sortBy === "name" && (
+                    sortBy === "patientName" && (
                       <IconChevronUp
                         style={{
                           transform:
@@ -207,13 +194,13 @@ const UserTable = ({
               </Group>
             </Table.Th>
             <Table.Th
-              onClick={() => handleSort("email")}
+              onClick={() => handleSort("doctorName")}
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
-                <span>Email</span>
+                <span>Doctor</span>
                 <Transition
-                  mounted={sortBy === "email"}
+                  mounted={sortBy === "doctorName"}
                   transition={{
                     type: "rotate-left",
                     duration: 200,
@@ -221,7 +208,7 @@ const UserTable = ({
                   }}
                 >
                   {(styles) =>
-                    sortBy === "email" && (
+                    sortBy === "doctorName" && (
                       <IconChevronUp
                         style={{
                           transform:
@@ -237,13 +224,13 @@ const UserTable = ({
               </Group>
             </Table.Th>
             <Table.Th
-              onClick={() => handleSort("phone")}
+              onClick={() => handleSort("serviceName")}
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
-                <span>Phone</span>
+                <span>Service</span>
                 <Transition
-                  mounted={sortBy === "phone"}
+                  mounted={sortBy === "serviceName"}
                   transition={{
                     type: "rotate-left",
                     duration: 200,
@@ -251,7 +238,7 @@ const UserTable = ({
                   }}
                 >
                   {(styles) =>
-                    sortBy === "phone" && (
+                    sortBy === "serviceName" && (
                       <IconChevronUp
                         style={{
                           transform:
@@ -266,12 +253,37 @@ const UserTable = ({
                 </Transition>
               </Group>
             </Table.Th>
-            <Table.Th>
-              <Group>
-                <span>Role</span>
-                <FilterUser />
+            <Table.Th
+              onClick={() => handleSort("createAt")}
+              className="cursor-pointer hover:bg-slate-50"
+            >
+              <Group justify="space-between">
+                <span>Date</span>
+                <Transition
+                  mounted={sortBy === "createAt"}
+                  transition={{
+                    type: "rotate-left",
+                    duration: 200,
+                    timingFunction: "ease",
+                  }}
+                >
+                  {(styles) =>
+                    sortBy === "createAt" && (
+                      <IconChevronUp
+                        style={{
+                          transform:
+                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
+                          ...styles,
+                        }}
+                        width={16}
+                        height={16}
+                      />
+                    )
+                  }
+                </Transition>
               </Group>
             </Table.Th>
+            <Table.Th>Description</Table.Th>
             <Table.Th>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>
@@ -280,10 +292,10 @@ const UserTable = ({
 
       <Group justify="space-between" mt={24}>
         <Group>
-          {users && users.meta && (
+          {medicalRecords && medicalRecords.meta && (
             <span className="text-xs italic text-gray-700 dark:text-gray-400">
-              Showing <strong>{users.meta.take}</strong> of{" "}
-              <strong>{users.meta.totalElements}</strong> entries
+              Showing <strong>{medicalRecords.meta.take}</strong> of{" "}
+              <strong>{medicalRecords.meta.totalElements}</strong> entries
             </span>
           )}
 
@@ -291,12 +303,7 @@ const UserTable = ({
             <Text size="xs" fw={700}>
               Per page:
             </Text>
-            <NumberInput
-              maw={50}
-              size="xs"
-              value={size}
-              onChange={(e) => handleSizeChange(e)}
-            />
+            <NumberInput maw={50} size="xs" value={size} onChange={setSize} />
           </Group>
         </Group>
 
@@ -304,11 +311,11 @@ const UserTable = ({
           currentPage={
             parseInt(new URLSearchParams(location.search).get("page")) || 1
           }
-          totalPages={users?.meta?.totalPages || 1}
+          totalPages={medicalRecords?.meta?.totalPages || 1}
         />
       </Group>
     </>
   );
 };
 
-export default UserTable;
+export default MedicalRecordTable;

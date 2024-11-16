@@ -1,25 +1,37 @@
 import { Group, Text, ScrollArea, ThemeIcon, Image } from "@mantine/core";
-import { IconUser, IconGauge, IconLock, IconKey } from "@tabler/icons-react";
+import {
+  IconUser,
+  IconGauge,
+  IconKey,
+  IconReportMedical,
+  IconDiscountFilled,
+  IconVaccine,
+} from "@tabler/icons-react";
+import { Link } from "react-router-dom";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
 import classes from "./Navbar.module.scss";
 import logoImage from "../../../assets/images/logo.png";
-import { Link } from "react-router-dom";
 import clsx from "clsx";
 
 const mockdata = [
   { label: "Dashboard", icon: IconGauge, link: "/admin" },
   { label: "Roles", icon: IconKey, link: "/admin/roles" },
-  { label: "Users", icon: IconUser, link: "/admin/users" },
   {
-    label: "Security",
-    icon: IconLock,
+    label: "Users",
+    icon: IconUser,
     links: [
-      { label: "Enable 2FA", link: "/" },
-      { label: "Change password", link: "/" },
-      { label: "Recovery codes", link: "/" },
+      { label: "Users", link: "/admin/users" },
+      { label: "Doctors", link: "/admin/doctors" },
     ],
   },
+  {
+    label: "Medical Records",
+    icon: IconReportMedical,
+    link: "/admin/medical-records",
+  },
+  { label: "Promotion", icon: IconDiscountFilled, link: "/admin/promotions" },
+  { label: "Service", icon: IconVaccine, link: "/admin/services" },
 ];
 
 const Navbar = ({ isCollapsed }) => {
