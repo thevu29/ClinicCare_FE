@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { deleteUserService } from "../../../services/userService";
 import { showNotification } from "../../../utils/notification";
 import PaginationComponent from "../../Pagination/Pagination";
@@ -29,6 +29,8 @@ const UserTable = ({
   size,
   setSize,
 }) => {
+  const location = useLocation();
+
   const toggleUserSelection = (userId) => {
     setSelectedUsers((prev) =>
       prev.includes(userId)
@@ -150,6 +152,12 @@ const UserTable = ({
       </Table.Tr>
     ));
 
+  const handleSizeChange = (size) => {
+    setSize(+size);
+    const params = new URLSearchParams(location.search);
+    params.delete("page");
+  };
+
   return (
     <>
       <Table highlightOnHover horizontalSpacing="md" verticalSpacing="md">
@@ -158,7 +166,9 @@ const UserTable = ({
             <Table.Th>
               <Checkbox
                 checked={
-                  users ? selectedUsers.length === users.data.length : false
+                  users && users.data && users.data.length > 0
+                    ? selectedUsers.length === users.data.length
+                    : false
                 }
                 onChange={() =>
                   toggleAllUsers(users.data.map((user) => user.userId))
@@ -257,7 +267,7 @@ const UserTable = ({
               </Group>
             </Table.Th>
             <Table.Th>
-              <Group justify="space-between">
+              <Group>
                 <span>Role</span>
                 <FilterUser />
               </Group>
@@ -285,7 +295,7 @@ const UserTable = ({
               maw={50}
               size="xs"
               value={size}
-              onChange={setSize}
+              onChange={(e) => handleSizeChange(e)}
             />
           </Group>
         </Group>

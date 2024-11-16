@@ -1,35 +1,39 @@
-import { useEffect, useState } from "react";
-import { IconPlus, IconTrashX } from "@tabler/icons-react";
 import { Button, Group, LoadingOverlay, Text, Title } from "@mantine/core";
+import { IconPlus, IconTrashX } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { modals } from "@mantine/modals";
-import { deleteUserService } from "../../../services/userService";
-import { showNotification } from "../../../utils/notification";
+import { deleteServiceManager } from "../../../services/serviceManager";
 import { handleSorting } from "../../../utils/sort";
-import { useUsers } from "../../../hooks/userHook";
+import { showNotification } from "../../../utils/notification";
+import { useServices } from "../../../hooks/serviceHook";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
-import UserTable from "./UserTable";
+import ServiceTable from "./ServiceTable";
 import Search from "../Search/Search";
 
-const breadcumbData = [{ title: "Admin", href: "/admin" }, { title: "Users" }];
+const breadcumbData = [
+  { title: "Admin", href: "/admin" },
+  { title: "Service", href: "/admin/services" },
+];
 
-const User = () => {
+const Service = () => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
 
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
   const [sortBy, setSortBy] = useState(null);
   const [order, setOrder] = useState("asc");
 
-  const { users, size, setSize, isLoading, setIsLoading, fetchUsers } =
-    useUsers();
+  const { services, size, setSize, isLoading, setIsLoading, fetchServices } =
+    useServices();
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
 
     const search = params.get("search") || "";
-    const role = params.get("role") || "";
+    const status = params.get("status") || "";
+    const price = params.get("price") || "";
     const page = parseInt(params.get("page")) || 1;
     const _sortBy = params.get("sortBy") || "";
     const _order = params.get("order") || "";
@@ -37,8 +41,8 @@ const User = () => {
     setSortBy(_sortBy);
     setOrder(_order);
 
-    fetchUsers(search, role, page, _sortBy, _order);
-  }, [location.search, fetchUsers]);
+    fetchServices(search, status, price, page, _sortBy, _order);
+  }, [location.search, fetchServices]);
 
   const handleSort = (field) => {
     let newOrder = "asc";
@@ -50,24 +54,26 @@ const User = () => {
     handleSorting(field, newOrder, location, pathname, navigate);
   };
 
-  const clearSelectedUsers = () => setSelectedUsers([]);
+  const clearSelectedServices = () => setSelectedServices([]);
 
-  const deleteUsers = async () => {
+  const deleteServices = async () => {
     try {
       setIsLoading(true);
-      const deleteUsersRes = selectedUsers.map((id) => deleteUserService(id));
+      const deleteUsersRes = selectedServices.map((id) =>
+        deleteServiceManager(id)
+      );
       const res = await Promise.all(deleteUsersRes);
 
       if (res.every((response) => response.success)) {
-        showNotification("Users deleted successfully", "Success");
-        clearSelectedUsers();
-        await fetchUsers();
+        showNotification("Services deleted successfully", "Success");
+        clearSelectedServices();
+        await fetchServices();
       } else {
-        showNotification("Some users could not be deleted", "Error");
+        showNotification("Some Services could not be deleted", "Error");
       }
     } catch (error) {
       console.log(error);
-      showNotification("Error deleting users", "Error");
+      showNotification("Error deleting services", "Error");
     } finally {
       setIsLoading(false);
     }
@@ -75,19 +81,21 @@ const User = () => {
 
   const openDeleteModal = () =>
     modals.openConfirmModal({
-      title: <Text size="xl">Delete users</Text>,
+      title: <Text size="xl">Delete Services</Text>,
       children: (
         <>
-          <Text size="md">Are you sure you want to delete checked users?</Text>
+          <Text size="md">
+            Are you sure you want to delete checked Services?
+          </Text>
           <Text mt="sm" c="yellow" fs="italic" size="sm">
             This action is irreversible and you will have to contact support to
             restore your data.
           </Text>
         </>
       ),
-      labels: { confirm: "Delete users", cancel: "Cancel" },
+      labels: { confirm: "Delete Services", cancel: "Cancel" },
       confirmProps: { color: "red" },
-      onConfirm: deleteUsers,
+      onConfirm: deleteServices,
     });
 
   return (
@@ -100,15 +108,14 @@ const User = () => {
 
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
-        Users
+        Services
       </Title>
 
       <div className="bg-white p-8 rounded-lg mt-7">
         <Group justify="space-between" mb={24}>
-          <Search placeholder="Search users" />
-
+          <Search placeholder="Search service" />
           <Group>
-            {selectedUsers.length > 0 && (
+            {selectedServices.length > 0 && (
               <Button
                 variant="light"
                 color="red"
@@ -118,27 +125,27 @@ const User = () => {
                 <IconTrashX width={18} height={18} />
               </Button>
             )}
-            <Link to="/admin/users/create">
+            <Link to="/admin/services/create">
               <Button
                 leftSection={<IconPlus />}
                 variant="filled"
                 color="indigo"
                 radius="md"
               >
-                Create user
+                Create service
               </Button>
             </Link>
           </Group>
         </Group>
 
-        <UserTable
-          users={users}
-          fetchUsers={fetchUsers}
+        <ServiceTable
+          services={services}
+          fetchServices={fetchServices}
           sortBy={sortBy}
           order={order}
           setIsLoading={setIsLoading}
-          selectedUsers={selectedUsers}
-          setSelectedUsers={setSelectedUsers}
+          selectedServices={selectedServices}
+          setSelectedServices={setSelectedServices}
           handleSort={handleSort}
           size={size}
           setSize={setSize}
@@ -148,4 +155,4 @@ const User = () => {
   );
 };
 
-export default User;
+export default Service;

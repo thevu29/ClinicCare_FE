@@ -74,6 +74,7 @@ const UpdateUserForm = () => {
     const fetchData = async () => {
       try {
         const rolesRes = await getAllRoles();
+
         if (rolesRes.success) {
           const rolesData = rolesRes.data
             .map((role) => ({
@@ -85,6 +86,7 @@ const UpdateUserForm = () => {
           setRoles(rolesData);
 
           const userRes = await getUserByIdService(id);
+          
           if (userRes.success) {
             const user = userRes.data;
             setUser(user);
@@ -130,7 +132,8 @@ const UpdateUserForm = () => {
         ? showNotification(response.message, "Success")
         : showNotification(response.message, "Error");
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.log(error);
+      showNotification("An error occured", "Error");
     } finally {
       setIsLoading(false);
     }

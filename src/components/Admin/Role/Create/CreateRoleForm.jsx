@@ -50,7 +50,8 @@ export default function CreateRoleForm() {
         showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.log(error);
+      showNotification("An error occured", "Error");
     }
     setIsLoading(false);
   };

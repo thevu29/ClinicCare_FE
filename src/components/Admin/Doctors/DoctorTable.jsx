@@ -8,12 +8,12 @@ import {
   Text,
   NumberInput,
 } from "@mantine/core";
-import { deleteDoctorService } from "../../../services/doctorService";
+import { modals } from "@mantine/modals";
 import { IconEdit, IconTrash, IconChevronUp } from "@tabler/icons-react";
+import { showNotification } from "../../../utils/notification";
+import { deleteDoctorService } from "../../../services/doctorService";
 import { Link } from "react-router-dom";
 import PaginationComponent from "../../Pagination/Pagination";
-import { modals } from "@mantine/modals";
-import { showNotification } from "../../../utils/notification";
 
 const DoctorTable = ({
   doctors,
@@ -41,7 +41,7 @@ const DoctorTable = ({
     );
   };
 
-  const deleteDoctor = async (id) => {  
+  const deleteDoctor = async (id) => {
     try {
       setIsLoading(true);
 
@@ -143,7 +143,7 @@ const DoctorTable = ({
             <Table.Th>
               <Checkbox
                 checked={
-                  doctors
+                  doctors && doctors.data && doctors.data.length > 0
                     ? selectedDoctors.length === doctors.data.length
                     : false
                 }

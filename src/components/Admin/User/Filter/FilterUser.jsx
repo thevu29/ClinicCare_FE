@@ -45,7 +45,7 @@ const FilterUser = () => {
   };
 
   return (
-    <Menu shadow="md" width={200}>
+    <Menu shadow="md" width={150}>
       <Menu.Target>
         <Button variant="white" color="rgba(0, 0, 0, 1)" size="xs">
           <IconFilter width={18} height={18} />

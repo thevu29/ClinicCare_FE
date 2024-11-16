@@ -25,12 +25,6 @@ const breadcumbData = [
 
 const FORM_VALIDATION = {
   name: { required: "Name is required" },
-  phone: {
-    pattern: {
-      value: /^\d{10}$/,
-      message: "Phone number must contain exactly 10 digits",
-    },
-  },
   email: {
     required: "Email is required",
     pattern: {
@@ -44,8 +38,10 @@ const FORM_VALIDATION = {
 const UpdateDoctorForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [doctor, setDoctor] = useState({});
+  
   const { handleSubmit, control, setValue, reset } = useForm({
     defaultValues: { name: "", phone: "", specialty: "", image: "" },
     mode: "onChange",
@@ -70,7 +66,8 @@ const UpdateDoctorForm = () => {
           showNotification(doctorRes.message, "Error");
         }
       } catch (error) {
-        showNotification(error.message, "Error");
+        console.log(error);
+        showNotification("An error occured", "Error");
       } finally {
         setIsLoading(false);
       }

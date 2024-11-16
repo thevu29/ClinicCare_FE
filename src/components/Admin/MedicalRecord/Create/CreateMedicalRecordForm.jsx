@@ -7,17 +7,15 @@ import {
   Title,
   Textarea,
 } from "@mantine/core";
-import { useEffect, useState, forwardRef } from "react";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  createMedicalRecordService,
-  getUserFormService,
-  getDoctorFormService,
-  getServiceManager,
-} from "../../../../services/medicalRecordService";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
+import { createMedicalRecordService } from "../../../../services/medicalRecordService";
+import { getAllPatientsService } from "../../../../services/userService";
+import { getAllDoctorsService } from "../../../../services/doctorService";
+import { getALlServicesManager } from "../../../../services/serviceManager";
 import { showNotification } from "../../../../utils/notification";
+import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -26,56 +24,47 @@ const breadcumbData = [
 ];
 
 const FORM_VALIDATION = {
-  patientName: {
+  patientId: {
     required: "Patient is required",
   },
-  doctorName: {
+  doctorProfileId: {
     required: "Doctor is required",
   },
-  serviceName: {
+  serviceId: {
     required: "Service is required",
-  },
-  description: {
-    required: "Description is required",
   },
 };
 
 const CreateMedicalRecordForm = () => {
   const navigate = useNavigate();
+
   const [isLoading, setIsLoading] = useState(false);
   const [patients, setPatients] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [services, setServices] = useState([]);
-  const [selectedPatientImage, setSelectedPatientImage] = useState(null);
-  const [selectedDoctorImage, setSelectedDoctorImage] = useState(null);
+
   const { handleSubmit, control } = useForm({
     defaultValues: {
-      patientName: "",
-      doctorName: "",
-      serviceName: "",
+      patientId: "",
+      doctorProfileId: "",
+      serviceId: "",
       description: "",
-      createAt: "",
     },
     mode: "onChange",
   });
 
-  const SelectItem = forwardRef(({ label, image, ...others }, ref) => (
-    <div ref={ref} {...others} className="flex items-center justify-between">
-      <span>{label}</span>
-    </div>
-  ));
-
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const res = await getUserFormService("user");
+        const res = await getAllPatientsService("user");
+
         if (res.success) {
           const data = res.data.map((patient) => ({
             value: patient.userId,
-            label: patient.name,
-            image: patient.image,
+            label: patient.phone
+              ? `${patient.name} - ${patient.phone}`
+              : patient.name,
           }));
-          console.log(data);
 
           setPatients(data);
         }
@@ -86,13 +75,16 @@ const CreateMedicalRecordForm = () => {
 
     const fetchDoctors = async () => {
       try {
-        const res = await getDoctorFormService();
+        const res = await getAllDoctorsService();
+
         if (res.success) {
           const data = res.data.map((doctor) => ({
             value: doctor.doctorProfileId,
-            label: doctor.name,
-            image: doctor.image,
+            label: doctor.phone
+              ? `${doctor.name} - ${doctor.phone}`
+              : doctor.name,
           }));
+
           setDoctors(data);
         }
       } catch (error) {
@@ -102,7 +94,8 @@ const CreateMedicalRecordForm = () => {
 
     const fetchServices = async () => {
       try {
-        const res = await getServiceManager();
+        const res = await getALlServicesManager();
+
         if (res.success) {
           const data = res.data.map((service) => ({
             value: service.serviceId,
@@ -124,12 +117,14 @@ const CreateMedicalRecordForm = () => {
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
-      const medicalRecordRes = await createMedicalRecordService(data);
-      if (medicalRecordRes.success) {
-        showNotification(medicalRecordRes.message, "Success");
+
+      const res = await createMedicalRecordService(data);
+
+      if (res.success) {
+        showNotification(res.message, "Success");
         navigate("/admin/medical-records");
       } else {
-        showNotification(medicalRecordRes.message, "Error");
+        showNotification(res.message, "Error");
       }
     } catch (error) {
       showNotification(error.message, "Error");
@@ -145,6 +140,7 @@ const CreateMedicalRecordForm = () => {
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
+
       <BreadcumbsComponent items={breadcumbData} />
       <Title order={1} mt={32}>
         Create Medical Record
@@ -160,41 +156,14 @@ const CreateMedicalRecordForm = () => {
                 rules={FORM_VALIDATION.patientName}
                 render={({ field, fieldState: { error } }) => (
                   <Select
-                    searchable
                     {...field}
+                    searchable
                     error={error?.message}
                     label="Patient"
                     placeholder="Select patient"
                     data={patients}
                     allowDeselect={false}
-                    itemComponent={SelectItem}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      const selectedPatient = patients.find(
-                        (p) => p.value === value
-                      );
-                      setSelectedPatientImage(selectedPatient?.image);
-                    }}
                     value={field.value}
-                    styles={{
-                      input: {
-                        paddingLeft: selectedPatientImage
-                          ? "2.5rem"
-                          : undefined,
-                      },
-                      wrapper: {
-                        position: "relative",
-                      },
-                    }}
-                    leftSection={
-                      selectedPatientImage && (
-                        <img
-                          src={selectedPatientImage}
-                          alt="Selected patient"
-                          className="w-6 h-6 rounded-full absolute left-2 top-1/2 transform -translate-y-1/2"
-                        />
-                      )
-                    }
                   />
                 )}
               />
@@ -205,42 +174,18 @@ const CreateMedicalRecordForm = () => {
                 rules={FORM_VALIDATION.doctorName}
                 render={({ field, fieldState: { error } }) => (
                   <Select
-                    searchable
                     {...field}
+                    searchable
                     error={error?.message}
                     label="Doctor"
                     placeholder="Select doctor"
                     data={doctors}
                     allowDeselect={false}
-                    itemComponent={SelectItem}
-                    onChange={(value) => {
-                      field.onChange(value);
-                      const selectedDoctor = doctors.find(
-                        (p) => p.value === value
-                      );
-                      setSelectedDoctorImage(selectedDoctor?.image);
-                    }}
                     value={field.value}
-                    styles={{
-                      input: {
-                        paddingLeft: selectedDoctorImage ? "2.5rem" : undefined,
-                      },
-                      wrapper: {
-                        position: "relative",
-                      },
-                    }}
-                    leftSection={
-                      selectedDoctorImage && (
-                        <img
-                          src={selectedDoctorImage}
-                          alt="Selected doctor"
-                          className="w-6 h-6 rounded-full absolute left-2 top-1/2 transform -translate-y-1/2"
-                        />
-                      )
-                    }
                   />
                 )}
               />
+
               <Controller
                 searchabl
                 name="serviceId"
@@ -248,8 +193,8 @@ const CreateMedicalRecordForm = () => {
                 rules={FORM_VALIDATION.serviceName}
                 render={({ field, fieldState: { error } }) => (
                   <Select
-                    searchable
                     {...field}
+                    searchable
                     error={error?.message}
                     label="Service"
                     placeholder="Select service"
@@ -259,6 +204,7 @@ const CreateMedicalRecordForm = () => {
                 )}
               />
             </Flex>
+
             <Controller
               name="description"
               control={control}
@@ -269,7 +215,6 @@ const CreateMedicalRecordForm = () => {
                   placeholder="Description"
                   label="Description"
                   error={fieldState?.error?.message}
-                  required
                   rows={10}
                 />
               )}

@@ -94,7 +94,7 @@ const Doctor = () => {
       }
     } catch (error) {
       console.log(error);
-      showNotification("Error deleting doctors", "Error");
+      showNotification("An error occured", "Error");
     } finally {
       setIsLoading(false);
     }

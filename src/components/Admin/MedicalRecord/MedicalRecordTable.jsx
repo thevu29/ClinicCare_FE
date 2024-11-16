@@ -106,6 +106,7 @@ const MedicalRecordTable = ({
         <Table.Td>{medicalRecord.doctorName}</Table.Td>
         <Table.Td>{medicalRecord.serviceName}</Table.Td>
         <Table.Td>{new Date(medicalRecord.date).toLocaleDateString()}</Table.Td>
+        <Table.Td>{medicalRecord.description}</Table.Td>
         <Table.Td>
           <Group gap={6}>
             <Link
@@ -146,7 +147,9 @@ const MedicalRecordTable = ({
             <Table.Th>
               <Checkbox
                 checked={
-                  medicalRecords
+                  medicalRecords &&
+                  medicalRecords.data &&
+                  medicalRecords.data.length > 0
                     ? selectedMedicalRecords.length ===
                       medicalRecords.data.length
                     : false
@@ -280,6 +283,7 @@ const MedicalRecordTable = ({
                 </Transition>
               </Group>
             </Table.Th>
+            <Table.Th>Description</Table.Th>
             <Table.Th>Actions</Table.Th>
           </Table.Tr>
         </Table.Thead>

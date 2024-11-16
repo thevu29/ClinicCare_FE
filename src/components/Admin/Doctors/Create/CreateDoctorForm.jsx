@@ -4,7 +4,6 @@ import {
   Group,
   LoadingOverlay,
   PasswordInput,
-  Select,
   TextInput,
   Title,
 } from "@mantine/core";
@@ -26,13 +25,6 @@ const FORM_VALIDATION = {
   name: {
     required: "Name is required",
   },
-  phone: {
-    required: "Phone number is required",
-    pattern: {
-      value: /^\d{10}$/,
-      message: "Phone number must contain exactly 10 digits",
-    },
-  },
   email: {
     required: "Email is required",
     pattern: {
@@ -48,10 +40,9 @@ const FORM_VALIDATION = {
   },
 };
 
-const CreateDoctorForm = ({ history }) => {
+const CreateDoctorForm = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-
 
   const { handleSubmit, control, setValue, watch } = useForm({
     defaultValues: {
@@ -91,7 +82,8 @@ const CreateDoctorForm = ({ history }) => {
         showNotification(response.message, "Error");
       }
     } catch (error) {
-      console.error("Error adding user:", error);
+      console.log(error);
+      showNotification("An error occured", "Error");
     } finally {
       setIsLoading(false);
     }
