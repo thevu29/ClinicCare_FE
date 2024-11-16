@@ -10,6 +10,8 @@ import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
 import Role from "./components/Admin/Role/Role.jsx";
 import UpdateRoleForm from "./components/Admin/Role/Update/UpdateRoleForm.jsx";
 import CreateRoleForm from "./components/Admin/Role/Create/CreateRoleForm.jsx";
+import PaymentPage from "./components/User/Payment/PaymentPage.jsx";
+import PaymentReturn from "./components/User/Payment/PaymentReturn.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -32,6 +34,14 @@ export const router = createBrowserRouter([
           { path: "users/create", element: <CreateUserForm /> },
           { path: "users/:id/update", element: <UpdateUserForm /> },
         ],
+      },
+      {
+        path: "payment",
+        element: <PaymentPage />,
+      },
+      {
+        path: "payment-return",
+        element: <PaymentReturn />,
       },
     ],
   },
