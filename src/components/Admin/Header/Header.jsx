@@ -1,12 +1,16 @@
-import { Group, ThemeIcon, UnstyledButton, Tooltip } from "@mantine/core";
+import { Group, ThemeIcon, UnstyledButton, Tooltip, Menu } from "@mantine/core";
 import {
-  IconBell,
   IconPower,
   IconLayoutSidebarLeftCollapse,
+  IconBell,
 } from "@tabler/icons-react";
 import classes from "./Header.module.scss";
+import NotificationBox from "./NotificationBox";
+import { useState } from "react";
 
 const Header = ({ isCollapsed, setIsCollapsed }) => {
+  const [isNotifiOpen, setIsNotifiOpen] = useState(false);
+
   return (
     <header className={`h-[60px] px-6 ${classes.header}`}>
       <Group justify="space-between" className="h-full">
@@ -28,17 +32,28 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
         </Tooltip>
 
         <Group>
-          <Tooltip label="Notifications">
-            <UnstyledButton className="size-10 flex justify-center items-center">
-              <ThemeIcon
-                variant="white"
-                size="lg"
-                className="hover:bg-[#228be61f]"
-              >
-                <IconBell />
-              </ThemeIcon>
-            </UnstyledButton>
-          </Tooltip>
+          <Menu
+            shadow="md"
+            onOpen={() => setIsNotifiOpen(true)}
+            onClose={() => setIsNotifiOpen(false)}
+          >
+            <Menu.Target>
+              <Tooltip label="Notifications">
+                <UnstyledButton className="size-10 flex justify-center items-center">
+                  <ThemeIcon
+                    variant="white"
+                    size="lg"
+                    className="hover:bg-[#228be61f]"
+                  >
+                    <IconBell />
+                  </ThemeIcon>
+                </UnstyledButton>
+              </Tooltip>
+            </Menu.Target>
+
+            <Menu.Dropdown>{isNotifiOpen && <NotificationBox />}</Menu.Dropdown>
+          </Menu>
+
           <Tooltip label="Logout">
             <UnstyledButton className="size-10 flex justify-center items-center">
               <ThemeIcon

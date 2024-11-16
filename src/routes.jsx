@@ -16,6 +16,9 @@ import UpdateServiceForm from "./components/Admin/Service/Update/UpdateServiceFo
 import User from "./components/Admin/User/User.jsx";
 import CreateUserForm from "./components/Admin/User/Create/CreateUserForm.jsx";
 import UpdateUserForm from "./components/Admin/User/Update/UpdateUserForm.jsx";
+import Role from "./components/Admin/Role/Role.jsx";
+import UpdateRoleForm from "./components/Admin/Role/Update/UpdateRoleForm.jsx";
+import CreateRoleForm from "./components/Admin/Role/Create/CreateRoleForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +42,11 @@ export const router = createBrowserRouter([
           { path : "services/create", element: <CreateServiceForm /> },
           { path : "services/:id/update", element: <UpdateServiceForm /> },
           
+
+
+          { path: "roles", element: <Role /> },
+          { path: "roles/create", element: <CreateRoleForm /> },
+          { path: "roles/:id/update", element: <UpdateRoleForm /> },
 
           { path: "users", element: <User /> },
           { path: "users/create", element: <CreateUserForm /> },
