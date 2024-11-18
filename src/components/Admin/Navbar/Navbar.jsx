@@ -6,6 +6,7 @@ import {
   IconReportMedical,
   IconDiscountFilled,
   IconVaccine,
+  IconMessageDots,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import NavbarFooter from "./NavbarFooter";
@@ -30,8 +31,9 @@ const mockdata = [
     icon: IconReportMedical,
     link: "/admin/medical-records",
   },
-  { label: "Promotion", icon: IconDiscountFilled, link: "/admin/promotions" },
-  { label: "Service", icon: IconVaccine, link: "/admin/services" },
+  { label: "Promotions", icon: IconDiscountFilled, link: "/admin/promotions" },
+  { label: "Services", icon: IconVaccine, link: "/admin/services" },
+  { label: "Feedbacks", icon: IconMessageDots, link: "/admin/feedbacks" },
 ];
 
 const Navbar = ({ isCollapsed }) => {

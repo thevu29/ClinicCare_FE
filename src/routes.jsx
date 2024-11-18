@@ -24,6 +24,7 @@ import UpdateDoctorForm from "./components/Admin/Doctors/Update/UpdateDoctorForm
 import MedicalRecord from "./components/Admin/MedicalRecord/MedicalRecord.jsx";
 import CreateMedicalRecordForm from "./components/Admin/MedicalRecord/Create/CreateMedicalRecordForm.jsx";
 import UpdateMedicalRecordForm from "./components/Admin/MedicalRecord/Update/UpdateMedicalRecordForm.jsx";
+import Feedback from "./components/Admin/Feedback/Feedback.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +74,9 @@ export const router = createBrowserRouter([
             path: "medical-records/:id/update",
             element: <UpdateMedicalRecordForm />,
           },
+
+          // Feedback
+          { path: "feedbacks", element: <Feedback /> },
         ],
       },
       {

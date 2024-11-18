@@ -8,9 +8,18 @@ import {
   Box,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
+import { updatePaymentStatusService } from "../../../services/paymentService";
+import { useEffect } from "react";
 
-export default function PaymentSuccess() {
+export default function PaymentSuccess({ paymentId }) {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    updatePaymentStatusService({
+      paymentId,
+      status: "PAID",
+    });
+  }, []);
 
   return (
     <Container size="sm" style={{ textAlign: "center", marginTop: "50px" }}>
