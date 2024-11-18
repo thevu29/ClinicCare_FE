@@ -1,7 +1,4 @@
-import {
-  deleteFeedbackService,
-  getFeedbacksService,
-} from "../../../services/feedbackService";
+import { deleteFeedbackService } from "../../../services/feedbackService";
 import {
   Table,
   Checkbox,
@@ -11,83 +8,77 @@ import {
   NumberInput,
   Text,
 } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { IconChevronUp, IconTrash } from "@tabler/icons-react";
-import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { handleSorting } from "../../../utils/sort";
-import PaginationComponent from "../../Pagination/Pagination";
+import { useLocation } from "react-router-dom";
 import { showNotification } from "../../../utils/notification";
+import { formatDate } from "../../../utils/date";
+import PaginationComponent from "../../Pagination/Pagination";
+import FilterFeedback from "./Filter/FilterFeedback";
 
-export default function FeedbackTable({
-  selectedRows,
-  setSelectedRows,
-  reload,
-  setReload,
-}) {
+const FeedbackTable = ({
+  feedbacks,
+  fetchFeedbacks,
+  sortBy,
+  order,
+  setIsLoading,
+  selectedFeedbacks,
+  setSelectedFeedbacks,
+  handleSort,
+  size,
+  setSize,
+}) => {
   const location = useLocation();
-  const pathname = location.pathname;
-  const navigate = useNavigate();
 
-  const [feedbacks, setFeedbacks] = useState({ data: [], meta: {} });
-  const [sortBy, setSortBy] = useState(null);
-  const [order, setOrder] = useState("desc");
-  const [size, setSize] = useState(4);
+  const toggleFeedbackSelection = (feedbackId) => {
+    setSelectedFeedbacks((prev) =>
+      prev.includes(feedbackId)
+        ? prev.filter((id) => id !== feedbackId)
+        : [...prev, feedbackId]
+    );
+  };
 
-  const fetchFeedbacks = useCallback(
-    async (search, page, sortBy, order) => {
-      try {
-        const res = await getFeedbacksService({
-          search,
-          page,
-          size,
-          sortBy,
-          order,
-        });
+  const toggleAllFeedbacks = (feedbackIds) => {
+    setSelectedFeedbacks((prev) =>
+      prev.length === feedbackIds.length ? [] : feedbackIds
+    );
+  };
 
-        if (res && res.success) {
-          setFeedbacks(res);
-        }
-      } catch (error) {
-        console.log(error);
+  const deleteFeedback = async () => {
+    try {
+      setIsLoading(true);
+
+      const res = await deleteFeedbackService(selectedFeedbacks);
+
+      if (res.success) {
+        showNotification(res.message, "Success");
+        fetchFeedbacks();
+      } else {
+        showNotification(res.message, "Error");
       }
-    },
-    [size]
-  );
-
-  const fetchData = () => {
-    const params = new URLSearchParams(location.search);
-
-    const search = params.get("search") || "";
-    const page = parseInt(params.get("page")) || 1;
-    const _sortBy = params.get("sortBy") || "";
-    const _order = params.get("order") || "";
-
-    setSortBy(_sortBy);
-    setOrder(_order);
-
-    fetchFeedbacks(search, page, _sortBy, _order);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  useEffect(fetchData, [location.search, fetchFeedbacks]);
-
-  useEffect(() => {
-    if (reload) {
-      setReload(false);
-      fetchData();
-    }
-  }, [reload]);
-
-  const handleSort = (field) => {
-    let newOrder = "asc";
-
-    if (sortBy === field) {
-      newOrder = order === "asc" ? "desc" : "asc";
-    }
-
-    setSortBy(field);
-    setOrder(newOrder);
-    handleSorting(field, newOrder, location, pathname, navigate);
-  };
+  const openDeleteModal = (id) =>
+    modals.openConfirmModal({
+      title: <Text size="xl">Delete feedback</Text>,
+      children: (
+        <>
+          <Text size="md">Are you sure you want to delete this feedback?</Text>
+          <Text mt="sm" c="yellow" fs="italic" size="sm">
+            This action is irreversible and you will have to contact support to
+            restore your data.
+          </Text>
+        </>
+      ),
+      labels: { confirm: "Delete feedback", cancel: "Cancel" },
+      confirmProps: { color: "red" },
+      onConfirm: () => deleteFeedback(id),
+    });
 
   const rows =
     feedbacks &&
@@ -97,60 +88,29 @@ export default function FeedbackTable({
       <Table.Tr
         key={feedback.feedbackId}
         bg={
-          selectedRows.includes(feedback.feedbackId)
+          selectedFeedbacks.includes(feedback.feedbackId)
             ? "var(--mantine-color-blue-light)"
             : undefined
         }
       >
         <Table.Td>
           <Checkbox
-            checked={selectedRows.includes(feedback.feedbackId)}
-            onChange={(e) =>
-              setSelectedRows(
-                e.currentTarget.checked
-                  ? [...selectedRows, feedback.feedbackId]
-                  : selectedRows.filter((id) => id !== feedback.feedbackId)
-              )
-            }
+            checked={selectedFeedbacks.includes(feedback.feedbackId)}
+            onChange={() => toggleFeedbackSelection(feedback.feedbackId)}
           />
         </Table.Td>
         <Table.Td>{feedback.patientName}</Table.Td>
-        <Table.Td>{feedback.patientPhone}</Table.Td>
         <Table.Td>{feedback.doctorName}</Table.Td>
         <Table.Td>{feedback.serviceName}</Table.Td>
         <Table.Td>{feedback.feedback}</Table.Td>
-        <Table.Td>
-          {new Date(feedback.date).toLocaleString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-          })}
-        </Table.Td>
+        <Table.Td>{formatDate(feedback.date)}</Table.Td>
         <Table.Td>
           <ActionIcon
             variant="transparent"
             color="red"
             radius="xl"
             title="Delete"
-            onClick={async () => {
-              try {
-                const res = await deleteFeedbackService(feedback.feedbackId);
-
-                // If delete successfully then reload the page
-                if (res && res.success) {
-                  showNotification(res.message, "Success");
-                  fetchData();
-                } else {
-                  showNotification(res.message, "Error");
-                }
-              } catch (error) {
-                console.log(error);
-                showNotification("An error occured", "Error");
-              }
-            }}
+            onClick={() => openDeleteModal(feedback.feedbackId)}
           >
             <IconTrash style={{ width: "70%", height: "70%" }} stroke={1.5} />
           </ActionIcon>
@@ -166,32 +126,25 @@ export default function FeedbackTable({
             <Table.Th>
               <Checkbox
                 checked={
-                  feedbacks.data.length <= 0
-                    ? false
-                    : selectedRows.length === feedbacks.data.length
+                  feedbacks && feedbacks.data && feedbacks.data.length > 0
+                    ? selectedFeedbacks.length === feedbacks.data.length
+                    : false
                 }
-                onChange={(e) =>
-                  setSelectedRows(
-                    e.currentTarget.checked
-                      ? feedbacks.data.map((feedback) => feedback.feedbackId)
-                      : []
+                onChange={() =>
+                  toggleAllFeedbacks(
+                    feedbacks.data.map((feedback) => feedback.feedbackId)
                   )
                 }
               />
             </Table.Th>
-            <Table.Th>Patient's name</Table.Th>
-            <Table.Th>Patient's phone</Table.Th>
-            <Table.Th>Doctor's name</Table.Th>
-            <Table.Th>Service's name</Table.Th>
-            <Table.Th>Feedback</Table.Th>
             <Table.Th
-              onClick={() => handleSort("createAt")}
+              onClick={() => handleSort("patientName")}
               className="cursor-pointer hover:bg-slate-50"
             >
               <Group justify="space-between">
-                <span>Date</span>
+                <span>Patient&apos;s name</span>
                 <Transition
-                  mounted={sortBy === "name"}
+                  mounted={sortBy === "patientName"}
                   transition={{
                     type: "rotate-left",
                     duration: 200,
@@ -199,7 +152,7 @@ export default function FeedbackTable({
                   }}
                 >
                   {(styles) =>
-                    sortBy === "name" && (
+                    sortBy === "patientName" && (
                       <IconChevronUp
                         style={{
                           transform:
@@ -212,6 +165,103 @@ export default function FeedbackTable({
                     )
                   }
                 </Transition>
+              </Group>
+            </Table.Th>
+            <Table.Th
+              onClick={() => handleSort("doctorName")}
+              className="cursor-pointer hover:bg-slate-50"
+            >
+              <Group justify="space-between">
+                <span>Doctor&apos;s name</span>
+                <Transition
+                  mounted={sortBy === "doctorName"}
+                  transition={{
+                    type: "rotate-left",
+                    duration: 200,
+                    timingFunction: "ease",
+                  }}
+                >
+                  {(styles) =>
+                    sortBy === "doctorName" && (
+                      <IconChevronUp
+                        style={{
+                          transform:
+                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
+                          ...styles,
+                        }}
+                        width={16}
+                        height={16}
+                      />
+                    )
+                  }
+                </Transition>
+              </Group>
+            </Table.Th>
+            <Table.Th
+              onClick={() => handleSort("serviceName")}
+              className="cursor-pointer hover:bg-slate-50"
+            >
+              <Group justify="space-between">
+                <span>Service&apos;s name</span>
+                <Transition
+                  mounted={sortBy === "serviceName"}
+                  transition={{
+                    type: "rotate-left",
+                    duration: 200,
+                    timingFunction: "ease",
+                  }}
+                >
+                  {(styles) =>
+                    sortBy === "serviceName" && (
+                      <IconChevronUp
+                        style={{
+                          transform:
+                            order === "asc" ? "rotate(0deg)" : "rotate(180deg)",
+                          ...styles,
+                        }}
+                        width={16}
+                        height={16}
+                      />
+                    )
+                  }
+                </Transition>
+              </Group>
+            </Table.Th>
+            <Table.Th>Feedback</Table.Th>
+            <Table.Th
+              onClick={() => handleSort("createAt")}
+              className="cursor-pointer hover:bg-slate-50"
+            >
+              <Group>
+                <Group justify="space-between">
+                  <span>Date</span>
+                  <Transition
+                    mounted={sortBy === "createAt"}
+                    transition={{
+                      type: "rotate-left",
+                      duration: 200,
+                      timingFunction: "ease",
+                    }}
+                  >
+                    {(styles) =>
+                      sortBy === "createAt" && (
+                        <IconChevronUp
+                          style={{
+                            transform:
+                              order === "asc"
+                                ? "rotate(0deg)"
+                                : "rotate(180deg)",
+                            ...styles,
+                          }}
+                          width={16}
+                          height={16}
+                        />
+                      )
+                    }
+                  </Transition>
+                </Group>
+
+                <FilterFeedback />
               </Group>
             </Table.Th>
             <Table.Th>Action</Table.Th>
@@ -246,4 +296,6 @@ export default function FeedbackTable({
       </Group>
     </>
   );
-}
+};
+
+export default FeedbackTable;

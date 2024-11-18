@@ -2,6 +2,7 @@ import axios from "../utils/axiosCustom";
 
 export const getFeedbacksService = async ({
   search = "",
+  date = "",
   page = 1,
   size = 5,
   sortBy,
@@ -10,6 +11,7 @@ export const getFeedbacksService = async ({
   const params = new URLSearchParams();
 
   if (search) params.append("search", search);
+  if (date) params.append("date", date);
   if (page) params.append("page", page);
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
