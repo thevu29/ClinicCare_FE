@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { updatePaymentStatusService } from "../../../services/paymentService";
 import { useEffect } from "react";
 
-export default function PaymentSuccess({ paymentId }) {
+export default function PaymentSuccess({ paymentId, message }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function PaymentSuccess({ paymentId }) {
         </Box>
       </Center>
       <Title order={2} mt="md" color="teal">
-        Payment Successful!
+        {message}
       </Title>
       <Text size="md" mt="sm" c="dimmed">
         Thank you for your payment. Your transaction was completed successfully.

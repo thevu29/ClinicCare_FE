@@ -11,3 +11,10 @@ export const updatePaymentStatusService = async (payload) => {
   });
   return res;
 };
+
+export const checkResponseFromVNPay = async (params) => {
+  const res = await axios.get("/payments/check-response", {
+    params: params,
+  });
+  return res;
+};

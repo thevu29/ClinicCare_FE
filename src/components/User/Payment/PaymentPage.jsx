@@ -8,10 +8,8 @@ import {
   Group,
   Select,
 } from "@mantine/core";
-import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import { QRCodeSVG } from "qrcode.react";
 
 const FORM_VALIDATION = {
   patientId: {
@@ -26,8 +24,6 @@ const FORM_VALIDATION = {
 };
 
 export default function PaymentPage() {
-  const [paymentUrl, setPaymentUrl] = useState(null);
-
   const { handleSubmit, control } = useForm({
     defaultValues: {
       patientId: "",
@@ -43,7 +39,7 @@ export default function PaymentPage() {
 
       // Redirect to vnpay
       if (res && res.data && res.data.paymentUrl) {
-        setPaymentUrl(res.data.paymentUrl);
+        window.location.href = res.data.paymentUrl;
       }
     } catch (error) {
       console.error("Error creating payment", error);
@@ -132,13 +128,6 @@ export default function PaymentPage() {
             </Button>
           </Group>
         </form>
-
-        {paymentUrl && (
-          <div>
-            <h3>QR Code:</h3>
-            <QRCodeSVG value={paymentUrl} size={256} />
-          </div>
-        )}
       </div>
     </Container>
   );

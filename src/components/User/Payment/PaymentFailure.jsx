@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { updatePaymentStatusService } from "../../../services/paymentService";
 import { useEffect } from "react";
 
-export default function PaymentFailure({ paymentId }) {
+export default function PaymentFailure({ paymentId, message }) {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function PaymentFailure({ paymentId }) {
         </Box>
       </Center>
       <Title order={2} mt="md" color="red">
-        Payment Failed!
+        {message}
       </Title>
       <Text size="md" mt="sm" c="dimmed">
         Unfortunately, your payment could not be processed. Please try again
