@@ -18,7 +18,7 @@ import {
   IconRosetteDiscountCheckOff,
 } from "@tabler/icons-react";
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import {
   deleteServiceManager,
@@ -44,6 +44,7 @@ const ServiceTable = ({
   setSize,
 }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [opened, { open, close }] = useDisclosure(false);
   const [selectedServiceId, setSelectedServiceId] = useState(null);
@@ -66,6 +67,7 @@ const ServiceTable = ({
     setSize(+size);
     const params = new URLSearchParams(location.search);
     params.delete("page");
+    navigate(`${location.pathname}?${params.toString()}`);
   };
 
   const deleteService = async (id) => {
