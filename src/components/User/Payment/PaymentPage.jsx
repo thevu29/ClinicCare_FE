@@ -30,8 +30,8 @@ export default function PaymentPage() {
 
   const { handleSubmit, control } = useForm({
     defaultValues: {
-      patientId: "",
-      serviceId: "",
+      patientId: "dd1162cb-1afb-4fd3-9d53-b1250b507f32",
+      serviceId: "80c1d310-4316-4dee-ab77-72aa4264c9c6",
       method: "",
     },
     mode: "onChange",

@@ -40,17 +40,6 @@ export default function PaymentFailure({ paymentId, message }) {
       </Text>
       <Button
         mt="lg"
-        mr="lg"
-        color="red"
-        size="md"
-        onClick={() => {
-          navigate("/payment");
-        }}
-      >
-        Try again
-      </Button>
-      <Button
-        mt="lg"
         variant="outline"
         color="red"
         size="md"
