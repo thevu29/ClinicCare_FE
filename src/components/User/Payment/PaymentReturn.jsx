@@ -3,12 +3,14 @@ import PaymentFailure from "./PaymentFailure";
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { checkResponseFromVNPay } from "../../../services/paymentService";
+import { Loader } from "@mantine/core";
 
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
 
   const paymentId = searchParams.get("vnp_TxnRef");
 
+  const [isLoading, setIsLoading] = useState(true);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -21,15 +23,31 @@ export default function PaymentReturn() {
       setPaymentSuccess(false);
       setMessage(response.message);
     }
+    setIsLoading(false);
   };
 
   useEffect(() => {
     checkResponse();
   }, []);
 
-  return paymentSuccess ? (
-    <PaymentSuccess paymentId={paymentId} message={message} />
-  ) : (
-    <PaymentFailure paymentId={paymentId} message={message} />
-  );
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+        }}
+      >
+        <Loader color="blue" />
+      </div>
+    );
+  }
+
+  if (!isLoading && paymentSuccess) {
+    return <PaymentSuccess paymentId={paymentId} message={message} />;
+  }
+
+  return <PaymentFailure paymentId={paymentId} message={message} />;
 }

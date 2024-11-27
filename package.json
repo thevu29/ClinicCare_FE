@@ -30,6 +30,7 @@
     "firebase": "^11.0.1",
     "lodash": "^4.17.21",
     "moment-timezone": "^0.5.46",
+    "qrcode.react": "^4.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.0",
