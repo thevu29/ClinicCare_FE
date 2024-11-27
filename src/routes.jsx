@@ -18,13 +18,17 @@ import UpdateRoleForm from "./components/Admin/Role/Update/UpdateRoleForm.jsx";
 import CreateRoleForm from "./components/Admin/Role/Create/CreateRoleForm.jsx";
 import PaymentPage from "./components/User/Payment/PaymentPage.jsx";
 import PaymentReturn from "./components/User/Payment/PaymentReturn.jsx";
-import Doctor from "./components/Admin/Doctors/Doctor.jsx";
-import CreateDoctorForm from "./components/Admin/Doctors/Create/CreateDoctorForm.jsx";
-import UpdateDoctorForm from "./components/Admin/Doctors/Update/UpdateDoctorForm.jsx";
+import Doctor from "./components/Admin/Doctor/Doctor.jsx";
+import CreateDoctorForm from "./components/Admin/Doctor/Create/CreateDoctorForm.jsx";
+import UpdateDoctorForm from "./components/Admin/Doctor/Update/UpdateDoctorForm.jsx";
 import MedicalRecord from "./components/Admin/MedicalRecord/MedicalRecord.jsx";
 import CreateMedicalRecordForm from "./components/Admin/MedicalRecord/Create/CreateMedicalRecordForm.jsx";
 import UpdateMedicalRecordForm from "./components/Admin/MedicalRecord/Update/UpdateMedicalRecordForm.jsx";
 import Feedback from "./components/Admin/Feedback/Feedback.jsx";
+import Schedule from "./components/Admin/Schedule/Schedule.jsx";
+import CreateScheduleForm from "./components/Admin/Schedule/Create/CreateScheduleForm.jsx";
+import AutoCreateScheduleForm from "./components/Admin/Schedule/Create/AutoCreateScheduleForm.jsx";
+import UpdateScheduleForm from "./components/Admin/Schedule/Update/UpdateScheduleForm.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -75,8 +79,17 @@ export const router = createBrowserRouter([
             element: <UpdateMedicalRecordForm />,
           },
 
-          // Feedback
+          // Feedbacks
           { path: "feedbacks", element: <Feedback /> },
+
+          // Schedules
+          { path: "schedules", element: <Schedule /> },
+          { path: "schedules/create", element: <CreateScheduleForm /> },
+          {
+            path: "schedules/auto-create",
+            element: <AutoCreateScheduleForm />,
+          },
+          { path: "schedules/:id/update", element: <UpdateScheduleForm /> },
         ],
       },
       {
