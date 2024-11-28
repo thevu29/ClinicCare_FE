@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import ScheduleTable from "./ScheduleTable";
 import Search from "../Search/Search";
-import ScheduleCalendar from "../../Calendar/ScheduleCalendar";
+import ScheduleCalendar from "./Calendar/ScheduleCalendar";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },

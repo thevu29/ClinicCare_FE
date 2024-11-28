@@ -29,6 +29,7 @@ import Schedule from "./components/Admin/Schedule/Schedule.jsx";
 import CreateScheduleForm from "./components/Admin/Schedule/Create/CreateScheduleForm.jsx";
 import AutoCreateScheduleForm from "./components/Admin/Schedule/Create/AutoCreateScheduleForm.jsx";
 import UpdateScheduleForm from "./components/Admin/Schedule/Update/UpdateScheduleForm.jsx";
+import Appointment from "./components/Admin/Appointment/Appointment.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -90,6 +91,9 @@ export const router = createBrowserRouter([
             element: <AutoCreateScheduleForm />,
           },
           { path: "schedules/:id/update", element: <UpdateScheduleForm /> },
+
+          // Appointments
+          { path: "appointments", element: <Appointment /> },
         ],
       },
       {
