@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Button, Group, LoadingOverlay, Title, Text } from "@mantine/core";
-import { IconPlus, IconTrashX } from "@tabler/icons-react";
+import { IconDownload, IconPlus, IconTrashX } from "@tabler/icons-react";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import Search from "../Search/Search";
 import MedicalRecordTable from "./MedicalRecordTable";
@@ -10,9 +10,11 @@ import { handleSorting } from "../../../utils/sort";
 import {
   getMedicalRecordsService,
   deleteMedicalRecordService,
+  exportMedicalRecordsService,
 } from "../../../services/medicalRecordService";
 
 import { modals } from "@mantine/modals";
+import { notifications } from "@mantine/notifications";
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
   { title: "Medical Record", href: "/admin/medical-records" },
@@ -23,6 +25,7 @@ const MedicalRecord = () => {
   const pathname = location.pathname;
   const navigate = useNavigate();
 
+  const [isExporting, setIsExporting] = useState(false);
   const [medicalRecords, setMedicalRecords] = useState(null);
   const [selectedMedicalRecords, setSelectedMedicalRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -116,6 +119,29 @@ const MedicalRecord = () => {
       onConfirm: deleteMedicalRecord,
     });
 
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      const res = await exportMedicalRecordsService();
+
+      if (res) {
+        const url = window.URL.createObjectURL(new Blob([res]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "medical-records.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        showNotification("Medical record exported successfully", "Success");
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification("Error export medical record", "Error");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <>
       <LoadingOverlay
@@ -134,6 +160,17 @@ const MedicalRecord = () => {
           <Search placeholder="Search records" />
 
           <Group>
+            <Button
+              variant="light"
+              color="blue"
+              radius="md"
+              leftSection={<IconDownload size="1.1rem" />}
+              onClick={handleExport}
+              loading={isExporting}
+              disabled={isExporting}
+            >
+              Export
+            </Button>
             {selectedMedicalRecords.length > 0 && (
               <Button
                 variant="light"

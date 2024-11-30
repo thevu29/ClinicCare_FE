@@ -40,3 +40,11 @@ export const deleteMedicalRecordService = async (id) => {
   const res = await axios.delete(`/medical-records/delete/${id}`);
   return res;
 };
+
+export const exportMedicalRecordsService = async () => {
+  const res = await axios.get("/medical-records/export", {
+    responseType: "blob",
+  });
+  console.log(res);
+  return res;
+};
