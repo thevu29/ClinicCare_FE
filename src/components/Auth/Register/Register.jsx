@@ -1,10 +1,10 @@
 import { Group, LoadingOverlay, Stepper, Text } from "@mantine/core";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import SendOtpForm from "./SendOtpForm";
 import VerifyOtpForm from "./VerifiOtpForm";
 import RegisterForm from "./RegisterForm";
-import { Link } from "react-router-dom";
 
 const breadcumbData = [{ title: "Trang chủ", href: "/" }, { title: "Đăng ký" }];
 
