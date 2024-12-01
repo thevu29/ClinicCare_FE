@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
+import { useState } from "react";
 import Navbar from "./Navbar/Navbar";
 import Header from "./Header/Header";
-import { useState } from "react";
 
 const Admin = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);

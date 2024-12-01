@@ -4,12 +4,33 @@ import {
   IconLayoutSidebarLeftCollapse,
   IconBell,
 } from "@tabler/icons-react";
+import { useState } from "react";
+import { useAuth } from "../../../context/Auth/authContext";
+import { logoutService } from "../../../services/authService";
+import { showNotification } from "../../../utils/notification";
+import { useNavigate } from "react-router-dom";
 import classes from "./Header.module.scss";
 import NotificationBox from "./NotificationBox";
-import { useState } from "react";
 
 const Header = ({ isCollapsed, setIsCollapsed }) => {
+  const { removeToken } = useAuth();
+  const navigate = useNavigate();
+
   const [isNotifiOpen, setIsNotifiOpen] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutService();
+
+      if (res.success) {
+        removeToken();
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification("An error occurred", "Error");
+    }
+  };
 
   return (
     <header className={`h-[60px] px-6 ${classes.header}`}>
@@ -55,7 +76,10 @@ const Header = ({ isCollapsed, setIsCollapsed }) => {
           </Menu>
 
           <Tooltip label="Logout">
-            <UnstyledButton className="size-10 flex justify-center items-center">
+            <UnstyledButton
+              className="size-10 flex justify-center items-center"
+              onClick={handleLogout}
+            >
               <ThemeIcon
                 variant="white"
                 size="lg"

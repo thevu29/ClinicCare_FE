@@ -9,6 +9,7 @@ import {
   IconMessageDots,
   IconCalendarMonth,
   IconCalendarClock,
+  IconCashBanknote,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import NavbarFooter from "./NavbarFooter";
@@ -42,6 +43,7 @@ const mockdata = [
     icon: IconCalendarClock,
     link: "/admin/appointments",
   },
+  { label: "Payments", icon: IconCashBanknote, link: "/admin/payments" },
 ];
 
 const Navbar = ({ isCollapsed }) => {
