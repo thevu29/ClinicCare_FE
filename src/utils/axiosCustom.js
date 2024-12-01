@@ -1,31 +1,34 @@
-import axios from 'axios'
- 
+import axios from "axios";
+import { getAccessToken } from "../context/Auth/authContext";
+
 const instance = axios.create({
-    baseURL: 'http://localhost:8080/api',
-})
+  baseURL: "http://localhost:8080/api",
+});
 
-// Add a request interceptor
-instance.interceptors.request.use(function (config) {
-    // const accessToken = store?.getState()?.user?.account?.access_token
-    // config.headers['Authorization'] = `Bearer ${accessToken}` 
-    // Do something before request is sent
-    return config
-}, function (error) {
-    // Do something with request error
-    return Promise.reject(error)
-})
+instance.interceptors.request.use(
+  function (config) {
+    const accessToken = getAccessToken();
 
-// Add a response interceptor
-instance.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response && response.data ? response.data : response
-}, function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+    if (accessToken) {
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
+    }
+
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);
+
+instance.interceptors.response.use(
+  function (response) {
+    return response && response.data ? response.data : response;
+  },
+  function (error) {
     return error && error.response && error.response.data
-        ? error.response.data 
-        : Promise.reject(error)
-})
+      ? error.response.data
+      : Promise.reject(error);
+  }
+);
 
-export default instance
+export default instance;
