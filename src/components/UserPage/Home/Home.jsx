@@ -1,30 +1,7 @@
-import { useEffect } from "react";
-import { getOAuth2Data } from "../../../services/authService";
-import { useAuth } from "../../../context/Auth/authContext";
 import Hero from "./Hero/Hero";
 import Content from "./Content/Content";
 
 const Home = () => {
-  const { token, saveToken } = useAuth();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await getOAuth2Data();
-
-        if (res.data) {
-          saveToken(res.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    if (!token) {
-      fetchUser();
-    }
-  }, [token, saveToken]);
-
   return (
     <>
       <Hero />

@@ -1,8 +1,8 @@
 import { Button, Group, LoadingOverlay, Text, Title } from "@mantine/core";
+import { modals } from "@mantine/modals";
 import { IconPlus, IconTrashX } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { modals } from "@mantine/modals";
 import { deleteServiceManager } from "../../../services/serviceManager";
 import { handleSorting } from "../../../utils/sort";
 import { showNotification } from "../../../utils/notification";
@@ -34,7 +34,7 @@ const Service = () => {
     const search = params.get("search") || "";
     const status = params.get("status") || "";
     const price = params.get("price") || "";
-    const page = parseInt(params.get("page")) || 1;
+    const page = +params.get("page") || 1;
     const _sortBy = params.get("sortBy") || "";
     const _order = params.get("order") || "";
 

@@ -24,11 +24,11 @@ import {
 import { useState } from "react";
 import { useAuth } from "../../../context/Auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
+import { showNotification } from "../../../utils/notification";
+import { logoutService } from "../../../services/authService";
 import classes from "./Header.module.scss";
 import Logo from "../../../assets/images/logo.png";
 import clsx from "clsx";
-import { showNotification } from "../../../utils/notification";
-import { logoutService } from "../../../services/authService";
 
 const mockdata = [
   {
@@ -57,7 +57,7 @@ const Header = () => {
 
       if (res.success) {
         showNotification("Đăng xuất thành công", "Success");
-        removeToken(); 
+        removeToken();
         navigate("/");
       }
     } catch (error) {
@@ -67,21 +67,23 @@ const Header = () => {
   };
 
   const links = mockdata.map((item) => (
-    <UnstyledButton className={classes.subLink} key={item.title}>
-      <Group wrap="nowrap" align="flex-start">
-        <ThemeIcon size={34} variant="default" radius="md">
-          <item.icon size={22} color={theme.colors.blue[6]} />
-        </ThemeIcon>
-        <div>
-          <Text size="sm" fw={500}>
-            {item.title}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {item.description}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
+    <Link to="/doctors" className={classes.subLink} key={item.title}>
+      <UnstyledButton>
+        <Group wrap="nowrap" align="flex-start">
+          <ThemeIcon size={34} variant="default" radius="md">
+            <item.icon size={22} color={theme.colors.blue[6]} />
+          </ThemeIcon>
+          <div>
+            <Text size="sm" fw={500}>
+              {item.title}
+            </Text>
+            <Text size="xs" c="dimmed">
+              {item.description}
+            </Text>
+          </div>
+        </Group>
+      </UnstyledButton>
+    </Link>
   ));
 
   return (
@@ -100,14 +102,14 @@ const Header = () => {
           </Link>
           <HoverCard position="bottom" radius="md" shadow="md" withinPortal>
             <HoverCard.Target>
-              <Link to="/" className={classes.link}>
+              <div className={clsx(classes.link, "cursor-pointer")}>
                 <Center inline>
                   <Box component="span" mr={5}>
                     Đặt khám
                   </Box>
                   <IconChevronDown size={16} color={theme.colors.blue[6]} />
                 </Center>
-              </Link>
+              </div>
             </HoverCard.Target>
 
             <HoverCard.Dropdown style={{ overflow: "hidden" }}>

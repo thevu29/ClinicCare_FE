@@ -26,9 +26,16 @@ export const getServicesManager = async ({
   return res;
 };
 
-export const getALlServicesManager = async () => {
-  return await axios.get("/services/all");
-}
+export const getALlServicesManager = async (service = "") => {
+  const params = new URLSearchParams();
+
+  if (service) params.append("service", service);
+
+  const queryString = params.toString();
+  const url = `/services/all${queryString ? `?${queryString}` : ""}`;
+
+  return await axios.get(url);
+};
 
 export const getServiceByIdManager = async (id) => {
   return await axios.get(`/services/${id}`);

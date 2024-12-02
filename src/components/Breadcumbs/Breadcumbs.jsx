@@ -10,7 +10,7 @@ const BreadcumbsComponent = ({ items }) => {
         key={index}
         className="text-[#4c6ef5] text-[13px] hover:underline"
       >
-        {item.href === "/admin" || item.href === "/" ? (
+        {item.href === "/admin" ? (
           <ThemeIcon variant="transparent" size="xs" key={index} title="Dashboard">
             <Image src={LogoImage} alt="Logo" width={20} height={20} />
           </ThemeIcon>

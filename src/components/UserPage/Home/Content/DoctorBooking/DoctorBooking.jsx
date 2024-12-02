@@ -3,8 +3,28 @@ import { Button } from "@mantine/core";
 import { IconArrowNarrowRight } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
 import DoctorCard from "../Card/DoctorCard";
+import { useEffect, useState } from "react";
+import { getDoctorsService } from "../../../../../services/doctorService";
 
 const DoctorBooking = () => {
+  const [doctors, setDoctors] = useState([]);
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await getDoctorsService({ page: 1, size: 10 });
+
+        if (res.success) {
+          setDoctors(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
+
   return (
     <section className="bg-white">
       <div className="max-w-7xl mx-auto">
@@ -18,7 +38,7 @@ const DoctorBooking = () => {
             </p>
           </div>
 
-          <Link to="/">
+          <Link to="/doctors">
             <Button
               variant="filled"
               color="indigo"
@@ -32,28 +52,20 @@ const DoctorBooking = () => {
 
         <div className="pt-8 pb-4 mx-4">
           <Carousel
-            withIndicators
-            slideSize={{ base: "100%", sm: "50%", md: "33.333333%" }}
-            slideGap={{ base: 0, sm: "md" }}
+            slideSize="25%"
+            slideGap="md"
             loop
             align="start"
+            withControls={doctors.length > 5}
             controlsOffset="xs"
           >
-            <Carousel.Slide>
-              <DoctorCard />
-            </Carousel.Slide>
-            <Carousel.Slide>
-              <DoctorCard />
-            </Carousel.Slide>
-            <Carousel.Slide>
-              <DoctorCard />
-            </Carousel.Slide>
-            <Carousel.Slide>
-              <DoctorCard />
-            </Carousel.Slide>
-            <Carousel.Slide>
-              <DoctorCard />
-            </Carousel.Slide>
+            {doctors &&
+              doctors.length > 0 &&
+              doctors.map((doctor) => (
+                <Carousel.Slide key={doctor.doctorProfileId}>
+                  <DoctorCard doctor={doctor} />
+                </Carousel.Slide>
+              ))}
           </Carousel>
         </div>
       </div>

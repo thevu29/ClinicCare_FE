@@ -37,6 +37,7 @@ import Login from "../components/Auth/Login/Login.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import Home from "../components/UserPage/Home/Home.jsx";
 import Register from "../components/Auth/Register/Register.jsx";
+import DoctorPage from "../components/UserPage/Doctor/Doctor.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,7 @@ export const router = createBrowserRouter([
         element: <UserPage />,
         children: [
           { index: true, element: <Home /> },
+          { path: "/doctors", element: <DoctorPage /> },
           { path: "payment", element: <PaymentPage /> },
           { path: "payment-return", element: <PaymentReturn /> },
         ],

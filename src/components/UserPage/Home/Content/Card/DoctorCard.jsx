@@ -1,28 +1,23 @@
-import { Card, Image, Text, Badge, Button, Group } from "@mantine/core";
+import { Card, Text, Button, Group, Avatar, Flex } from "@mantine/core";
 
-const DoctorCard = () => {
+const DoctorCard = ({ doctor }) => {
   return (
-    <Card shadow="sm" padding="lg" radius="md" withBorder>
-      <Card.Section>
-        <Image
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png"
-          height={160}
-          alt="Norway"
-        />
-      </Card.Section>
-
-      <Group justify="space-between" mt="md" mb="xs">
-        <Text fw={500}>Norway Fjord Adventures</Text>
-        <Badge color="pink">On Sale</Badge>
+    <Card shadow="sm" padding="lg" radius="md" withBorder className="cursor">
+      <Group justify="center">
+        <Avatar variant="white" radius="50%" size="xl" src={doctor?.image} />
       </Group>
 
-      <Text size="sm" c="dimmed">
-        With Fjord Tours you can explore more of the magical fjord landscapes
-        with tours and activities on and around the fjords of Norway
-      </Text>
+      <Group justify="center" mt="md" mb="xs">
+        <Flex direction="column" align="center">
+          <Text fw={500}>BS {doctor.name}</Text>
+          <Text size="sm" c="dimmed">
+            {doctor.specialty}
+          </Text>
+        </Flex>
+      </Group>
 
       <Button color="blue" fullWidth mt="md" radius="md">
-        Book classic tour now
+        Đặt lịch khám
       </Button>
     </Card>
   );

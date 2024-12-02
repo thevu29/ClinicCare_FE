@@ -6,13 +6,16 @@ import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 
 const UserPage = () => {
-  const { token, saveToken } = useAuth();
+  const { saveToken } = useAuth();
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const provider = urlParams.get("provider");
+
     const fetchUser = async () => {
       try {
         const res = await getOAuth2Data();
-
+        console.log(res);
         if (res.data) {
           saveToken(res.data);
         }
@@ -21,10 +24,13 @@ const UserPage = () => {
       }
     };
 
-    if (!token) {
+    if (provider === "google") {
       fetchUser();
+
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, newUrl);
     }
-  }, [token, saveToken]);
+  }, [saveToken]);
 
   return (
     <>
