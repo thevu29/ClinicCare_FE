@@ -17,7 +17,6 @@ import UpdateUserForm from "../components/Admin/User/Update/UpdateUserForm.jsx";
 import Role from "../components/Admin/Role/Role.jsx";
 import UpdateRoleForm from "../components/Admin/Role/Update/UpdateRoleForm.jsx";
 import CreateRoleForm from "../components/Admin/Role/Create/CreateRoleForm.jsx";
-import PaymentPage from "../components/UserPage/Payment/PaymentPage.jsx";
 import PaymentReturn from "../components/UserPage/Payment/PaymentReturn.jsx";
 import Doctor from "../components/Admin/Doctor/Doctor.jsx";
 import CreateDoctorForm from "../components/Admin/Doctor/Create/CreateDoctorForm.jsx";
@@ -49,7 +48,6 @@ export const router = createBrowserRouter([
         element: <UserPage />,
         children: [
           { index: true, element: <Home /> },
-          { path: "payment", element: <PaymentPage /> },
           { path: "payment-return", element: <PaymentReturn /> },
         ],
       },
