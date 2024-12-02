@@ -8,18 +8,9 @@ import {
   Box,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { updatePaymentStatusService } from "../../../services/paymentService";
-import { useEffect } from "react";
 
-export default function PaymentFailure({ paymentId, message }) {
+export default function PaymentFailure({ message }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    updatePaymentStatusService({
-      paymentId,
-      status: "CANCELLED",
-    });
-  }, []);
 
   return (
     <Container size="sm" style={{ textAlign: "center", marginTop: "50px" }}>

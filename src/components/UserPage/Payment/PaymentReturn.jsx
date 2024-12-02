@@ -8,8 +8,6 @@ import { Loader } from "@mantine/core";
 export default function PaymentReturn() {
   const [searchParams] = useSearchParams();
 
-  const paymentId = searchParams.get("vnp_TxnRef");
-
   const [isLoading, setIsLoading] = useState(true);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [message, setMessage] = useState("");
@@ -46,8 +44,8 @@ export default function PaymentReturn() {
   }
 
   if (!isLoading && paymentSuccess) {
-    return <PaymentSuccess paymentId={paymentId} message={message} />;
+    return <PaymentSuccess message={message} />;
   }
 
-  return <PaymentFailure paymentId={paymentId} message={message} />;
+  return <PaymentFailure message={message} />;
 }
