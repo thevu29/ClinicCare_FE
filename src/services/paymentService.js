@@ -46,3 +46,10 @@ export const updatePaymentStatusService = async (payload) => {
     status: payload.status,
   });
 };
+
+export const checkResponseFromVNPay = async (params) => {
+  const res = await axios.get("/payments/check-response", {
+    params: params,
+  });
+  return res;
+};

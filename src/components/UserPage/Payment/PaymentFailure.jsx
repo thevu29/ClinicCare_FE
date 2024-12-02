@@ -8,18 +8,9 @@ import {
   Box,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { updatePaymentStatusService } from "../../../services/paymentService";
-import { useEffect } from "react";
 
-export default function PaymentFailure({ paymentId }) {
+export default function PaymentFailure({ message }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    updatePaymentStatusService({
-      paymentId,
-      status: "CANCELLED",
-    });
-  }, []);
 
   return (
     <Container size="sm" style={{ textAlign: "center", marginTop: "50px" }}>
@@ -32,23 +23,12 @@ export default function PaymentFailure({ paymentId }) {
         </Box>
       </Center>
       <Title order={2} mt="md" color="red">
-        Payment Failed!
+        {message}
       </Title>
       <Text size="md" mt="sm" c="dimmed">
         Unfortunately, your payment could not be processed. Please try again
         later.
       </Text>
-      <Button
-        mt="lg"
-        mr="lg"
-        color="red"
-        size="md"
-        onClick={() => {
-          navigate("/payment");
-        }}
-      >
-        Try again
-      </Button>
       <Button
         mt="lg"
         variant="outline"
