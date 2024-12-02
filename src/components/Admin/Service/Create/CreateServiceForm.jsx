@@ -14,6 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { addServiceManager } from "../../../../services/serviceManager";
 import { getAllPromotionsService } from "../../../../services/promotionService";
 import { showNotification } from "../../../../utils/notification";
+import ImageDropzone from "../../../Dropzone/Dropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -22,9 +23,9 @@ const breadcumbData = [
 ];
 
 const statuses = [
-  { label: "Available", value: "available"},
-  { label: "Unavailable", value: "unavailable"},
-]
+  { label: "Available", value: "available" },
+  { label: "Unavailable", value: "unavailable" },
+];
 
 const FORM_VALIDATION = {
   name: {
@@ -44,11 +45,12 @@ const CreateServiceForm = () => {
   const [promotions, setPromotions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control } = useForm({
+  const { handleSubmit, control, setValue } = useForm({
     defaultValues: {
       name: "",
       description: "",
       price: "",
+      imageFile: "",
       status: "",
       promotionId: "",
     },
@@ -80,7 +82,18 @@ const CreateServiceForm = () => {
     try {
       setIsLoading(true);
 
-      const res = await addServiceManager(data);
+      if (!data.imageFile) {
+        showNotification("Image is required", "Error");
+        return;
+      }
+
+      const formData = new FormData();
+
+      Object.keys(data).forEach((key) => {
+        formData.append(key, data[key]);
+      });
+
+      const res = await addServiceManager(formData);
 
       if (res.success) {
         showNotification(res.message, "Success");
@@ -94,6 +107,10 @@ const CreateServiceForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleImageUpload = (file) => {
+    setValue("imageFile", file);
   };
 
   return (
@@ -158,6 +175,12 @@ const CreateServiceForm = () => {
                 )}
               />
             </Flex>
+
+            <Controller
+              name="image"
+              control={control}
+              render={() => <ImageDropzone onUpload={handleImageUpload} />}
+            />
           </Group>
 
           <Group grow mt={20}>
@@ -178,22 +201,21 @@ const CreateServiceForm = () => {
               )}
             />
             <Controller
-                name="promotionId"
-                control={control}
-                rules={FORM_VALIDATION.promotionId}
-                render={({ field, fieldState: { error } }) => (
-                  <Select
-                    {...field}
-                    error={error?.message}
-                    label="Promotion"
-                    size="md"
-                    placeholder="Select promotion"
-                    data={promotions}
-                  />
-                )}
-              />
+              name="promotionId"
+              control={control}
+              rules={FORM_VALIDATION.promotionId}
+              render={({ field, fieldState: { error } }) => (
+                <Select
+                  {...field}
+                  error={error?.message}
+                  label="Promotion"
+                  size="md"
+                  placeholder="Select promotion"
+                  data={promotions}
+                />
+              )}
+            />
           </Group>
-
 
           <Group mt={32} justify="flex-end">
             <Link to="/admin/services">

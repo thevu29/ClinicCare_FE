@@ -17,7 +17,7 @@ import { getAllRoles } from "../../../../services/roleService";
 import { showNotification } from "../../../../utils/notification";
 import { Link, useParams } from "react-router-dom";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import AvatarDropzone from "../Dropzone/Dropzone";
+import ImageDropzone from "../../../Dropzone/Dropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -196,7 +196,7 @@ const UpdateUserForm = () => {
               name="image"
               control={control}
               render={() => (
-                <AvatarDropzone user={user} onUpload={handleImageUpload} />
+                <ImageDropzone object={user} onUpload={handleImageUpload} />
               )}
             />
           </Group>

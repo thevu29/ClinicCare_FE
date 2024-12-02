@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Flex, Group, Image, Text, rem } from "@mantine/core";
 import { IconUpload, IconPhoto, IconX } from "@tabler/icons-react";
 import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
-import { showNotification } from "../../../../utils/notification";
+import { showNotification } from "../../utils/notification";
 
-const AvatarDropzone = ({ onUpload, disabled, user }) => {
+const ImageDropzone = ({ onUpload, disabled, object }) => {
   const [preview, setPreview] = useState(null);
 
   const handleDrop = (files) => {
@@ -17,10 +17,10 @@ const AvatarDropzone = ({ onUpload, disabled, user }) => {
   };
 
   useEffect(() => {
-    if (user && user.image) {
-      setPreview(user.image);
+    if (object && object.image) {
+      setPreview(object.image);
     }
-  }, [user]);
+  }, [object]);
 
   const handleReject = (files) => {
     files.forEach((file) => {
@@ -106,4 +106,4 @@ const AvatarDropzone = ({ onUpload, disabled, user }) => {
   );
 };
 
-export default AvatarDropzone;
+export default ImageDropzone;

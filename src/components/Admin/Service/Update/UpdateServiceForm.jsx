@@ -18,6 +18,7 @@ import {
 import { getAllPromotionsService } from "../../../../services/promotionService";
 import { showNotification } from "../../../../utils/notification";
 import { toUpper } from "lodash";
+import ImageDropzone from "../../../Dropzone/Dropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -26,9 +27,9 @@ const breadcumbData = [
 ];
 
 const statuses = [
-  { label: "Available", value: "available"},
-  { label: "Unavailable", value: "unavailable"},
-]
+  { label: "Available", value: "available" },
+  { label: "Unavailable", value: "unavailable" },
+];
 
 const FORM_VALIDATION = {
   name: {
@@ -47,14 +48,16 @@ const UpdateServiceForm = () => {
 
   const navigate = useNavigate();
 
+  const [service, setService] = useState(null);
   const [promotions, setPromotions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { handleSubmit, control, reset } = useForm({
+  const { handleSubmit, control, reset, setValue } = useForm({
     defaultValues: {
       name: "",
       description: "",
       price: "",
+      imageFile: "",
       status: "",
       promotionId: "",
     },
@@ -77,18 +80,23 @@ const UpdateServiceForm = () => {
           const serviceRes = await getServiceByIdManager(id);
           if (serviceRes.success) {
             const service = serviceRes.data;
+            setService(service);
 
             const promotionSelected =
-            promotionsData.find(
+              promotionsData.find(
                 (promotion) => promotion.value === service.promotionId
               )?.value || "";
 
-            const statusSelected = statuses.find((status) => toUpper(status.label) === service.status)?.value || "";
+            const statusSelected =
+              statuses.find(
+                (status) => toUpper(status.label) === service.status
+              )?.value || "";
 
             reset({
               name: service.name,
               description: service.description,
               price: service.price,
+              imageFile: service.image,
               status: statusSelected,
               promotionId: promotionSelected,
             });
@@ -102,12 +110,23 @@ const UpdateServiceForm = () => {
     fetchData();
   }, [id, reset]);
 
-
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
 
-      const res = await updateServiceManager(id, data);
+      const formData = new FormData();
+
+      Object.keys(data).forEach((key) => {
+        if (key !== "imageFile") {
+          formData.append(key, data[key]);
+        }
+      });
+
+      if (data.imageFile && typeof data.imageFile !== "string") {
+        formData.append("imageFile", data.imageFile);
+      }
+
+      const res = await updateServiceManager(id, formData);
 
       if (res.success) {
         showNotification(res.message, "Success");
@@ -121,6 +140,10 @@ const UpdateServiceForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleImageUpload = (file) => {
+    setValue("imageFile", file);
   };
 
   return (
@@ -185,9 +208,16 @@ const UpdateServiceForm = () => {
                 )}
               />
             </Flex>
+
+            <Controller
+              name="imageFile"
+              control={control}
+              render={() => (
+                <ImageDropzone object={service} onUpload={handleImageUpload} />
+              )}
+            />
           </Group>
 
-          
           <Group grow mt={20}>
             <Controller
               name="status"
@@ -206,20 +236,20 @@ const UpdateServiceForm = () => {
               )}
             />
             <Controller
-                name="promotionId"
-                control={control}
-                rules={FORM_VALIDATION.promotionId}
-                render={({ field, fieldState: { error } }) => (
-                  <Select
-                    {...field}
-                    error={error?.message}
-                    label="Promotion"
-                    size="md"
-                    placeholder="Select promotion"
-                    data={promotions}
-                  />
-                )}
-              />
+              name="promotionId"
+              control={control}
+              rules={FORM_VALIDATION.promotionId}
+              render={({ field, fieldState: { error } }) => (
+                <Select
+                  {...field}
+                  error={error?.message}
+                  label="Promotion"
+                  size="md"
+                  placeholder="Select promotion"
+                  data={promotions}
+                />
+              )}
+            />
           </Group>
 
           <Group mt={32} justify="flex-end">

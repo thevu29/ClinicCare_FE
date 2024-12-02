@@ -34,13 +34,13 @@ export const getServiceByIdManager = async (id) => {
   return await axios.get(`/services/${id}`);
 };
 
-export const addServiceManager = async (data) => {
-  const res = await axios.post("/services", data);
+export const addServiceManager = async (formData) => {
+  const res = await axios.post("/services", formData);
   return res;
 };
 
-export const updateServiceManager = async (id, data) => {
-  const res = await axios.put(`/services/update/${id}`, data);
+export const updateServiceManager = async (id, formData) => {
+  const res = await axios.put(`/services/update/${id}`, formData);
   return res;
 };
 

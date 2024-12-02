@@ -7,6 +7,7 @@ import {
   Transition,
   NumberInput,
   Menu,
+  Avatar,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import {
@@ -170,6 +171,13 @@ const ServiceTable = ({
             onChange={() => toggleServiceSelection(service.serviceId)}
           />
         </Table.Td>
+        <Table.Td>
+          {service.image ? (
+            <Avatar size="sm" src={service.image} alt="Service Image" />
+          ) : (
+            <Avatar size="sm" />
+          )}
+        </Table.Td>
         <Table.Td>{service.name}</Table.Td>
         <Table.Td>{service.description}</Table.Td>
         <Table.Td>{service.price}</Table.Td>
@@ -276,6 +284,7 @@ const ServiceTable = ({
                 }
               />
             </Table.Th>
+            <Table.Th />
             <Table.Th
               onClick={() => handleSort("name")}
               className="cursor-pointer hover:bg-slate-50"

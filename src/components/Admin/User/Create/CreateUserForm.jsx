@@ -15,7 +15,7 @@ import { getAllRoles } from "../../../../services/roleService";
 import { addUserService } from "../../../../services/userService";
 import { showNotification } from "../../../../utils/notification";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
-import AvatarDropzone from "../Dropzone/Dropzone";
+import ImageDropzone from "../../../Dropzone/Dropzone";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -119,6 +119,11 @@ const CreateUserForm = () => {
 
       const formData = new FormData();
 
+      if (isDoctor && !data.image) {
+        showNotification("Doctor image is required", "Error");
+        return
+      }
+
       Object.keys(data).forEach((key) => {
         if (key !== "image" && key !== "confirmPassword") {
           formData.append(key, data[key]);
@@ -201,7 +206,7 @@ const CreateUserForm = () => {
             <Controller
               name="image"
               control={control}
-              render={() => <AvatarDropzone onUpload={handleImageUpload} />}
+              render={() => <ImageDropzone onUpload={handleImageUpload} />}
             />
           </Group>
 
