@@ -70,7 +70,6 @@ export const router = createBrowserRouter([
               },
             ],
           },
-          { path: "payment", element: <PaymentPage /> },
           { path: "payment-return", element: <PaymentReturn /> },
         ],
       },
