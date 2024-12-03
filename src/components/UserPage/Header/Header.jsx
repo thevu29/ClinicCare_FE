@@ -1,47 +1,28 @@
 import {
   IconChevronDown,
   IconLogout,
-  IconMessage,
-  IconNurse,
   IconSettings,
-  IconSocial,
   IconCalendarClock,
+  IconFile,
+  IconReceipt,
 } from "@tabler/icons-react";
 import {
   Avatar,
-  Box,
   Button,
-  Center,
   Group,
-  HoverCard,
   Menu,
-  SimpleGrid,
   Text,
-  ThemeIcon,
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
 import { useState } from "react";
 import { useAuth } from "../../../context/Auth/authContext";
 import { Link, useNavigate } from "react-router-dom";
+import { showNotification } from "../../../utils/notification";
+import { logoutService } from "../../../services/authService";
 import classes from "./Header.module.scss";
 import Logo from "../../../assets/images/logo.png";
 import clsx from "clsx";
-import { showNotification } from "../../../utils/notification";
-import { logoutService } from "../../../services/authService";
-
-const mockdata = [
-  {
-    icon: IconNurse,
-    title: "Đặt khám bác sĩ",
-    description: "Đặt lịch khám không chờ đợi",
-  },
-  {
-    icon: IconSocial,
-    title: "Đặt khám chuyên khoa",
-    description: "Đặt khám, thanh toán, nhận kết quả",
-  },
-];
 
 const Header = () => {
   const navigate = useNavigate();
@@ -57,7 +38,7 @@ const Header = () => {
 
       if (res.success) {
         showNotification("Đăng xuất thành công", "Success");
-        removeToken(); 
+        removeToken();
         navigate("/");
       }
     } catch (error) {
@@ -65,24 +46,6 @@ const Header = () => {
       showNotification("An error occurred", "Error");
     }
   };
-
-  const links = mockdata.map((item) => (
-    <UnstyledButton className={classes.subLink} key={item.title}>
-      <Group wrap="nowrap" align="flex-start">
-        <ThemeIcon size={34} variant="default" radius="md">
-          <item.icon size={22} color={theme.colors.blue[6]} />
-        </ThemeIcon>
-        <div>
-          <Text size="sm" fw={500}>
-            {item.title}
-          </Text>
-          <Text size="xs" c="dimmed">
-            {item.description}
-          </Text>
-        </div>
-      </Group>
-    </UnstyledButton>
-  ));
 
   return (
     <header className={classes.header}>
@@ -98,24 +61,9 @@ const Header = () => {
           <Link to="/" className={classes.link}>
             Trang chủ
           </Link>
-          <HoverCard position="bottom" radius="md" shadow="md" withinPortal>
-            <HoverCard.Target>
-              <Link to="/" className={classes.link}>
-                <Center inline>
-                  <Box component="span" mr={5}>
-                    Đặt khám
-                  </Box>
-                  <IconChevronDown size={16} color={theme.colors.blue[6]} />
-                </Center>
-              </Link>
-            </HoverCard.Target>
-
-            <HoverCard.Dropdown style={{ overflow: "hidden" }}>
-              <SimpleGrid cols={1} spacing={0}>
-                {links}
-              </SimpleGrid>
-            </HoverCard.Dropdown>
-          </HoverCard>
+          <Link to="/doctors" className={classes.link}>
+            Đặt khám
+          </Link>
           <Link to="/" className={classes.link}>
             Tư vấn
           </Link>
@@ -151,27 +99,40 @@ const Header = () => {
               </UnstyledButton>
             </Menu.Target>
             <Menu.Dropdown>
+              <Link to="/account/appointments">
+                <Menu.Item
+                  leftSection={
+                    <IconCalendarClock
+                      size={16}
+                      color={theme.colors.gray[6]}
+                      stroke={1.5}
+                    />
+                  }
+                >
+                  Lịch khám
+                </Menu.Item>
+              </Link>
               <Menu.Item
                 leftSection={
-                  <IconCalendarClock
+                  <IconFile
+                    size={16}
+                    color={theme.colors.red[6]}
+                    stroke={1.5}
+                  />
+                }
+              >
+                Hồ sơ bệnh án
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconReceipt
                     size={16}
                     color={theme.colors.yellow[6]}
                     stroke={1.5}
                   />
                 }
               >
-                Lịch khám
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconMessage
-                    size={16}
-                    color={theme.colors.blue[6]}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Nhận xét
+                Lịch sử thanh toán
               </Menu.Item>
 
               <Menu.Label>Tài khoản</Menu.Label>

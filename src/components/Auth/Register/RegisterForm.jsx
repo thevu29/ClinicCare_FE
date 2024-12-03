@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/Auth/authContext";
 import { showNotification } from "../../../utils/notification";
 import { loginService, registerService } from "../../../services/authService";
-import AvatarDropzone from "../../Admin/User/Dropzone/Dropzone";
+import ImageDropzone from "../../Dropzone/Dropzone";
 
 const FORM_VALIDATION = {
   name: {
@@ -126,7 +126,7 @@ const RegisterForm = ({ email, setIsLoading }) => {
           <Controller
             name="image"
             control={control}
-            render={() => <AvatarDropzone onUpload={handleImageUpload} />}
+            render={() => <ImageDropzone onUpload={handleImageUpload} />}
           />
         </Group>
 

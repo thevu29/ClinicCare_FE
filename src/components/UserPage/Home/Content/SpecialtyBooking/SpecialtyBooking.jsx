@@ -1,6 +1,26 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getServicesManager } from "../../../../../services/serviceManager";
 
 const SpecialtyBooking = () => {
+  const [services, setServices] = useState([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await getServicesManager({ page: 1, size: 10 });
+
+        if (res.success) {
+          setServices(res.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   return (
     <section className="bg-white">
       <div className="max-w-7xl mx-auto py-10">
@@ -17,17 +37,21 @@ const SpecialtyBooking = () => {
         <div className="pt-8 pb-4 mx-4">
           <details className="group flex flex-row flex-wrap mt-10 [&_summary::-webkit-details-marker]:hidden">
             <summary className="grid grid-cols-3 lg:grid-cols-6">
-              <div className="col-span-1">
-                <Link
-                  to="/"
-                  className="flex flex-col items-center p-4 font-medium text-center text-xs md:text-sm hover:shadow-[0_10px_70px_#00000026] rounded-xl transition"
-                >
-                  <div className="rounded-full mb-2 w-16 h-16">
-                    <img src="https://cdn1.youmed.vn/tin-tuc/wp-content/uploads/2023/05/Yhoccotruyen.png" />
+              {services &&
+                services.length > 0 &&
+                services.map((service) => (
+                  <div className="col-span-1" key={service.serviceId}>
+                    <Link
+                      to="/"
+                      className="flex flex-col items-center p-4 font-medium text-center text-xs md:text-sm hover:shadow-[0_10px_70px_#00000026] rounded-xl transition"
+                    >
+                      <div className="rounded-full mb-2 w-16 h-16">
+                        <img src={service.image} />
+                      </div>
+                      <h3>{service.name}</h3>
+                    </Link>
                   </div>
-                  <h3>Y học cổ truyền</h3>
-                </Link>
-              </div>
+                ))}
             </summary>
           </details>
         </div>

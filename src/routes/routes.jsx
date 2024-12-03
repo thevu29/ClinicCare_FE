@@ -36,6 +36,11 @@ import Login from "../components/Auth/Login/Login.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import Home from "../components/UserPage/Home/Home.jsx";
 import Register from "../components/Auth/Register/Register.jsx";
+import DoctorPage from "../components/UserPage/Doctor/Doctor.jsx";
+import DoctorSchedule from "../components/UserPage/DoctorSchedule/DoctorSchedule.jsx";
+import AppointmentBooking from "../components/UserPage/AppointmentBooking/AppointmentBooking.jsx";
+import Account from "../components/UserPage/Account/Account.jsx";
+import AccountAppointment from "../components/UserPage/Account/Appointment/AccountAppointment.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +53,24 @@ export const router = createBrowserRouter([
         element: <UserPage />,
         children: [
           { index: true, element: <Home /> },
+          { path: "doctors", element: <DoctorPage /> },
+          { path: "doctors/:id/schedules", element: <DoctorSchedule /> },
+          {
+            path: "appointment-booking/:scheduleId",
+            element: <AppointmentBooking />,
+          },
+          {
+            path: "account",
+            element: <Account />,
+            children: [
+              {
+                index: true,
+                path: "appointments",
+                element: <AccountAppointment />,
+              },
+            ],
+          },
+          { path: "payment", element: <PaymentPage /> },
           { path: "payment-return", element: <PaymentReturn /> },
         ],
       },

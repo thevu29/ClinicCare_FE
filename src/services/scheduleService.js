@@ -12,6 +12,7 @@ export const getSchedulesService = async ({
   size = 5,
   sortBy,
   order,
+  doctorId,
 }) => {
   const params = new URLSearchParams();
 
@@ -22,6 +23,7 @@ export const getSchedulesService = async ({
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
+  if (doctorId) params.append("doctorId", doctorId);
 
   const queryString = params.toString();
   const url = `/schedules${queryString ? `?${queryString}` : ""}`;

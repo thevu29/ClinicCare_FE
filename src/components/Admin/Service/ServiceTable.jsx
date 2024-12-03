@@ -392,10 +392,8 @@ const ServiceTable = ({
         </Group>
 
         <PaginationComponent
-          currentPage={
-            parseInt(new URLSearchParams(location.search).get("page")) || 1
-          }
-          totalPages={services?.meta?.totalPage || 1}
+          currentPage={services?.meta?.page || 1}
+          totalPages={services?.meta?.totalPages || 1}
         />
       </Group>
 
