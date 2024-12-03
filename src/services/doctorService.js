@@ -28,7 +28,7 @@ export const getAllDoctorsService = async () => {
   return await axios.get("/doctors/all");
 }
 
-export const getDoctorServiceById = async (id) => {
+export const getDoctorByIdService = async (id) => {
   return await axios.get(`/doctors/${id}`);
 };
 

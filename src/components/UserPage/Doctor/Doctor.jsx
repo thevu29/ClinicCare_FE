@@ -100,7 +100,6 @@ const DoctorPage = () => {
                     icon={CheckIcon}
                     value=""
                     label="Tất cả"
-                    defaultChecked
                     checked={selectedService === ""}
                   />
                   {services &&

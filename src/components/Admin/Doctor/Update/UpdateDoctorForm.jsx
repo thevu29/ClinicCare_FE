@@ -11,7 +11,7 @@ import {
 import { useParams, useNavigate } from "react-router-dom";
 import {
   updateDoctorService,
-  getDoctorServiceById,
+  getDoctorByIdService,
 } from "../../../../services/doctorService";
 import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import AvatarDropzone from "../Dropzone/AvatarDropzone";
@@ -51,7 +51,7 @@ const UpdateDoctorForm = () => {
     const fetchDoctor = async () => {
       try {
         setIsLoading(true);
-        const doctorRes = await getDoctorServiceById(id);
+        const doctorRes = await getDoctorByIdService(id);
         if (doctorRes.success) {
           const doctor = doctorRes.data;
           setDoctor(doctor);

@@ -7,6 +7,8 @@ export const getFeedbacksService = async ({
   size = 5,
   sortBy,
   order,
+  doctorId,
+  patientId,
 }) => {
   const params = new URLSearchParams();
 
@@ -16,12 +18,28 @@ export const getFeedbacksService = async ({
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
+  if (doctorId) params.append("doctorId", doctorId);
+  if (patientId) params.append("patientId", patientId);
 
   const queryString = params.toString();
   const url = `/feedbacks${queryString ? `?${queryString}` : ""}`;
 
   const res = await axios.get(url);
   return res;
+};
+
+export const addFeedbackService = async ({
+  patientId,
+  doctorId,
+  serviceId,
+  feedback,
+}) => {
+  return await axios.post("/feedbacks", {
+    patientId,
+    doctorId,
+    serviceId,
+    feedback,
+  });
 };
 
 export const deleteFeedbackService = async (id) => {

@@ -1,4 +1,5 @@
 import { Card, Text, Button, Group, Avatar, Flex } from "@mantine/core";
+import { Link } from "react-router-dom";
 
 const DoctorCard = ({ doctor }) => {
   return (
@@ -16,9 +17,11 @@ const DoctorCard = ({ doctor }) => {
         </Flex>
       </Group>
 
-      <Button color="blue" fullWidth mt="md" radius="md">
-        Đặt lịch khám
-      </Button>
+      <Link to={`/doctors/${doctor.doctorProfileId}/schedules`}>
+        <Button color="blue" fullWidth mt="md" radius="md">
+          Đặt lịch khám
+        </Button>
+      </Link>
     </Card>
   );
 };

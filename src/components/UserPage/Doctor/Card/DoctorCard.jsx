@@ -1,4 +1,5 @@
 import { Button } from "@mantine/core";
+import { Link } from "react-router-dom";
 
 const DoctorCard = ({ doctor }) => {
   return (
@@ -14,9 +15,7 @@ const DoctorCard = ({ doctor }) => {
         </div>
         <div className="flex-1 overflow-hidden">
           <div className="flex items-center flex-wrap gap-2">
-            <h2 className="md:text-lg font-semibold">
-              BS {doctor.name}
-            </h2>
+            <h2 className="md:text-lg font-semibold">BS {doctor.name}</h2>
           </div>
           <div className="font-medium text-sm bg-gray-100 rounded-full px-3 py-1 mt-3 whitespace-nowrap w-fit">
             {doctor.specialty}
@@ -24,9 +23,11 @@ const DoctorCard = ({ doctor }) => {
         </div>
       </div>
       <div>
-        <Button variant="filled" color="indigo" size="md">
-          Đặt khám
-        </Button>
+        <Link to={`/doctors/${doctor.doctorProfileId}/schedules`}>
+          <Button variant="filled" color="indigo" size="md">
+            Đặt khám
+          </Button>
+        </Link>
       </div>
     </div>
   );
