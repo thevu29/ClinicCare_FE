@@ -23,7 +23,7 @@ const Search = ({ placeholder }) => {
     <TextInput
       leftSectionPointerEvents="none"
       leftSection={<IconSearch width={18} height={18} />}
-      onChange={e => handleSearch(e.target.value)}
+      onChange={(e) => handleSearch(e.target.value)}
       placeholder={placeholder}
     />
   );

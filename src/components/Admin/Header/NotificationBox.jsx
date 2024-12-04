@@ -1,8 +1,11 @@
 import { Menu, Divider, Text, Box, Loader } from "@mantine/core";
 import { useEffect, useRef, useState } from "react";
 import { getByUserIdService } from "../../../services/notificationService";
+import { useAuth } from "../../../context/Auth/authContext";
 
-export default function NotificationBox() {
+const NotificationBox = () => {
+  const { token } = useAuth();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isShowMore, setIsShowMore] = useState(false);
 
@@ -21,7 +24,7 @@ export default function NotificationBox() {
     // If cursor have value then I can load more
     if (cursor) {
       try {
-        const res = await getByUserIdService(userId, cursor);
+        const res = await getByUserIdService(token?.userId, cursor);
         console.log(res);
 
         if (res && res.success) {
@@ -144,4 +147,6 @@ export default function NotificationBox() {
       </Text>
     </>
   );
-}
+};
+
+export default NotificationBox;

@@ -26,7 +26,7 @@ createRoot(document.getElementById("root")).render(
         Notifications: {
           styles: {
             root: {
-              zIndex: 9999, // Ensure a high z-index
+              zIndex: 9999,
             },
           },
         },

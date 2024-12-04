@@ -8,7 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction";
 import "./ScheduleCalendar.scss";
 import ScheduleInformationModal from "../Modal/ScheduleInformationModal";
 
-const ScheduleCalendar = () => {
+const ScheduleCalendar = ({ token }) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [schedules, setSchedules] = useState([]);
   const [schedule, setSchedule] = useState(null);
@@ -16,7 +16,9 @@ const ScheduleCalendar = () => {
   useEffect(() => {
     const fetchSchedules = async () => {
       try {
-        const res = await getAllSchedulesService();
+        const res = await getAllSchedulesService({
+          userId: token?.role.toLowerCase() !== "admin" ? token?.userId : null,
+        });
 
         if (res.success) {
           const events = res.data.map((schedule) => {
@@ -51,7 +53,7 @@ const ScheduleCalendar = () => {
     };
 
     fetchSchedules();
-  }, []);
+  }, [token]);
 
   const handleEventClick = (info) => {
     const schedule = {

@@ -8,10 +8,10 @@ import {
   addFeedbackService,
   getFeedbacksService,
 } from "../../../../services/feedbackService";
-import { convertToGMT7, formatDateTime } from "../../../../utils/date";
+import { formatDateTime } from "../../../../utils/date";
 import { showNotification } from "../../../../utils/notification";
 
-const Feedback = ({ doctorId }) => {
+const Feedback = ({ doctor }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
 
@@ -19,7 +19,10 @@ const Feedback = ({ doctorId }) => {
 
   const fetchFeedbacks = useCallback(async () => {
     try {
-      const res = await getFeedbacksService({ size: 5, doctorId });
+      const res = await getFeedbacksService({
+        size: 5,
+        userId: doctor?.userId,
+      });
 
       if (res.success) {
         setFeedbacks(res);
@@ -27,7 +30,7 @@ const Feedback = ({ doctorId }) => {
     } catch (error) {
       console.log(error);
     }
-  }, [doctorId]);
+  }, [doctor]);
 
   useEffect(() => {
     fetchFeedbacks();
@@ -49,7 +52,7 @@ const Feedback = ({ doctorId }) => {
       }
 
       const res = await addFeedbackService({
-        doctorId,
+        doctorId: doctor?.doctorProfileId,
         patientId: token?.userId,
         feedback: data.feedback,
       });
@@ -121,7 +124,7 @@ const Feedback = ({ doctorId }) => {
                   <div className="flex items-center gap-1">
                     <IconClock color="#707070" width={16} height={16} />
                     <span className="text-xs text-[#707070] font-bold">
-                      {formatDateTime(convertToGMT7(feedback?.date))}
+                      {formatDateTime(feedback?.date)}
                     </span>
                   </div>
                 </div>

@@ -86,7 +86,7 @@ const UpdateUserForm = () => {
           setRoles(rolesData);
 
           const userRes = await getUserByIdService(id);
-          
+
           if (userRes.success) {
             const user = userRes.data;
             setUser(user);
@@ -118,7 +118,7 @@ const UpdateUserForm = () => {
 
       Object.keys(data).forEach((key) => {
         if (key !== "image") {
-          formData.append(key, data[key]);
+          if (data[key]) formData.append(key, data[key]);
         }
       });
 

@@ -5,6 +5,7 @@ import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import ScheduleTable from "./ScheduleTable";
 import Search from "../Search/Search";
 import ScheduleCalendar from "./Calendar/ScheduleCalendar";
+import { useAuth } from "../../../context/Auth/authContext";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -12,6 +13,8 @@ const breadcumbData = [
 ];
 
 const Schedule = () => {
+  const { token } = useAuth();
+
   return (
     <>
       <BreadcumbsComponent items={breadcumbData} />
@@ -55,7 +58,7 @@ const Schedule = () => {
 
           <Tabs.Panel value="calendar">
             <div className="mt-8">
-              <ScheduleCalendar />
+              <ScheduleCalendar token={token} />
             </div>
           </Tabs.Panel>
 
@@ -65,7 +68,7 @@ const Schedule = () => {
                 <Search placeholder="Search schedules" />
               </Group>
 
-              <ScheduleTable />
+              <ScheduleTable token={token} />
             </div>
           </Tabs.Panel>
         </Tabs>

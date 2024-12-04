@@ -1,23 +1,23 @@
 import { UnstyledButton, Group, Avatar, Text } from "@mantine/core";
+import { useAuth } from "../../../context/Auth/authContext";
 import classes from "./NavbarFooter.module.scss";
 
 const NavbarFooter = ({ isCollapsed }) => {
+  const { token } = useAuth();
+
   return (
     <UnstyledButton className={classes.user}>
       <Group wrap="no">
-        <Avatar
-          src="https://media.yeah1.com/files/ngoctran/2022/07/01/289693821_582015943280803_2102006602626651935_n-205941.jpg"
-          radius="xl"
-        />
+        <Avatar src={token?.image} radius="xl" />
 
         {!isCollapsed && (
           <div style={{ flex: 1 }}>
             <Text size="sm" fw={500}>
-              Lâm Quốc Đại
+              {token?.name}
             </Text>
 
             <Text c="dimmed" size="xs">
-              daisex@gmail.com  
+              {token?.username}
             </Text>
           </div>
         )}

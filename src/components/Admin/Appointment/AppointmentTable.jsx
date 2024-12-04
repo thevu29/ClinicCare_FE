@@ -9,11 +9,21 @@ import {
   Transition,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconChevronUp, IconCircleX } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import {
+  IconChevronUp,
+  IconCircleX,
+  IconCircleCheck,
+} from "@tabler/icons-react";
 import { handleSorting } from "../../../utils/sort";
 import { formatDate, formatDateTime } from "../../../utils/date";
-import { getAppointmentsService } from "../../../services/appointmentService";
+import {
+  completeAppointmentService,
+  getAppointmentsService,
+} from "../../../services/appointmentService";
 import { getScheduleByIdService } from "../../../services/scheduleService";
+import { useAuth } from "../../../context/Auth/authContext";
+import { showNotification } from "../../../utils/notification";
 import clsx from "clsx";
 import PaginationComponent from "../../Pagination/Pagination";
 import ScheduleInformationModal from "./Modal/ScheduleInformationModal";
@@ -22,6 +32,8 @@ import FilterAppointmentDate from "./Filter/FilterAppointmentDate";
 import FilterAppointmentStatus from "./Filter/FilterAppointmentStatus";
 
 const AppointmentTable = () => {
+  const { token } = useAuth();
+
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
@@ -45,6 +57,7 @@ const AppointmentTable = () => {
           size,
           sortBy,
           order,
+          userId: token?.role.toLowerCase() !== "admin" ? token?.userId : null,
         });
 
         if (res.success) {
@@ -58,12 +71,14 @@ const AppointmentTable = () => {
           }
 
           setAppoinments(res);
+        } else {
+          showNotification(res.message, "Error");
         }
       } catch (error) {
         console.log(error);
       }
     },
-    [size]
+    [size, token]
   );
 
   useEffect(() => {
@@ -109,6 +124,34 @@ const AppointmentTable = () => {
     open();
   };
 
+  const handleCompleteAppointment = async (appointmentId) => {
+    try {
+      const res = await completeAppointmentService(appointmentId);
+
+      if (res.success) {
+        showNotification(res.message, "Success");
+        fetchAppointments();
+      } else {
+        showNotification(res.message, "Error");
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification("An error occurred", "Error");
+    }
+  };
+
+  const openCompleteModal = (appointmentId) =>
+    modals.openConfirmModal({
+      title: "Complete Appointment",
+      children: (
+        <Text size="sm">
+          Are you sure you want to complete this appointment?
+        </Text>
+      ),
+      labels: { confirm: "Confirm", cancel: "Cancel" },
+      onConfirm: () => handleCompleteAppointment(appointmentId),
+    });
+
   const rows =
     appointments &&
     appointments.data &&
@@ -130,11 +173,18 @@ const AppointmentTable = () => {
         <Table.Td>
           <span
             className={clsx("px-4 py-3 font-bold", {
-              "bg-green-500 text-white": !appointment.cancelBy,
-              "bg-red-500 text-white": appointment.cancelBy,
+              "bg-blue-500 text-white":
+                !appointment.completed && !appointment.cancelBy,
+              "bg-red-500 text-white":
+                !appointment.completed && appointment.cancelBy,
+              "bg-green-500 text-white": appointment.completed,
             })}
           >
-            {appointment.cancelBy ? "Canceled" : "Active"}
+            {!appointment.completed
+              ? appointment.cancelBy
+                ? "Cancelled"
+                : "Active"
+              : "Completed"}
           </span>
         </Table.Td>
         <Table.Td>
@@ -146,6 +196,18 @@ const AppointmentTable = () => {
             onClick={() => handleOpenCancelScheduleModal(appointment)}
           >
             <IconCircleX style={{ width: "70%", height: "70%" }} stroke={1.5} />
+          </ActionIcon>
+          <ActionIcon
+            variant="transparent"
+            color="green"
+            radius="xl"
+            title="Complete appointment"
+            onClick={() => openCompleteModal(appointment.appointmentId)}
+          >
+            <IconCircleCheck
+              style={{ width: "70%", height: "70%" }}
+              stroke={1.5}
+            />
           </ActionIcon>
         </Table.Td>
       </Table.Tr>
@@ -303,6 +365,8 @@ const AppointmentTable = () => {
         opened={opened}
         close={close}
         appointment={selectedAppointment}
+        userId={token?.userId}
+        fetchAppointments={fetchAppointments}
       />
     </>
   );

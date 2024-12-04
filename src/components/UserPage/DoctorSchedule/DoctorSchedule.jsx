@@ -77,11 +77,11 @@ const DoctorSchedule = () => {
             </h2>
           </div>
 
-          <ScheduleList doctorId={id} />
+          <ScheduleList doctor={doctor} />
         </div>
       </div>
 
-      <Feedback doctorId={id} />
+      <Feedback doctor={doctor} />
     </div>
   );
 };

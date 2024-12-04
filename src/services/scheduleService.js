@@ -1,7 +1,14 @@
 import axios from "../utils/axiosCustom";
 
-export const getAllSchedulesService = async () => {
-  return await axios.get("/schedules/all");
+export const getAllSchedulesService = async ({ userId }) => {
+  const params = new URLSearchParams();
+
+  if (userId) params.append("userId", userId);
+
+  const queryString = params.toString();
+  const url = `/schedules/all${queryString ? `?${queryString}` : ""}`;
+
+  return await axios.get(url);
 };
 
 export const getSchedulesService = async ({
@@ -12,7 +19,7 @@ export const getSchedulesService = async ({
   size = 5,
   sortBy,
   order,
-  doctorId,
+  userId,
 }) => {
   const params = new URLSearchParams();
 
@@ -23,7 +30,7 @@ export const getSchedulesService = async ({
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
-  if (doctorId) params.append("doctorId", doctorId);
+  if (userId) params.append("userId", userId);
 
   const queryString = params.toString();
   const url = `/schedules${queryString ? `?${queryString}` : ""}`;

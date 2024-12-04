@@ -8,45 +8,36 @@ import {
   Box,
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
-import { updatePaymentStatusService } from "../../../services/paymentService";
-import { useEffect } from "react";
 
-export default function PaymentSuccess({ paymentId }) {
+export default function PaymentFailure({ message }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    updatePaymentStatusService({
-      paymentId,
-      status: "PAID",
-    });
-  }, []);
 
   return (
     <Container size="sm" style={{ textAlign: "center", marginTop: "50px" }}>
       <Center>
         <Box w={120} h={120}>
           <Image
-            src="https://cdn-icons-png.flaticon.com/512/190/190411.png"
-            alt="Success"
+            src="https://cdn-icons-png.flaticon.com/512/753/753345.png"
+            alt="Failure"
           />
         </Box>
       </Center>
-      <Title order={2} mt="md" color="teal">
-        Payment Successful!
+      <Title order={2} mt="md" color="red">
+        {message}
       </Title>
       <Text size="md" mt="sm" c="dimmed">
-        Thank you for your payment. Your transaction was completed successfully.
+        Thanh toán thất bại. Vui lòng thử lại sau!
       </Text>
       <Button
         mt="lg"
         variant="outline"
-        color="teal"
+        color="red"
         size="md"
         onClick={() => {
-          navigate("/");
+          navigate("/admin/payments");
         }}
       >
-        Go to Homepage
+        Trở về trang chủ
       </Button>
     </Container>
   );

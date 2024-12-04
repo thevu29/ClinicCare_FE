@@ -16,6 +16,7 @@ const breadcumbData = [
 
 const AppointmentBooking = () => {
   const navigate = useNavigate();
+
   const { token } = useAuth();
   const { scheduleId } = useParams();
 
@@ -28,7 +29,6 @@ const AppointmentBooking = () => {
         const res = await getScheduleByIdService(scheduleId);
 
         if (res.success) {
-          console.log(res.data);
           setSchedule(res.data);
         }
       } catch (error) {
@@ -50,7 +50,7 @@ const AppointmentBooking = () => {
 
   const { handleSubmit, control } = useForm({
     defaultValues: {
-      patientname: "",
+      patientName: "",
       patientPhone: "",
     },
     mode: "onChange",
@@ -69,12 +69,13 @@ const AppointmentBooking = () => {
         ...data,
         scheduleId,
         patientId: token.userId,
-      };
+      }; 
 
       const res = await addAppointmentService(payload);
 
       if (res.success) {
         showNotification("Đặt lịch khám thành công", "Success");
+        navigate("/account/appointments");
       } else {
         showNotification(res.message, "Error");
       }
@@ -165,7 +166,7 @@ const AppointmentBooking = () => {
                       <div className="flex flex-row items-center gap-4 px-4 lg:px-6 py-2 bg-white">
                         <div className="flex-none">
                           <img
-                            src="https://cdn.youmed.vn/photos/6482af81-ab7d-4587-b011-8a9bad38a1e9.png"
+                            src={schedule?.image}
                             className="w-[60px] h-[60px] object-scale-down rounded-full"
                           />
                         </div>

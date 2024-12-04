@@ -12,6 +12,7 @@ import {
   IconCashBanknote,
 } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "../../../context/Auth/authContext";
 import NavbarFooter from "./NavbarFooter";
 import LinksGroup from "./NavbarLinksGroup";
 import classes from "./Navbar.module.scss";
@@ -19,7 +20,7 @@ import logoImage from "../../../assets/images/logo.png";
 import clsx from "clsx";
 
 const mockdata = [
-  { label: "Dashboard", icon: IconGauge, link: "/admin" },
+  { label: "Dashboard", icon: IconGauge, link: "/admin/dashboard" },
   { label: "Roles", icon: IconKey, link: "/admin/roles" },
   {
     label: "Users",
@@ -46,8 +47,45 @@ const mockdata = [
   { label: "Payments", icon: IconCashBanknote, link: "/admin/payments" },
 ];
 
+const adminPermitted = [
+  "Dashboard",
+  "Roles",
+  "Users",
+  "Medical Records",
+  "Promotions",
+  "Services",
+  "Feedbacks",
+  "Schedules",
+  "Appointments",
+  "Payments",
+];
+
+const doctorPermitted = [
+  "Medical Records",
+  "Feedbacks",
+  "Schedules",
+  "Appointments",
+];
+
 const Navbar = ({ isCollapsed }) => {
-  const links = mockdata.map((item) => (
+  const { token } = useAuth();
+
+  const permittedLinks = (role) => {
+    if (role === "admin") {
+      return adminPermitted;
+    } else if (role === "doctor") {
+      return doctorPermitted;
+    }
+    return [];
+  };
+
+  const userPermittedLinks = permittedLinks(token?.role.toLowerCase());
+
+  const filteredLinks = mockdata.filter((item) =>
+    userPermittedLinks.includes(item.label)
+  );
+
+  const links = filteredLinks.map((item) => (
     <LinksGroup {...item} isCollapsed={isCollapsed} key={item.label} />
   ));
 

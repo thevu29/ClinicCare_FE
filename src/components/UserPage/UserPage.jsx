@@ -15,7 +15,7 @@ const UserPage = () => {
     const fetchUser = async () => {
       try {
         const res = await getOAuth2Data();
-        console.log(res);
+
         if (res.data) {
           saveToken(res.data);
         }

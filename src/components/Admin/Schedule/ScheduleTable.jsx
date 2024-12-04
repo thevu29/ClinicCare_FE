@@ -17,7 +17,7 @@ import FilterScheduleDateTime from "./Filter/FilterScheduleDateTime";
 import clsx from "clsx";
 import FilterScheduleStatus from "./Filter/FilterScheduleStatus";
 
-const ScheduleTable = () => {
+const ScheduleTable = ({ token }) => {
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ const ScheduleTable = () => {
           size,
           sortBy,
           order,
+          userId: token?.role.toLowerCase() !== "admin" ? token?.userId : null,
         });
 
         if (res.success) {
@@ -47,7 +48,7 @@ const ScheduleTable = () => {
         console.log(error);
       }
     },
-    [size]
+    [size, token]
   );
 
   useEffect(() => {

@@ -112,7 +112,7 @@ const Header = () => {
                   Lịch khám
                 </Menu.Item>
               </Link>
-              <Menu.Item
+              {/* <Menu.Item
                 leftSection={
                   <IconFile
                     size={16}
@@ -122,18 +122,20 @@ const Header = () => {
                 }
               >
                 Hồ sơ bệnh án
-              </Menu.Item>
-              <Menu.Item
-                leftSection={
-                  <IconReceipt
-                    size={16}
-                    color={theme.colors.yellow[6]}
-                    stroke={1.5}
-                  />
-                }
-              >
-                Lịch sử thanh toán
-              </Menu.Item>
+              </Menu.Item> */}
+              <Link to="/account/payments">
+                <Menu.Item
+                  leftSection={
+                    <IconReceipt
+                      size={16}
+                      color={theme.colors.yellow[6]}
+                      stroke={1.5}
+                    />
+                  }
+                >
+                  Lịch sử thanh toán
+                </Menu.Item>
+              </Link>
 
               <Menu.Label>Tài khoản</Menu.Label>
               <Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
