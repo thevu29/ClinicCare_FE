@@ -16,9 +16,12 @@ const DoctorPage = () => {
   const pathname = location.pathname;
   const navigate = useNavigate();
 
+  const params = new URLSearchParams(location.search);
+  const initialServiceId = params.get("serviceId") || "";
+
   const [services, setServices] = useState([]);
   const [doctors, setDoctors] = useState([]);
-  const [selectedService, setSelectedService] = useState("");
+  const [selectedService, setSelectedService] = useState(initialServiceId);
 
   const fetchServices = async (search) => {
     try {
@@ -94,7 +97,10 @@ const DoctorPage = () => {
             <SearchService />
 
             <ScrollArea h={350} offsetScrollbars mt="lg">
-              <Radio.Group value={selectedService} onChange={handleSelectService}>
+              <Radio.Group
+                value={selectedService}
+                onChange={handleSelectService}
+              >
                 <Flex direction="column" gap={12}>
                   <Radio
                     icon={CheckIcon}

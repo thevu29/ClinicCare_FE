@@ -42,7 +42,7 @@ const SpecialtyBooking = () => {
                 services.map((service) => (
                   <div className="col-span-1" key={service.serviceId}>
                     <Link
-                      to="/"
+                      to={`/doctors?serviceId=${service.serviceId}`}
                       className="flex flex-col items-center p-4 font-medium text-center text-xs md:text-sm hover:shadow-[0_10px_70px_#00000026] rounded-xl transition"
                     >
                       <div className="rounded-full mb-2 w-16 h-16">

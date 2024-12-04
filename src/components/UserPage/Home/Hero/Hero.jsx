@@ -1,8 +1,24 @@
 import { IconSearch } from "@tabler/icons-react";
-import { TextInput } from "@mantine/core";
+import { ActionIcon, TextInput } from "@mantine/core";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import HeroImage from "../../../../assets/images/home-hero.webp";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearch = (value) => {
+    if (!value) return;
+    navigate(`/doctors?search=${value}`);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      handleSearch(searchValue);
+    }
+  };
+
   return (
     <div className="relative overflow-hidden bg-[#1975dc]">
       <div className="relative z-20 max-w-7xl mx-auto px-4 py-16 lg:px-6 md:min-h-[520px] flex flex-col justify-center">
@@ -12,8 +28,8 @@ const Hero = () => {
               Ứng dụng đặt khám
             </h1>
             <p className="text-white text-sm md:text-lg mt-2 mb-0">
-              Đặt khám với hơn 50 bác sĩ trên ClinicCare để có số thứ tự <br />
-              và khung giờ khám trước.
+              Đặt khám với hơn 50 bác sĩ trên ClinicCare để có <br /> khung giờ
+              khám trước.
             </p>
           </div>
           <div className="wrapper-search flex flex-col gap-3 pt-6">
@@ -21,7 +37,18 @@ const Hero = () => {
               placeholder="Chuyên khoa, bác sĩ,..."
               size="lg"
               radius="xl"
-              rightSection={<IconSearch />}
+              onChange={(e) => setSearchValue(e.target.value)}
+              onKeyDown={handleKeyDown}
+              rightSection={
+                <ActionIcon
+                  className="cursor-pointer p-2"
+                  variant="transparent"
+                  c="gray"
+                  onClick={() => handleSearch(searchValue)}
+                >
+                  <IconSearch />
+                </ActionIcon>
+              }
             />
           </div>
         </div>
