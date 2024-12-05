@@ -6,6 +6,7 @@ import "@mantine/dropzone/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/carousel/styles.css";
+import '@mantine/charts/styles.css';
 import { MantineProvider } from "@mantine/core";
 import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/routes";
@@ -26,7 +27,7 @@ createRoot(document.getElementById("root")).render(
         Notifications: {
           styles: {
             root: {
-              zIndex: 9999, // Ensure a high z-index
+              zIndex: 9999,
             },
           },
         },

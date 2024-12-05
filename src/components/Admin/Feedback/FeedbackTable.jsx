@@ -10,7 +10,6 @@ import {
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import { IconChevronUp, IconTrash } from "@tabler/icons-react";
-import { useLocation } from "react-router-dom";
 import { showNotification } from "../../../utils/notification";
 import { formatDate } from "../../../utils/date";
 import PaginationComponent from "../../Pagination/Pagination";
@@ -28,7 +27,6 @@ const FeedbackTable = ({
   size,
   setSize,
 }) => {
-  const location = useLocation();
 
   const toggleFeedbackSelection = (feedbackId) => {
     setSelectedFeedbacks((prev) =>
@@ -288,9 +286,7 @@ const FeedbackTable = ({
         </Group>
 
         <PaginationComponent
-          currentPage={
-            parseInt(new URLSearchParams(location.search).get("page")) || 1
-          }
+          currentPage={feedbacks?.meta?.page || 1}
           totalPages={feedbacks?.meta?.totalPages || 1}
         />
       </Group>

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import SendOtpForm from "./SendOtpForm";
-import VerifyOtpForm from "./VerifiOtpForm";
+import VerifyOtpForm from "./VerifyOtpForm";
 import RegisterForm from "./RegisterForm";
 
 const breadcumbData = [{ title: "Trang chủ", href: "/" }, { title: "Đăng ký" }];

@@ -3,7 +3,6 @@ import {
   Group,
   LoadingOverlay,
   NumberInput,
-  Select,
   Title,
 } from "@mantine/core";
 import { DateTimePicker } from "@mantine/dates";
@@ -32,18 +31,7 @@ const FORM_VALIDATION = {
     required: "Duration is required",
     min: { value: 1, message: "Duration must be at least 1" },
   },
-  status: {
-    required: "Status is required",
-  },
 };
-
-const statuses = [
-  { value: "AVAILABLE", label: "Available" },
-  { value: "UNAVAILABLE", label: "Unavailable" },
-  { value: "BOOKED", label: "Booked" },
-  { value: "CANCELLED", label: "Cancelled" },
-  { value: "COMPLETED", label: "Completed" },
-];
 
 const UpdateScheduleForm = () => {
   const { id } = useParams();
@@ -54,7 +42,6 @@ const UpdateScheduleForm = () => {
     defaultValues: {
       dateTime: "",
       duration: "",
-      status: "",
     },
     mode: "onChange",
   });
@@ -71,7 +58,6 @@ const UpdateScheduleForm = () => {
           reset({
             dateTime: dateTime,
             duration: schedule.duration,
-            status: schedule.status,
           });
         }
       } catch (error) {
@@ -137,24 +123,6 @@ const UpdateScheduleForm = () => {
               )}
             />
 
-            <Controller
-              name="status"
-              control={control}
-              rules={FORM_VALIDATION.status}
-              render={({ field, fieldState: { error } }) => (
-                <Select
-                  {...field}
-                  error={error?.message}
-                  label="Status"
-                  size="md"
-                  placeholder="Select status"
-                  data={statuses}
-                />
-              )}
-            />
-          </Group>
-
-          <Group grow mt={24}>
             <Controller
               name="duration"
               control={control}

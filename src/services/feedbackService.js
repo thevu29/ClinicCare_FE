@@ -7,7 +7,7 @@ export const getFeedbacksService = async ({
   size = 5,
   sortBy,
   order,
-  doctorId,
+  userId,
   patientId,
 }) => {
   const params = new URLSearchParams();
@@ -18,7 +18,7 @@ export const getFeedbacksService = async ({
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
-  if (doctorId) params.append("doctorId", doctorId);
+  if (userId) params.append("userId", userId);
   if (patientId) params.append("patientId", patientId);
 
   const queryString = params.toString();

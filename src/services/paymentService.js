@@ -14,6 +14,7 @@ export const getPaymentsService = async ({
   size = 5,
   sortBy,
   order,
+  patientId,
 }) => {
   const params = new URLSearchParams();
 
@@ -26,6 +27,7 @@ export const getPaymentsService = async ({
   if (size) params.append("size", size);
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
+  if (patientId) params.append("patientId", patientId);
 
   const queryString = params.toString();
   const url = `/payments${queryString ? `?${queryString}` : ""}`;

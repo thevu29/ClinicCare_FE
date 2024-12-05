@@ -49,9 +49,6 @@ const FORM_VALIDATION = {
 const statuses = [
   { value: "AVAILABLE", label: "Available" },
   { value: "UNAVAILABLE", label: "Unavailable" },
-  { value: "BOOKED", label: "Booked" },
-  { value: "CANCELLED", label: "Cancelled" },
-  { value: "COMPLETED", label: "Completed" },
 ];
 
 const AutoCreateScheduleForm = () => {
@@ -226,19 +223,19 @@ const AutoCreateScheduleForm = () => {
             </Flex>
 
             <Controller
-            name="duration"
-            control={control}
-            rules={FORM_VALIDATION.duration}
-            render={({ field, fieldState: { error } }) => (
-              <NumberInput
-                {...field}
-                error={error?.message}
-                label="Duration (minutes)"
-                size="md"
-                placeholder="Enter duration"
-              />
-            )}
-          />
+              name="duration"
+              control={control}
+              rules={FORM_VALIDATION.duration}
+              render={({ field, fieldState: { error } }) => (
+                <NumberInput
+                  {...field}
+                  error={error?.message}
+                  label="Duration (minutes)"
+                  size="md"
+                  placeholder="Enter duration"
+                />
+              )}
+            />
           </Group>
 
           <Group mt={32} justify="flex-end">

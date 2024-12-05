@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router-dom";
 
-export default function PaymentSuccess({ message }) {
+export default function PaymentFailure({ message }) {
   const navigate = useNavigate();
 
   return (
@@ -17,27 +17,27 @@ export default function PaymentSuccess({ message }) {
       <Center>
         <Box w={120} h={120}>
           <Image
-            src="https://cdn-icons-png.flaticon.com/512/190/190411.png"
-            alt="Success"
+            src="https://cdn-icons-png.flaticon.com/512/753/753345.png"
+            alt="Failure"
           />
         </Box>
       </Center>
-      <Title order={2} mt="md" color="teal">
+      <Title order={2} mt="md" color="red">
         {message}
       </Title>
       <Text size="md" mt="sm" c="dimmed">
-        Thank you for your payment. Your transaction was completed successfully.
+        Thanh toán thất bại. Vui lòng thử lại sau!
       </Text>
       <Button
         mt="lg"
         variant="outline"
-        color="teal"
+        color="red"
         size="md"
         onClick={() => {
-          navigate("/");
+          navigate("/admin/payments");
         }}
       >
-        Go to Homepage
+        Trở về trang chủ
       </Button>
     </Container>
   );

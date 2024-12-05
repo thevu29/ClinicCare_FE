@@ -5,10 +5,10 @@ import { useForm, Controller } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { showNotification } from "../../../../utils/notification";
 import { addScheduleService } from "../../../../services/scheduleService";
-import moment from "moment-timezone";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { getALlServicesManager } from "../../../../services/serviceManager";
 import { getAllDoctorsService } from "../../../../services/doctorService";
+import moment from "moment-timezone";
+import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -38,9 +38,6 @@ const FORM_VALIDATION = {
 const statuses = [
   { value: "AVAILABLE", label: "Available" },
   { value: "UNAVAILABLE", label: "Unavailable" },
-  { value: "BOOKED", label: "Booked" },
-  { value: "CANCELLED", label: "Cancelled" },
-  { value: "COMPLETED", label: "Completed" },
 ];
 
 const CreateScheduleForm = () => {

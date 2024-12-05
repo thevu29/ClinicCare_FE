@@ -17,7 +17,7 @@ import UpdateUserForm from "../components/Admin/User/Update/UpdateUserForm.jsx";
 import Role from "../components/Admin/Role/Role.jsx";
 import UpdateRoleForm from "../components/Admin/Role/Update/UpdateRoleForm.jsx";
 import CreateRoleForm from "../components/Admin/Role/Create/CreateRoleForm.jsx";
-import PaymentReturn from "../components/UserPage/Payment/PaymentReturn.jsx";
+import PaymentReturn from "../components/Payment/PaymentReturn.jsx";
 import Doctor from "../components/Admin/Doctor/Doctor.jsx";
 import CreateDoctorForm from "../components/Admin/Doctor/Create/CreateDoctorForm.jsx";
 import UpdateDoctorForm from "../components/Admin/Doctor/Update/UpdateDoctorForm.jsx";
@@ -41,6 +41,8 @@ import DoctorSchedule from "../components/UserPage/DoctorSchedule/DoctorSchedule
 import AppointmentBooking from "../components/UserPage/AppointmentBooking/AppointmentBooking.jsx";
 import Account from "../components/UserPage/Account/Account.jsx";
 import AccountAppointment from "../components/UserPage/Account/Appointment/AccountAppointment.jsx";
+import AccountPayment from "../components/UserPage/Account/Payment/AccountPayment.jsx";
+import RoleBasedRedirect from "./RolesPageRedirect.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -68,11 +70,15 @@ export const router = createBrowserRouter([
                 path: "appointments",
                 element: <AccountAppointment />,
               },
+              {
+                path: "payments",
+                element: <AccountPayment />,
+              },
             ],
           },
-          { path: "payment-return", element: <PaymentReturn /> },
         ],
       },
+      { path: "payment-return", element: <PaymentReturn /> },
       { path: "login", element: <Login /> },
       { path: "register", element: <Register /> },
       {
@@ -83,7 +89,10 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
         children: [
-          { index: true, element: <Dashboard /> },
+          { index: true, element: <RoleBasedRedirect /> },
+
+          // Dashboard
+          { path: "dashboard", element: <Dashboard /> },
 
           // Roles
           { path: "roles", element: <Role /> },

@@ -1,7 +1,18 @@
 import Hero from "./Hero/Hero";
 import Content from "./Content/Content";
+import { useAuth } from "../../../context/Auth/authContext";
+import { Navigate } from "react-router-dom";
 
 const Home = () => {
+  const { token } = useAuth();
+
+  if (
+    token?.role.toLowerCase() === "admin" ||
+    token?.role.toLowerCase() === "doctor"
+  ) {
+    return <Navigate to="/admin" />;
+  }
+
   return (
     <>
       <Hero />

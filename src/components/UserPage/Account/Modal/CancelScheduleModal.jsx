@@ -1,9 +1,15 @@
 import { Button, Group, Modal, Textarea } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
-import { showNotification } from "../../../../utils/notification";
 import { cancelAppointmentService } from "../../../../services/appointmentService";
+import { showNotification } from "../../../../utils/notification";
 
-const CancelScheduleModal = ({ opened, close, appointment, userId, fetchAppointments }) => {
+const CancelScheduleModal = ({
+  opened,
+  close,
+  appointment,
+  userId,
+  fetchAppointments,
+}) => {
   const { handleSubmit, control } = useForm({
     defaultValues: {
       cancelReason: "",
@@ -18,10 +24,13 @@ const CancelScheduleModal = ({ opened, close, appointment, userId, fetchAppointm
         cancelBy: userId,
       };
 
-      const res = await cancelAppointmentService(appointment.appointmentId, payload);
+      const res = await cancelAppointmentService(
+        appointment.appointmentId,
+        payload
+      );
 
       if (res.success) {
-        showNotification(res.message, "Success");
+        showNotification("Hủy lịch thành công", "Success");
         close();
         fetchAppointments();
       } else {
@@ -29,24 +38,24 @@ const CancelScheduleModal = ({ opened, close, appointment, userId, fetchAppointm
       }
     } catch (error) {
       console.log(error);
-      showNotification("An error occurred", "Error");
+      showNotification("Có lỗi xảy ra. Vui lòng thử lại!", "Error");
     }
   };
 
   if (!appointment) return null;
 
   return (
-    <Modal opened={opened} onClose={close} title="Cancel Schedule">
+    <Modal opened={opened} onClose={close} title="Hủy lịch">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller
           name="cancelReason"
           control={control}
-          rules={{ required: "Cancel reason by is required" }}
+          rules={{ required: "Vui lòng nhập lí do hủy" }}
           render={({ field, fieldState }) => (
             <Textarea
               {...field}
-              placeholder="Cancel reason"
-              label="Cancel reason"
+              label="Lí do"
+              placeholder="Nhập lí do hủy lịch"
               error={fieldState?.error?.message}
               rows={5}
             />
@@ -55,10 +64,10 @@ const CancelScheduleModal = ({ opened, close, appointment, userId, fetchAppointm
 
         <Group mt={32} justify="flex-end">
           <Button variant="filled" color="gray" onClick={close}>
-            Cancel
+            Hủy
           </Button>
           <Button type="submit" variant="filled" color="red">
-            Cancel
+            Xác nhận
           </Button>
         </Group>
       </form>

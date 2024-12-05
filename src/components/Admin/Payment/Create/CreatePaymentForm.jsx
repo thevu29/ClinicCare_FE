@@ -12,8 +12,8 @@ import { Controller, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllPatientsService } from "../../../../services/userService";
 import { getALlServicesManager } from "../../../../services/serviceManager";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 import { showNotification } from "../../../../utils/notification";
+import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
 
 const breadcumbData = [
   { title: "Admin", href: "/admin" },
@@ -38,11 +38,10 @@ const FORM_VALIDATION = {
   },
 };
 
-export default function CreatePaymentForm() {
+const CreatePaymentForm = () => {
   const navigate = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
   const [patients, setPatients] = useState([]);
   const [services, setServices] = useState([]);
 
@@ -58,7 +57,7 @@ export default function CreatePaymentForm() {
   useEffect(() => {
     const fetchPatient = async () => {
       try {
-        const res = await getAllPatientsService("user");
+        const res = await getAllPatientsService();
 
         if (res.success) {
           const data = res.data.map((patient) => ({
@@ -82,7 +81,9 @@ export default function CreatePaymentForm() {
         if (res.success) {
           const data = res.data.map((service) => ({
             value: service.serviceId,
-            label: service.name,
+            label: `${service.name}-${
+              (+service.price * (100 - service.promotionDiscount)) / 100
+            } (${service.price}-discount ${service.promotionDiscount}%)`,
           }));
 
           setServices(data);
@@ -97,36 +98,28 @@ export default function CreatePaymentForm() {
   }, []);
 
   const onSubmit = async (data) => {
-    setIsLoading(true);
-    setData(data);
-  };
+    try {
+      setIsLoading(true);
 
-  useEffect(() => {
-    if (isLoading) {
-      const addPayment = async () => {
-        try {
-          const res = await addPaymentService(data);
+      const res = await addPaymentService(data);
 
-          if (res && res.success) {
-            showNotification(res.message, "Success");
-            // Redirect to vnpay
-            if (res.data && res.data.paymentUrl) {
-              window.location.href = res.data.paymentUrl;
-            } else {
-              navigate("/admin/payments");
-            }
-          } else {
-            showNotification(res.message, "Error");
-          }
-        } catch (error) {
-          console.error("Error creating payment", error);
+      if (res && res.success) {
+        showNotification(res.message, "Success");
+
+        if (res.data && res.data.paymentUrl) {
+          window.location.href = res.data.paymentUrl;
+        } else {
+          navigate("/admin/payments");
         }
-        setIsLoading(false);
-      };
-
-      addPayment();
+      } else {
+        showNotification(res.message, "Error");
+      }
+    } catch (error) {
+      console.error("Error creating payment", error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [isLoading]);
+  };
 
   return (
     <>
@@ -186,7 +179,7 @@ export default function CreatePaymentForm() {
                 render={({ field, fieldState: { error } }) => (
                   <Select
                     {...field}
-                    label="Payment Method"
+                    label="Method"
                     error={error?.message}
                     data={paymentMethods}
                     placeholder="Select a payment method"
@@ -211,4 +204,6 @@ export default function CreatePaymentForm() {
       </div>
     </>
   );
-}
+};
+
+export default CreatePaymentForm;

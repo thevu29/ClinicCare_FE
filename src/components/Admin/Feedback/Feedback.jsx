@@ -9,6 +9,7 @@ import {
 } from "../../../services/feedbackService";
 import { showNotification } from "../../../utils/notification";
 import { handleSorting } from "../../../utils/sort";
+import { useAuth } from "../../../context/Auth/authContext";
 import BreadcumbsComponent from "../../Breadcumbs/Breadcumbs";
 import Search from "../Search/Search";
 import FeedbackTable from "./FeedbackTable";
@@ -19,6 +20,8 @@ const breadcumbData = [
 ];
 
 const Feedback = () => {
+  const { token } = useAuth();
+
   const location = useLocation();
   const pathname = location.pathname;
   const navigate = useNavigate();
@@ -40,6 +43,7 @@ const Feedback = () => {
           size,
           sortBy,
           order,
+          userId: token?.role.toLowerCase() !== "admin" ? token?.userId : null,
         });
 
         if (res && res.success) {
@@ -51,7 +55,7 @@ const Feedback = () => {
         console.log(error);
       }
     },
-    [size]
+    [size, token]
   );
 
   useEffect(() => {

@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 const statuses = [
   { value: "active", label: "Active" },
   { value: "cancelled", label: "Cancelled" },
+  { value: "completed", label: "Completed" },
 ];
 
 const FilterAppointmentStatus = () => {

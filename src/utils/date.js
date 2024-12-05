@@ -74,12 +74,16 @@ export const convertToGMT7 = (date) => {
 
 export const getDatesInMonth = (year, month) => {
   const dates = [];
-  const date = new Date(year, month, 1);
-
-  while (date.getMonth() === month) {
-    dates.push(new Date(date));
-    date.setDate(date.getDate() + 1);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const startDay = today.getDate();
+  
+  for (let day = startDay; day <= lastDay; day++) {
+    const date = new Date(year, month, day);
+    dates.push(date);
   }
-
+  
   return dates;
 };

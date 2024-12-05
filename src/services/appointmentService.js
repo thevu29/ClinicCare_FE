@@ -13,6 +13,7 @@ export const getAppointmentsService = async ({
   sortBy,
   order,
   patientId,
+  userId,
 }) => {
   const params = new URLSearchParams();
 
@@ -24,6 +25,7 @@ export const getAppointmentsService = async ({
   if (sortBy) params.append("sortBy", sortBy);
   if (order) params.append("order", order);
   if (patientId) params.append("patientId", patientId);
+  if (userId) params.append("userId", userId);
 
   const queryString = params.toString();
   const url = `/appointments${queryString ? `?${queryString}` : ""}`;
@@ -40,6 +42,10 @@ export const addAppointmentService = async (data) => {
   return axios.post("/appointments", data);
 };
 
-export const cancelAppointmentService = async (data) => {
-  return axios.put(`/appointments/${data.id}/cancel`, data);
+export const cancelAppointmentService = async (id, data) => {
+  return axios.put(`/appointments/cancel/${id}`, data);
+};
+
+export const completeAppointmentService = async (id) => {
+  return axios.put(`/appointments/complete/${id}`);
 };
