@@ -1,5 +1,5 @@
 import { Menu, Divider, Text, Box, Loader } from "@mantine/core";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getByUserIdService } from "../../../services/notificationService";
 import { useAuth } from "../../../context/Auth/authContext";
 
@@ -11,22 +11,17 @@ const NotificationBox = () => {
 
   const [notifications, setNotifications] = useState([]);
 
-  // Cursor
   const [cursor, setCursor] = useState("");
 
   const boxRef = useRef(null);
 
-  // Handle for load more notification
-  const loadMoreNotification = async () => {
-    // If cursor have value then I can load more
+  const loadMoreNotification = useCallback(async () => {
     if (cursor) {
       try {
         const res = await getByUserIdService(token?.userId, cursor);
 
         if (res && res.success) {
-          // Set cursor
           setCursor(res.data.cursor);
-          // Set notification
           setNotifications((prev) => [...prev, ...res.data.notifications]);
         } else {
           setCursor("");
@@ -36,21 +31,19 @@ const NotificationBox = () => {
       }
     }
     setIsLoading(false);
-  };
+  }, [cursor, token]);
 
   const handleScroll = () => {
     if (isShowMore) {
       if (boxRef.current) {
         const { scrollTop, scrollHeight, clientHeight } = boxRef.current;
         if (scrollTop + clientHeight >= scrollHeight - 5) {
-          //   If reaching bottom will load more notification
           setIsLoading(true);
         }
       }
     }
   };
 
-  // Get notification with admin Id
   useEffect(() => {
     const fetchNotification = async () => {
       try {
@@ -58,9 +51,7 @@ const NotificationBox = () => {
         console.log(res);
 
         if (res && res.success) {
-          // Set cursor
           setCursor(res.data.cursor);
-          // Set notification
           setNotifications(res.data.notifications);
         }
       } catch (error) {
@@ -68,14 +59,13 @@ const NotificationBox = () => {
       }
     };
     fetchNotification();
-  }, []);
+  }, [token]);
 
-  //   When loading it will get more notification
   useEffect(() => {
     if (isLoading) {
       loadMoreNotification();
     }
-  }, [isLoading]);
+  }, [isLoading, loadMoreNotification]);
 
   return (
     <>
