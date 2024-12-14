@@ -138,9 +138,13 @@ const Header = () => {
               </Link>
 
               <Menu.Label>Tài khoản</Menu.Label>
-              <Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
-                Thông tin cá nhân
-              </Menu.Item>
+              <Link to="/account/information">
+                <Menu.Item
+                  leftSection={<IconSettings size={16} stroke={1.5} />}
+                >
+                  Thông tin cá nhân
+                </Menu.Item>
+              </Link>
               <Menu.Item
                 leftSection={<IconLogout size={16} stroke={1.5} />}
                 onClick={handleLogout}

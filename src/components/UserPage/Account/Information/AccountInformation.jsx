@@ -1,61 +1,38 @@
 import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
-import {
-  Button,
-  Flex,
-  Group,
-  LoadingOverlay,
-  Select,
-  TextInput,
-  Title,
-} from "@mantine/core";
-import {
-  getUserByIdService,
-  updateUserService,
-} from "../../../../services/userService";
+import { Button, Flex, Group, TextInput } from "@mantine/core";
 import { getAllRoles } from "../../../../services/roleService";
+import {
+    getUserByIdService,
+    updateUserService,
+} from "../../../../services/userService";
 import { showNotification } from "../../../../utils/notification";
-import { Link, useParams } from "react-router-dom";
-import BreadcumbsComponent from "../../../Breadcumbs/Breadcumbs";
+import { useAuth } from "../../../../context/Auth/authContext";
 import ImageDropzone from "../../../Dropzone/Dropzone";
-
-const breadcumbData = [
-  { title: "Admin", href: "/admin" },
-  { title: "Users", href: "/admin/users" },
-  { title: "Update user", href: "/admin/users/update" },
-];
 
 const FORM_VALIDATION = {
   name: {
-    required: "Name is required",
+    required: "Họ và tên không được để trống",
   },
   phone: {
     pattern: {
       value: /^\d{10}$/,
-      message: "Phone number must contain exactly 10 digits",
+      message: "Số điện thoại phải chứa đúng 10 chữ số",
     },
-  },
-  role: {
-    required: "Role is required",
-  },
-  specialty: {
-    required: "Specialty is required",
   },
 };
 
-const UpdateUserForm = () => {
-  const { id } = useParams();
+const AccountInformation = () => {
+  const { token } = useAuth();
 
-  const [roles, setRoles] = useState([]);
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
 
   const { handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
+      email: "",
       name: "",
       phone: "",
       image: "",
-      roleId: "",
     },
     mode: "onChange",
   });
@@ -73,9 +50,7 @@ const UpdateUserForm = () => {
             }))
             .filter((role) => role.label !== "User");
 
-          setRoles(rolesData);
-
-          const userRes = await getUserByIdService(id);
+          const userRes = await getUserByIdService(token?.userId);
 
           if (userRes.success) {
             const user = userRes.data;
@@ -85,6 +60,7 @@ const UpdateUserForm = () => {
               rolesData.find((role) => role.label === user.role)?.value || "";
 
             reset({
+              email: user.email,
               name: user.name,
               phone: user.phone,
               image: user.image,
@@ -98,12 +74,10 @@ const UpdateUserForm = () => {
     };
 
     fetchData();
-  }, [id, reset]);
+  }, [token, reset]);
 
   const onSubmit = async (data) => {
     try {
-      setIsLoading(true);
-
       const formData = new FormData();
 
       Object.keys(data).forEach((key) => {
@@ -116,7 +90,7 @@ const UpdateUserForm = () => {
         formData.append("image", data.image);
       }
 
-      const response = await updateUserService(id, formData);
+      const response = await updateUserService(token?.userId, formData);
 
       response.success
         ? showNotification(response.message, "Success")
@@ -124,8 +98,6 @@ const UpdateUserForm = () => {
     } catch (error) {
       console.log(error);
       showNotification("An error occured", "Error");
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -135,21 +107,27 @@ const UpdateUserForm = () => {
 
   return (
     <>
-      <LoadingOverlay
-        visible={isLoading}
-        zIndex={1000}
-        overlayProps={{ radius: "sm", blur: 2 }}
-      />
+      <div className="flex items-center justify-between mb-2 p-4 md:px-0">
+        <h1 className="text-xl font-bold">Thông tin cá nhân</h1>
+      </div>
 
-      <BreadcumbsComponent items={breadcumbData} />
-      <Title order={1} mt={32}>
-        Update User
-      </Title>
-
-      <div className="bg-white p-8 rounded-lg mt-7">
+      <div className="bg-white p-8 rounded-lg">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Group justify="space-between" grow>
             <Flex direction="column" gap={20}>
+              <Controller
+                name="email"
+                control={control}
+                render={() => (
+                  <TextInput
+                    disabled
+                    label="Email"
+                    size="md"
+                    placeholder="Email của bạn"
+                  />
+                )}
+              />
+
               <Controller
                 name="name"
                 control={control}
@@ -158,9 +136,9 @@ const UpdateUserForm = () => {
                   <TextInput
                     {...field}
                     error={error?.message}
-                    label="Name"
+                    label="Họ và tên"
                     size="md"
-                    placeholder="Enter your name"
+                    placeholder="Nhập họ và tên"
                   />
                 )}
               />
@@ -173,10 +151,10 @@ const UpdateUserForm = () => {
                   <TextInput
                     {...field}
                     error={error?.message}
-                    label="Phone"
+                    label="Số điện thoại"
                     size="md"
                     type="number"
-                    placeholder="Enter your phone number"
+                    placeholder="Nhập số điện thoại"
                   />
                 )}
               />
@@ -191,35 +169,9 @@ const UpdateUserForm = () => {
             />
           </Group>
 
-          {user && user.role.toLowerCase() !== "user" && (
-            <Group grow mt={20}>
-              <Controller
-                name="roleId"
-                control={control}
-                rules={FORM_VALIDATION.role}
-                render={({ field, fieldState: { error } }) => (
-                  <Select
-                    {...field}
-                    error={error?.message}
-                    defaultValue={field.value}
-                    label="Role"
-                    placeholder="Select role"
-                    data={roles}
-                    allowDeselect={false}
-                  />
-                )}
-              />
-            </Group>
-          )}
-
           <Group mt={32} justify="flex-end">
-            <Link to="/admin/users">
-              <Button variant="filled" color="gray">
-                Cancel
-              </Button>
-            </Link>
             <Button type="submit" variant="filled">
-              Save
+              Lưu
             </Button>
           </Group>
         </form>
@@ -228,4 +180,4 @@ const UpdateUserForm = () => {
   );
 };
 
-export default UpdateUserForm;
+export default AccountInformation;

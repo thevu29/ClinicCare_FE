@@ -43,6 +43,7 @@ import Account from "../components/UserPage/Account/Account.jsx";
 import AccountAppointment from "../components/UserPage/Account/Appointment/AccountAppointment.jsx";
 import AccountPayment from "../components/UserPage/Account/Payment/AccountPayment.jsx";
 import RoleBasedRedirect from "./RolesPageRedirect.jsx";
+import AccountInformation from "../components/UserPage/Account/Information/AccountInformation.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ export const router = createBrowserRouter([
               {
                 path: "payments",
                 element: <AccountPayment />,
+              },
+              {
+                path: "information",
+                element: <AccountInformation />,
               },
             ],
           },
