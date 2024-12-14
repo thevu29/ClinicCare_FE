@@ -14,9 +14,6 @@ const NotificationBox = () => {
   // Cursor
   const [cursor, setCursor] = useState("");
 
-  // Admin Id
-  const userId = "1112c29f-aa3c-40ce-ad10-4266c06b8461";
-
   const boxRef = useRef(null);
 
   // Handle for load more notification
@@ -25,7 +22,6 @@ const NotificationBox = () => {
     if (cursor) {
       try {
         const res = await getByUserIdService(token?.userId, cursor);
-        console.log(res);
 
         if (res && res.success) {
           // Set cursor
@@ -58,7 +54,7 @@ const NotificationBox = () => {
   useEffect(() => {
     const fetchNotification = async () => {
       try {
-        const res = await getByUserIdService(userId);
+        const res = await getByUserIdService(token?.userId);
         console.log(res);
 
         if (res && res.success) {
