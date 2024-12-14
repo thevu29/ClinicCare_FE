@@ -1,0 +1,41 @@
+.typing-indicator {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border-radius: 50%;
+    background-color: #ccc;
+    animation: typing 1s infinite steps(3);
+}
+
+@keyframes typing {
+    0% {
+        box-shadow:
+            0.5em 0 0 0.5em,
+            1em 0 0 0.5em,
+            1.5em 0 0 0.5em;
+    }
+    25% {
+        box-shadow:
+            0.5em 0 0 0.5em,
+            1em 0 0 0.5em,
+            1.5em 0 0 0.5em;
+    }
+    50% {
+        box-shadow:
+            0.5em 0 0 0.5em,
+            1em 0 0 0.5em,
+            1.5em 0 0 0.5em;
+    }
+    75% {
+        box-shadow:
+            0.5em 0 0 0.5em,
+            1em 0 0 0.5em,
+            1.5em 0 0 0.5em;
+    }
+    100% {
+        box-shadow:
+            0.5em 0 0 0.5em,
+            1em 0 0 0.5em,
+            1.5em 0 0 0.5em;
+    }
+}

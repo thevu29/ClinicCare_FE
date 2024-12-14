@@ -44,6 +44,7 @@ import AccountAppointment from "../components/UserPage/Account/Appointment/Accou
 import AccountPayment from "../components/UserPage/Account/Payment/AccountPayment.jsx";
 import RoleBasedRedirect from "./RolesPageRedirect.jsx";
 import AccountInformation from "../components/UserPage/Account/Information/AccountInformation.jsx";
+import Consult from "../components/UserPage/Consult/Consult.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -81,6 +82,7 @@ export const router = createBrowserRouter([
               },
             ],
           },
+          { path: "/consults", element: <Consult /> },
         ],
       },
       { path: "payment-return", element: <PaymentReturn /> },

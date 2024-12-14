@@ -64,7 +64,7 @@ const Header = () => {
           <Link to="/doctors" className={classes.link}>
             Đặt khám
           </Link>
-          <Link to="/" className={classes.link}>
+          <Link to="/consults" className={classes.link}>
             Tư vấn
           </Link>
         </Group>
