@@ -18,7 +18,6 @@ Backend: https://github.com/thevu29/ClinicCare_BE.git
 - User-friendly patient and doctor dashboards
 - Appointment scheduling and filtering
 - Integration with backend APIs for authentication and data
-- Responsive design with mobile and desktop support
 - Google OAuth2 login integration
 
 ---
