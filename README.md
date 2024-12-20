@@ -25,7 +25,7 @@ Backend: https://github.com/thevu29/ClinicCare_BE.git
 ## Tech Stack
 - **Framework**: React.js
 - **State Management**: React Context API / TanStack Query
-- **Styling**: TailwindCSS and Sass
+- **Styling**: Mantine, TailwindCSS and Sass
 - **Routing**: React Router
 - **Build Tool**: Vite
 
